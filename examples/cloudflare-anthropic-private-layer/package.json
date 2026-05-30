@@ -1,0 +1,22 @@
+{
+  "name": "@patronage/example-cloudflare-anthropic-private-layer",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal Cloudflare Managed Agents overlay for Patronage connector tools",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/local-preview.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@patronage/google-ads": "workspace:*",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  }
+}

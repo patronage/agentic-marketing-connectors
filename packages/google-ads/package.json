@@ -1,0 +1,91 @@
+{
+  "dependencies": {
+    "yaml": "2.8.3"
+  },
+  "description": "Worker-safe Google Ads primitives for Patronage Core",
+  "devDependencies": {
+    "tsdown": "0.21.4",
+    "typescript": "5.9.3",
+    "vitest": "4.1.0"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./cloudflare": {
+      "default": "./src/cloudflare/index.ts",
+      "types": "./src/cloudflare/index.ts"
+    },
+    "./core": {
+      "default": "./src/core/index.ts",
+      "types": "./src/core/index.ts"
+    },
+    "./deploy/parse-brief": {
+      "default": "./src/deploy/parse-brief.ts",
+      "types": "./src/deploy/parse-brief.ts"
+    },
+    "./deploy/types": {
+      "default": "./src/deploy/types.ts",
+      "types": "./src/deploy/types.ts"
+    },
+    "./reports": {
+      "default": "./src/reports/index.ts",
+      "types": "./src/reports/index.ts"
+    },
+    "./rest": {
+      "default": "./src/rest/index.ts",
+      "types": "./src/rest/index.ts"
+    },
+    "./workflows/add-keywords": {
+      "default": "./src/workflows/add-keywords.ts",
+      "types": "./src/workflows/add-keywords.ts"
+    },
+    "./workflows/create-campaign-experiment": {
+      "default": "./src/workflows/create-campaign-experiment.ts",
+      "types": "./src/workflows/create-campaign-experiment.ts"
+    },
+    "./workflows/deploy-campaign": {
+      "default": "./src/workflows/deploy-campaign.ts",
+      "types": "./src/workflows/deploy-campaign.ts"
+    },
+    "./workflows/negative-keywords": {
+      "default": "./src/workflows/negative-keywords.ts",
+      "types": "./src/workflows/negative-keywords.ts"
+    },
+    "./workflows/pause-ad-groups": {
+      "default": "./src/workflows/pause-ad-groups.ts",
+      "types": "./src/workflows/pause-ad-groups.ts"
+    },
+    "./workflows/set-campaign-frequency-cap": {
+      "default": "./src/workflows/set-campaign-frequency-cap.ts",
+      "types": "./src/workflows/set-campaign-frequency-cap.ts"
+    },
+    "./workflows/shared-set-negative-keywords": {
+      "default": "./src/workflows/shared-set-negative-keywords.ts",
+      "types": "./src/workflows/shared-set-negative-keywords.ts"
+    },
+    "./workflows/update-ad-final-urls": {
+      "default": "./src/workflows/update-ad-final-urls.ts",
+      "types": "./src/workflows/update-ad-final-urls.ts"
+    },
+    "./workflows/update-ad-group-demographics": {
+      "default": "./src/workflows/update-ad-group-demographics.ts",
+      "types": "./src/workflows/update-ad-group-demographics.ts"
+    },
+    "./workflows/update-campaign-locations": {
+      "default": "./src/workflows/update-campaign-locations.ts",
+      "types": "./src/workflows/update-campaign-locations.ts"
+    }
+  },
+  "license": "MIT",
+  "name": "@patronage/google-ads",
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "version": "0.0.0"
+}

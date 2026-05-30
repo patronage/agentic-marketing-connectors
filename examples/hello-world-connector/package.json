@@ -1,0 +1,21 @@
+{
+  "name": "@patronage/example-hello-world-connector",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal Hello World example for Patronage connector packages",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@patronage/google-ads": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  }
+}

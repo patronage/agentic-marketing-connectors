@@ -1,0 +1,73 @@
+{
+  "examples": [
+    {
+      "name": "@patronage/example-cloudflare-anthropic-private-layer",
+      "publicPath": "examples/cloudflare-anthropic-private-layer",
+      "sourcePath": "examples/cloudflare-anthropic-private-layer"
+    },
+    {
+      "name": "@patronage/example-hello-world-connector",
+      "publicPath": "examples/hello-world-connector",
+      "sourcePath": "examples/hello-world-connector"
+    }
+  ],
+  "gatedSurfaces": [
+    {
+      "name": "Ads Sync",
+      "plannedPackage": "@patronage/ads-sync",
+      "plannedPublicPath": "packages/ads-sync",
+      "reason": "Gated until the public Ads Sync contract is ready; current app-local package remains private.",
+      "sourcePath": "apps/ads-sync"
+    }
+  ],
+  "layout": {
+    "examplesDir": "examples",
+    "packagesDir": "packages"
+  },
+  "packages": [
+    {
+      "description": "Minimal local CLI harness for Patronage Open Source Core",
+      "name": "@patronage/cli",
+      "publicPath": "packages/cli",
+      "sourcePath": "src/packages/cli",
+      "version": "0.0.0"
+    },
+    {
+      "description": "Worker-safe Google Ads primitives for Patronage Core",
+      "name": "@patronage/google-ads",
+      "publicPath": "packages/google-ads",
+      "sourcePath": "src/packages/google-ads",
+      "version": "0.0.0"
+    },
+    {
+      "description": "Worker-safe LinkedIn Ads reporting primitives for Patronage Core",
+      "name": "@patronage/linkedin-ads",
+      "publicPath": "packages/linkedin-ads",
+      "sourcePath": "src/packages/linkedin-ads",
+      "version": "0.0.0"
+    },
+    {
+      "description": "Worker-safe Meta paid ads reporting primitives for Patronage Core",
+      "name": "@patronage/meta-ads",
+      "publicPath": "packages/meta-ads",
+      "sourcePath": "src/packages/meta-ads",
+      "version": "0.0.0"
+    },
+    {
+      "description": "Worker-safe Meta organic social Graph API primitives for Patronage Core",
+      "name": "@patronage/meta-social",
+      "publicPath": "packages/meta-social",
+      "sourcePath": "src/packages/meta-social",
+      "version": "0.0.0"
+    },
+    {
+      "description": "Worker-safe X authored post ingestion primitives for Patronage Core",
+      "name": "@patronage/x-posts",
+      "publicPath": "packages/x-posts",
+      "sourcePath": "src/packages/x-posts",
+      "version": "0.0.0"
+    }
+  ],
+  "publicRepository": "github.com/patronage/agentic-marketing-connectors",
+  "schemaVersion": 1
+}
