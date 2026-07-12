@@ -6,6 +6,7 @@ Public release monorepo for Patronage's agentic marketing connector packages.
 
 | Package | Path | Description |
 | --- | --- | --- |
+| `@patronage/ads-sync` | `packages/ads-sync` | Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines |
 | `@patronage/cli` | `packages/cli` | Minimal local CLI harness for Patronage Open Source Core |
 | `@patronage/google-ads` | `packages/google-ads` | Worker-safe Google Ads primitives for Patronage Core |
 | `@patronage/linkedin-ads` | `packages/linkedin-ads` | Worker-safe LinkedIn Ads reporting primitives for Patronage Core |

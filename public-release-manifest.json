@@ -11,20 +11,19 @@
       "sourcePath": "examples/hello-world-connector"
     }
   ],
-  "gatedSurfaces": [
-    {
-      "name": "Ads Sync",
-      "plannedPackage": "@patronage/ads-sync",
-      "plannedPublicPath": "packages/ads-sync",
-      "reason": "Gated until the public Ads Sync contract is ready; current app-local package remains private.",
-      "sourcePath": "apps/ads-sync"
-    }
-  ],
+  "gatedSurfaces": [],
   "layout": {
     "examplesDir": "examples",
     "packagesDir": "packages"
   },
   "packages": [
+    {
+      "description": "Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines.",
+      "name": "@patronage/ads-sync",
+      "publicPath": "packages/ads-sync",
+      "sourcePath": "src/packages/ads-sync",
+      "version": "0.1.0"
+    },
     {
       "description": "Minimal local CLI harness for Patronage Open Source Core",
       "name": "@patronage/cli",
