@@ -604,11 +604,11 @@ async function runConversionsTest(
       {
         action_source: "website",
         event_name: "PageView",
-        event_source_url: "https://test.paitronage.com",
+        event_source_url: "https://example.com",
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           client_ip_address: "0.0.0.0",
-          client_user_agent: "Paitronage/1.0 (Conversions API Test)",
+          client_user_agent: "Patronage/1.0 (Conversions API Test)",
         },
       },
     ],

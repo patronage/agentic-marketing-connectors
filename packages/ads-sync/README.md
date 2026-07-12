@@ -1,12 +1,12 @@
 # Ads Sync
 
-`@patronage/ads-sync` contains the public Ads Sync ingestion contract shared by Patronage's private deployment and the nested reference deployment.
+`@patronage/ads-sync` contains composable ingestion contracts for Cloudflare-hosted ad platform data pipelines.
 
 ## Release Boundary
 
-Ads Sync is released through the `github.com/patronage/agentic-marketing-connectors` public monorepo as `packages/ads-sync`. The source of truth remains `src/packages/ads-sync` in Paitronage until an explicit migration says otherwise.
+Ads Sync is published from `packages/ads-sync` in the `github.com/patronage/agentic-marketing-connectors` monorepo.
 
-The nested `deploy/` package is included in the public repo tree as operator reference content, but it is not part of the npm package tarball. Patronage's private `apps/ads-sync` deployment stays private and must continue consuming this package through the public `@patronage/ads-sync` entry point.
+The nested `deploy/` workspace provides operator reference content but is not part of the npm package tarball. It consumes only the public `@patronage/ads-sync` entry point.
 
 Do not publish to npm or make additional release visibility changes without explicit approval of package versioning, npm org/access, dependency policy, and release notes.
 

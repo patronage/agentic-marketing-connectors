@@ -1,10 +1,10 @@
 # Ads Sync Reference Deployment
 
-This private workspace package is the deployable reference shell for operators running `@patronage/ads-sync` on Cloudflare.
+This non-published workspace package is the deployable reference shell for operators running `@patronage/ads-sync` on Cloudflare.
 
 It is intentionally nested inside the package directory so the public repo-tree artifact includes both the composer-facing package and the operator-facing deployment. The deployment must import `@patronage/ads-sync` through public entry points only.
 
-The current reference Worker exposes `GET /health` and provider metadata at `GET /`. It does not yet include the full private runner endpoints such as `/migrations`, `/runs`, or `/backfill-plans`; compose those endpoints from the package primitives before using this shell as a production runner.
+The current reference Worker exposes `GET /health` and provider metadata at `GET /`. It does not yet include production runner endpoints such as `/migrations`, `/runs`, or `/backfill-plans`; compose those endpoints from the package primitives before using this shell as a production runner.
 
 ## Operator Checklist
 

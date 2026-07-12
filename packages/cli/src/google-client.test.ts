@@ -12,7 +12,7 @@ describe("findDotenvPath", () => {
 
     try {
       const envPath = path.join(root, ".env");
-      const packageCwd = path.join(root, "src/packages/cli");
+      const packageCwd = path.join(root, "packages/cli");
 
       mkdirSync(packageCwd, { recursive: true });
       writeFileSync(envPath, "GOOGLE_ADS_CLIENT_ID=test\n");
@@ -28,7 +28,7 @@ describe("findDotenvPath", () => {
 
     try {
       const outsideCwd = path.join(root, "outside/project");
-      const packageCwd = path.join(root, "repo/src/packages/cli");
+      const packageCwd = path.join(root, "repo/packages/cli");
       const envPath = path.join(root, "repo/.env");
 
       mkdirSync(outsideCwd, { recursive: true });

@@ -22,4 +22,4 @@ Public release monorepo for Patronage's agentic marketing connector packages.
 
 ## Status
 
-This repository is generated from the private Patronage development repo. Active development happens in the private source repo, and this public tree is updated through the release sync pipeline.
+These packages are open-source building blocks for agentic marketing tools and Cloudflare-hosted automation.
