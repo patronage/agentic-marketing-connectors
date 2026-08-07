@@ -9,9 +9,9 @@ function makeResponse(body: unknown) {
   } as Response;
 }
 
-describe("XaiGrokSearchProvider", () => {
+describe(XaiGrokSearchProvider, () => {
   it("normalizes grounded x_search responses", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       makeResponse({
         output: [
           {
@@ -65,7 +65,7 @@ describe("XaiGrokSearchProvider", () => {
     expect(body.model).toBe("grok-4-1-fast-reasoning");
     expect(body.temperature).toBe(0);
     expect(body.tool_choice).toBe("required");
-    expect(body.input).toEqual([
+    expect(body.input).toStrictEqual([
       {
         content: expect.stringContaining(
           "Return only a JSON array of authored posts from @ExampleCommunityFund"
@@ -73,7 +73,7 @@ describe("XaiGrokSearchProvider", () => {
         role: "user",
       },
     ]);
-    expect(body.tools[0]).toEqual(
+    expect(body.tools[0]).toStrictEqual(
       expect.objectContaining({
         allowed_x_handles: ["ExampleCommunityFund"],
         enable_video_understanding: true,
@@ -82,7 +82,7 @@ describe("XaiGrokSearchProvider", () => {
         type: "x_search",
       })
     );
-    expect(result.posts).toEqual([
+    expect(result.posts).toStrictEqual([
       expect.objectContaining({
         handle: "ExampleCommunityFund",
         hasVideo: true,
@@ -100,7 +100,7 @@ describe("XaiGrokSearchProvider", () => {
   });
 
   it("falls back to citations when the model omits canonical urls", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       makeResponse({
         output: [
           {
@@ -148,7 +148,7 @@ describe("XaiGrokSearchProvider", () => {
   });
 
   it("uses output annotations when top-level citations are absent", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       makeResponse({
         output: [
           {
@@ -189,7 +189,7 @@ describe("XaiGrokSearchProvider", () => {
 
     const result = await provider.listRecentPosts();
 
-    expect(result.posts[0]).toEqual(
+    expect(result.posts[0]).toStrictEqual(
       expect.objectContaining({
         id: "2039018944766300656",
         url: "https://x.com/ExampleCommunityFund/status/2039018944766300656",
@@ -199,7 +199,7 @@ describe("XaiGrokSearchProvider", () => {
   });
 
   it("drops model results that are not grounded by citations", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       makeResponse({
         output: [
           {
@@ -247,13 +247,13 @@ describe("XaiGrokSearchProvider", () => {
 
     const result = await provider.listRecentPosts();
 
-    expect(result.posts).toEqual([
+    expect(result.posts).toStrictEqual([
       expect.objectContaining({
         id: "2039018944766300656",
         url: "https://x.com/ExampleCommunityFund/status/2039018944766300656",
       }),
     ]);
-    expect(result.warnings).toEqual([
+    expect(result.warnings).toStrictEqual([
       "Dropped 1 xAI post result without citation grounding.",
     ]);
   });

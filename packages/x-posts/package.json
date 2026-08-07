@@ -1,14 +1,17 @@
 {
   "description": "Worker-safe X authored post ingestion primitives for Patronage Core",
   "devDependencies": {
-    "tsdown": "0.21.4",
-    "typescript": "5.9.3",
-    "vitest": "4.1.0"
+    "tsdown": "0.22.4",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
   },
   "exports": {
     ".": {
-      "default": "./src/index.ts",
-      "types": "./src/index.ts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./product": {
+      "default": "./product.json"
     }
   },
   "license": "MIT",

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import {
   buildUpdateCampaignLocationOperations,
   updateCampaignLocations,
@@ -27,7 +28,7 @@ describe("update campaign locations workflow", () => {
         ],
         removeLocations: [{ campaignId: "111", criterionId: "21137" }],
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         campaignCriterionOperation: {
           remove: "customers/1234567890/campaignCriteria/111~21137",
@@ -146,12 +147,12 @@ describe("update campaign locations workflow", () => {
 
   it("defaults writes to validation mode and blocks execution until apply guards exist", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     await updateCampaignLocations(client, {

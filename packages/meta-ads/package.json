@@ -1,24 +1,62 @@
 {
-  "description": "Worker-safe Meta paid ads reporting primitives for Patronage Core",
+  "dependencies": {
+    "@patronage/connector-lifecycle": "workspace:*"
+  },
+  "description": "Worker-safe Meta Ads reporting and guarded mutation primitives for Patronage Core",
   "devDependencies": {
-    "tsdown": "0.21.4",
-    "typescript": "5.9.3",
-    "vitest": "4.1.0"
+    "tsdown": "0.22.4",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
   },
   "exports": {
     ".": {
-      "default": "./src/index.ts",
-      "types": "./src/index.ts"
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./deployment": {
+      "types": "./src/deployment.ts",
+      "development": "./src/deployment.ts",
+      "default": "./dist/deployment.js"
+    },
+    "./mutation-canary": {
+      "types": "./src/mutation-canary.ts",
+      "development": "./src/mutation-canary.ts",
+      "default": "./dist/mutation-canary.js"
+    },
+    "./product": {
+      "default": "./product.json"
     }
   },
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "product.json",
+    "README.md",
+    "scripts/live-smoke.mjs",
+    "scripts/live-smoke-options.mjs"
+  ],
   "license": "MIT",
   "name": "@patronage/meta-ads",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/meta-ads",
+    "type": "git",
+    "url": "https://github.com/patronage/agentic-marketing-connectors.git"
+  },
   "scripts": {
     "build": "tsdown",
+    "smoke:live": "pnpm --filter @patronage/connector-lifecycle build && pnpm build && node scripts/live-smoke.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "type": "module",
-  "version": "0.0.0"
+  "version": "0.1.0"
 }

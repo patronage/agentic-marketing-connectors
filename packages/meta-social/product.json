@@ -1,0 +1,27 @@
+{
+  "boundaries": [
+    "Paid insights, audiences, leads, Conversions API, and mutations belong in the Meta Ads package.",
+    "Callers supply Page tokens and any required app-secret proof."
+  ],
+  "capabilities": [
+    {
+      "description": "Read Facebook Page posts and engagement evidence through a small fetch-based Graph API client.",
+      "id": "facebook-pages",
+      "title": "Facebook Page reads"
+    },
+    {
+      "description": "Read Instagram Business media used by promotion intake, creative analysis, and boost reporting.",
+      "id": "instagram-media",
+      "title": "Instagram media reads"
+    }
+  ],
+  "description": "Worker-safe organic Facebook and Instagram primitives for promotion intake, creative analysis, and reporting inputs.",
+  "id": "meta-social",
+  "name": "Meta Social",
+  "nonGoals": [],
+  "packageName": "@patronage/meta-social",
+  "packageSurfaces": ["client", "types"],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "Organic social evidence for agent-run promotion workflows."
+}

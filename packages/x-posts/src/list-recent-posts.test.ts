@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { listRecentPosts } from "./list-recent-posts.js";
 import type { ListRecentPostsResult, XProviderName } from "./types.js";
 
-describe("listRecentPosts", () => {
+describe(listRecentPosts, () => {
   it("prefers the X API when both credential types are present", async () => {
     const result = await listRecentPosts(
       {
@@ -32,7 +32,7 @@ describe("listRecentPosts", () => {
     );
 
     expect(result.provider).toBe("x-api");
-    expect(result.warnings).toEqual([]);
+    expect(result.warnings).toStrictEqual([]);
   });
 
   it("falls back to xAI when only xAI credentials are present", async () => {
@@ -107,7 +107,7 @@ describe("listRecentPosts", () => {
       }
     );
 
-    expect(usedProviders).toEqual(["xai-grok"]);
+    expect(usedProviders).toStrictEqual(["xai-grok"]);
     expect(result.provider).toBe("xai-grok");
   });
 

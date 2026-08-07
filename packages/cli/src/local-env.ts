@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import path from "node:path";
 
 import { config as loadDotenv } from "dotenv";
 
@@ -7,19 +7,19 @@ export function findDotenvPath(startDirectories: string[]): string | undefined {
   const searched = new Set<string>();
 
   for (const startDirectory of startDirectories) {
-    let currentDirectory = resolve(startDirectory);
+    let currentDirectory = path.resolve(startDirectory);
 
     while (true) {
       if (!searched.has(currentDirectory)) {
         searched.add(currentDirectory);
 
-        const candidate = join(currentDirectory, ".env");
+        const candidate = path.join(currentDirectory, ".env");
         if (existsSync(candidate)) {
           return candidate;
         }
       }
 
-      const parentDirectory = dirname(currentDirectory);
+      const parentDirectory = path.dirname(currentDirectory);
       if (parentDirectory === currentDirectory) {
         break;
       }

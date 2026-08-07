@@ -7,7 +7,7 @@ describe("connector safety contract", () => {
   });
 
   it("loads the root export without fetch access or runtime bootstrap", async () => {
-    const fetchTrap = vi.fn(() => {
+    const fetchTrap = vi.fn<typeof fetch>(() => {
       throw new Error("root import must not touch fetch");
     });
 
@@ -16,7 +16,13 @@ describe("connector safety contract", () => {
     vi.resetModules();
     const root = await import("./index.js");
 
-    expect(Object.keys(root).toSorted()).toEqual(["createGoogleAdsClient"]);
+    expect(Object.keys(root).toSorted()).toStrictEqual([
+      "DEFAULT_GOOGLE_ADS_API_VERSION",
+      "GoogleAdsContractError",
+      "GoogleAdsRequestError",
+      "createGoogleAdsClient",
+      "runGoogleAdsReadCanary",
+    ]);
     expect(fetchTrap).not.toHaveBeenCalled();
   });
 
@@ -41,7 +47,9 @@ describe("connector safety contract", () => {
 
     vi.resetModules();
     const root = await import("./index.js");
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ results: [] }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ results: [] }));
     const client = root.createGoogleAdsClient({
       auth: { getAccessToken: async () => "token" },
       developerToken: "developer-token",

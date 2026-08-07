@@ -2,19 +2,17 @@ import { describe, expect, it, vi } from "vitest";
 
 import { XApiTimelineProvider } from "./x-api-timeline-provider.js";
 
-describe("XApiTimelineProvider", () => {
+describe(XApiTimelineProvider, () => {
   it("normalizes authored posts from the user timeline", async () => {
     const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        Response.json({
           data: { id: "user-1", username: "ExampleCommunityFund" },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
           data: [
             {
               attachments: { media_keys: ["3_1"] },
@@ -40,8 +38,8 @@ describe("XApiTimelineProvider", () => {
               },
             ],
           },
-        }),
-      });
+        })
+      );
 
     const provider = new XApiTimelineProvider(
       {
@@ -66,7 +64,7 @@ describe("XApiTimelineProvider", () => {
       "exclude=retweets%2Creplies"
     );
     expect(result.provider).toBe("x-api");
-    expect(result.posts).toEqual([
+    expect(result.posts).toStrictEqual([
       expect.objectContaining({
         handle: "ExampleCommunityFund",
         hasVideo: true,
@@ -94,16 +92,14 @@ describe("XApiTimelineProvider", () => {
 
   it("excludes replies and retweets but preserves quote tweets", async () => {
     const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        Response.json({
           data: { id: "user-1", username: "ExampleCommunityFund" },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
           data: [
             {
               created_at: "2026-03-31T18:00:00.000Z",
@@ -124,8 +120,8 @@ describe("XApiTimelineProvider", () => {
               text: "This matters https://t.co/xyz",
             },
           ],
-        }),
-      });
+        })
+      );
 
     const provider = new XApiTimelineProvider(
       {
@@ -140,7 +136,7 @@ describe("XApiTimelineProvider", () => {
     const result = await provider.listRecentPosts();
 
     expect(result.posts).toHaveLength(1);
-    expect(result.posts[0]).toEqual(
+    expect(result.posts[0]).toStrictEqual(
       expect.objectContaining({
         id: "quote-1",
         isQuote: true,

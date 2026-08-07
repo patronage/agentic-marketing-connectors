@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import {
   addSharedSetNegativeKeywords,
   applyAccountNegativeKeywordList,
@@ -19,7 +20,7 @@ describe("apply account negative keyword list workflow", () => {
         ],
         listName: "Account-Wide Negatives",
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         sharedSetOperation: {
           create: {
@@ -125,12 +126,12 @@ describe("apply account negative keyword list workflow", () => {
 
   it("defaults typed writes to validation mode and requires explicit execution", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     await applyAccountNegativeKeywordList(client, {
@@ -173,7 +174,7 @@ describe("add to existing shared set workflow", () => {
         ],
         sharedSetId: "987",
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         sharedCriterionOperation: {
           create: {
@@ -195,12 +196,12 @@ describe("add to existing shared set workflow", () => {
 
   it("defaults add-to-existing writes to validation mode", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     await addSharedSetNegativeKeywords(client, {

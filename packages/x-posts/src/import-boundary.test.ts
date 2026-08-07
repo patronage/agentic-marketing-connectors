@@ -1,0 +1,74 @@
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import path from "node:path";
+
+import { describe, expect, it } from "vitest";
+
+const privateConfigPackage = ["@paitronage", "config"].join("/");
+const forbiddenRuntimeImports = [
+  privateConfigPackage,
+  "@ai-sdk/",
+  "@patronage/cli",
+  "@xdevplatform/xdk",
+  "axios",
+  "child_process",
+  "commander",
+  "dotenv",
+  "openai",
+  "node-fetch",
+  "node:",
+  'from "fs"',
+  'import("fs")',
+  'from "http"',
+  'import("http")',
+  'from "https"',
+  'import("https")',
+  'from "ai"',
+  'import("ai")',
+  'from "path"',
+  'import("path")',
+  'from "process"',
+  'import("process")',
+  "process.env",
+];
+
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((entry) => {
+    const filePath = path.join(dir, entry);
+    const stats = statSync(filePath);
+
+    if (stats.isDirectory()) {
+      return sourceFiles(filePath);
+    }
+
+    if (!filePath.endsWith(".ts") || filePath.endsWith(".test.ts")) {
+      return [];
+    }
+
+    return [filePath];
+  });
+}
+
+describe("worker-safe public boundary", () => {
+  it("exports the X posts root surface", async () => {
+    const root = await import("./index.js");
+
+    expect(Object.keys(root).toSorted()).toStrictEqual([
+      "compareProviders",
+      "listRecentPosts",
+    ]);
+  });
+
+  it("keeps runtime source files free of Node and provider SDK dependencies", () => {
+    const files = sourceFiles(new URL(".", import.meta.url).pathname);
+
+    for (const file of files) {
+      const content = readFileSync(file, "utf-8");
+      for (const forbidden of forbiddenRuntimeImports) {
+        expect(
+          content,
+          `${path.relative(process.cwd(), file)} should not include ${forbidden}`
+        ).not.toContain(forbidden);
+      }
+    }
+  });
+});

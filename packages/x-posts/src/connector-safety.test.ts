@@ -1,13 +1,9 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const packageRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  ".."
-);
+const packageRoot = path.resolve(import.meta.dirname, "..");
 
 describe("connector safety contract", () => {
   afterEach(() => {
@@ -16,7 +12,7 @@ describe("connector safety contract", () => {
   });
 
   it("loads the root export without fetch access or runtime bootstrap", async () => {
-    const fetchTrap = vi.fn(() => {
+    const fetchTrap = vi.fn<typeof fetch>(() => {
       throw new Error("root import must not touch fetch");
     });
 
@@ -25,7 +21,7 @@ describe("connector safety contract", () => {
     vi.resetModules();
     const root = await import("./index.js");
 
-    expect(Object.keys(root).toSorted()).toEqual([
+    expect(Object.keys(root).toSorted()).toStrictEqual([
       "compareProviders",
       "listRecentPosts",
     ]);
@@ -75,9 +71,10 @@ describe("connector safety contract", () => {
       "src/providers/x-api-timeline-provider.ts",
       "src/providers/xai-grok-search-provider.ts",
     ];
+    const privateConfigPackage = ["@paitronage", "config"].join("/");
     const forbidden = [
       "@patronage/cli",
-      "@private-scope/config",
+      privateConfigPackage,
       "commander",
       "dotenv",
       "node:",
@@ -90,7 +87,8 @@ describe("connector safety contract", () => {
     ];
 
     for (const file of runtimeFiles) {
-      const source = await readFile(path.join(packageRoot, file), "utf8");
+      // oxlint-disable-next-line no-await-in-loop, react-doctor/async-await-in-loop -- imports are checked serially so a failing runtime boundary is attributable (#507).
+      const source = await readFile(path.join(packageRoot, file), "utf-8");
 
       for (const token of forbidden) {
         expect(source, `${file} must not contain ${token}`).not.toContain(

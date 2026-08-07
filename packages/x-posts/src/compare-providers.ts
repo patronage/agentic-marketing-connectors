@@ -32,6 +32,7 @@ export async function compareProviders(
       continue;
     }
 
+    // oxlint-disable-next-line no-await-in-loop, react-doctor/async-await-in-loop -- this stateful operation intentionally runs in deterministic sequence (#507).
     results[provider] = await listRecentPostsImpl({
       ...input,
       provider,
@@ -55,12 +56,14 @@ function buildComparison(
   const xAiPosts = results["xai-grok"]?.posts ?? [];
   const xApiUrls = new Set(xApiPosts.map((post) => post.url));
   const xAiUrls = new Set(xAiPosts.map((post) => post.url));
+  const xApiPostsByUrl = new Map(xApiPosts.map((post) => [post.url, post]));
+  const xAiPostsByUrl = new Map(xAiPosts.map((post) => [post.url, post]));
   const overlapUrls = [...xApiUrls].filter((url) => xAiUrls.has(url));
   const videoAgreement = { matched: 0, mismatched: 0 };
 
   for (const url of overlapUrls) {
-    const xApiPost = xApiPosts.find((post) => post.url === url);
-    const xAiPost = xAiPosts.find((post) => post.url === url);
+    const xApiPost = xApiPostsByUrl.get(url);
+    const xAiPost = xAiPostsByUrl.get(url);
 
     if (!xApiPost || !xAiPost) {
       continue;
@@ -80,12 +83,12 @@ function buildComparison(
     },
     overlapUrls,
     videoAgreement,
-    xAiOnlyUrls: xAiPosts
-      .map((post) => post.url)
-      .filter((url) => !xApiUrls.has(url)),
-    xApiOnlyUrls: xApiPosts
-      .map((post) => post.url)
-      .filter((url) => !xAiUrls.has(url)),
+    xAiOnlyUrls: xAiPosts.flatMap((post) =>
+      xApiUrls.has(post.url) ? [] : [post.url]
+    ),
+    xApiOnlyUrls: xApiPosts.flatMap((post) =>
+      xAiUrls.has(post.url) ? [] : [post.url]
+    ),
   };
 }
 

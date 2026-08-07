@@ -39,3 +39,7 @@ const result = await listRecentPosts({
 ```
 
 `x-api` is the preferred authored-post path when `xApiBearerToken` is present. `xai-grok` remains available as a secondary comparison provider when `xAiApiKey` is provided.
+
+## Runnable tutorial
+
+[`examples/recent-post-intake.ts`](examples/recent-post-intake.ts) includes a synthetic credential-free run and the same function shape used with a caller-resolved provider credential.

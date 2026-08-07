@@ -70,7 +70,7 @@ export async function addCampaignNegativeKeywords(
 }
 
 function assertNumericId(value: string, fieldName: string): void {
-  if (!/^\d+$/.test(value)) {
+  if (!/^\d+$/u.test(value)) {
     throw new Error(`${fieldName} must contain only digits.`);
   }
 }

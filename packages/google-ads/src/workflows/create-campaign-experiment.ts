@@ -1,5 +1,9 @@
 import { normalizeCustomerId } from "../core/index.js";
-import type { GoogleAdsExperimentClient } from "../rest/index.js";
+import type {
+  GoogleAdsExperimentClient,
+  GraduateExperimentResult,
+  PromoteExperimentResult,
+} from "../rest/index.js";
 
 export type CampaignExperimentType = "YOUTUBE_CUSTOM";
 
@@ -43,6 +47,20 @@ export interface ScheduleCampaignExperimentInput {
 
 export interface EndCampaignExperimentInput {
   customerId: string;
+  experimentResourceName: string;
+  mode?: "execute" | "validate";
+}
+
+export interface PromoteCampaignExperimentInput {
+  customerId: string;
+  experimentResourceName: string;
+  mode?: "execute" | "validate";
+}
+
+export interface GraduateCampaignExperimentInput {
+  campaignBudgetResourceName: string;
+  customerId: string;
+  experimentCampaignResourceName: string;
   experimentResourceName: string;
   mode?: "execute" | "validate";
 }
@@ -91,7 +109,7 @@ export function buildCreateCampaignExperimentArmOperations(
   assertExperimentTrafficSplit(input);
   assertResourceName(
     input.experimentResourceName,
-    /^customers\/\d+\/experiments\/\d+$/,
+    /^customers\/\d+\/experiments\/\d+$/u,
     "experimentResourceName"
   );
   assertResourceCustomerMatches(
@@ -161,7 +179,7 @@ export async function scheduleCampaignExperiment(
   assertValidateOnlyMode(input.mode, "scheduleCampaignExperiment");
   assertResourceName(
     input.experimentResourceName,
-    /^customers\/\d+\/experiments\/\d+$/,
+    /^customers\/\d+\/experiments\/\d+$/u,
     "experimentResourceName"
   );
   assertResourceCustomerMatches(
@@ -186,7 +204,7 @@ export async function endCampaignExperiment(
   assertNumericId(customerId, "customerId");
   assertResourceName(
     input.experimentResourceName,
-    /^customers\/\d+\/experiments\/\d+$/,
+    /^customers\/\d+\/experiments\/\d+$/u,
     "experimentResourceName"
   );
   assertResourceCustomerMatches(
@@ -198,6 +216,70 @@ export async function endCampaignExperiment(
   return client.endExperiment({
     experimentResourceName: input.experimentResourceName,
     validateOnly: input.mode !== "execute",
+  });
+}
+
+export async function promoteCampaignExperiment(
+  client: GoogleAdsExperimentClient,
+  input: PromoteCampaignExperimentInput
+): Promise<PromoteExperimentResult> {
+  const customerId = normalizeCustomerId(input.customerId);
+
+  assertValidateOnlyMode(input.mode, "promoteCampaignExperiment");
+  assertNumericId(customerId, "customerId");
+  assertResourceName(
+    input.experimentResourceName,
+    /^customers\/\d+\/experiments\/\d+$/u,
+    "experimentResourceName"
+  );
+  assertResourceCustomerMatches(
+    input.experimentResourceName,
+    customerId,
+    "experimentResourceName"
+  );
+
+  return client.promoteExperiment({
+    resourceName: input.experimentResourceName,
+    validateOnly: true,
+  });
+}
+
+export async function graduateCampaignExperiment(
+  client: GoogleAdsExperimentClient,
+  input: GraduateCampaignExperimentInput
+): Promise<GraduateExperimentResult> {
+  const customerId = normalizeCustomerId(input.customerId);
+
+  assertValidateOnlyMode(input.mode, "graduateCampaignExperiment");
+  assertNumericId(customerId, "customerId");
+  assertResourceForCustomer(
+    input.experimentResourceName,
+    /^customers\/\d+\/experiments\/\d+$/u,
+    customerId,
+    "experimentResourceName"
+  );
+  assertResourceForCustomer(
+    input.experimentCampaignResourceName,
+    /^customers\/\d+\/campaigns\/\d+$/u,
+    customerId,
+    "experimentCampaignResourceName"
+  );
+  assertResourceForCustomer(
+    input.campaignBudgetResourceName,
+    /^customers\/\d+\/campaignBudgets\/\d+$/u,
+    customerId,
+    "campaignBudgetResourceName"
+  );
+
+  return client.graduateExperiment({
+    campaignBudgetMappings: [
+      {
+        campaignBudget: input.campaignBudgetResourceName,
+        experimentCampaign: input.experimentCampaignResourceName,
+      },
+    ],
+    experiment: input.experimentResourceName,
+    validateOnly: true,
   });
 }
 
@@ -262,11 +344,11 @@ function assertDateRange(input: {
   endDate?: string;
   startDate?: string;
 }): void {
-  if (input.startDate && !/^\d{4}-\d{2}-\d{2}$/.test(input.startDate)) {
+  if (input.startDate && !/^\d{4}-\d{2}-\d{2}$/u.test(input.startDate)) {
     throw new Error("startDate must use YYYY-MM-DD format.");
   }
 
-  if (input.endDate && !/^\d{4}-\d{2}-\d{2}$/.test(input.endDate)) {
+  if (input.endDate && !/^\d{4}-\d{2}-\d{2}$/u.test(input.endDate)) {
     throw new Error("endDate must use YYYY-MM-DD format.");
   }
 
@@ -282,7 +364,7 @@ function assertName(value: string, fieldName: string): void {
 }
 
 function assertNumericId(value: string, fieldName: string): void {
-  if (!/^\d+$/.test(value)) {
+  if (!/^\d+$/u.test(value)) {
     throw new Error(`${fieldName} must contain only digits.`);
   }
 }
@@ -302,11 +384,23 @@ function assertResourceCustomerMatches(
   customerId: string,
   fieldName: string
 ): void {
-  const resourceCustomerId = resourceName.match(/^customers\/(\d+)\//)?.[1];
+  const resourceCustomerId = resourceName.match(
+    /^customers\/(?<capture1>\d+)\//u
+  )?.[1];
 
   if (resourceCustomerId !== customerId) {
     throw new Error(`${fieldName} customer ID does not match customerId.`);
   }
+}
+
+function assertResourceForCustomer(
+  resourceName: string,
+  pattern: RegExp,
+  customerId: string,
+  fieldName: string
+): void {
+  assertResourceName(resourceName, pattern, fieldName);
+  assertResourceCustomerMatches(resourceName, customerId, fieldName);
 }
 
 function asRecord(value: unknown): Record<string, unknown> {

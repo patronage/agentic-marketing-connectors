@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import {
   buildUpdateAdGroupDemographicOperations,
   updateAdGroupDemographics,
@@ -34,7 +35,7 @@ describe("update ad group demographics workflow", () => {
         ],
         customerId: "123-456-7890",
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         adGroupCriterionOperation: {
           update: {
@@ -143,12 +144,12 @@ describe("update ad group demographics workflow", () => {
 
   it("defaults writes to validation mode and blocks execution until apply guards exist", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     const criteria = [

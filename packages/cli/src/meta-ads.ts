@@ -1,33 +1,37 @@
-import { readFileSync } from "node:fs";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { createHash, randomUUID } from "node:crypto";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import nodePath from "node:path";
 
-import {
-  buildBoostPostPlan,
-  createMetaAdsClient,
-  type BoostPostInput,
-  type CreateAdInput,
-  type CreateAdSetInput,
-  type CreateCampaignInput,
-  type CreateCustomAudienceInput,
-  type CreateLookalikeAudienceInput,
-  type MetaAdsClient,
-  type MetaAdsInsight,
-  type MetaAdsInsightLevel,
-  type MetaCampaignStatus,
-  type ReachEstimateInput,
-  type SendConversionEventsInput,
-  type SyncAudienceUsersInput,
+import { buildBoostPostPlan, createMetaAdsClient } from "@patronage/meta-ads";
+import type {
+  BoostPostInput,
+  CreateCustomAudienceInput,
+  CreateLookalikeAudienceInput,
+  MetaAdsClient,
+  MetaAdsInsight,
+  MetaAdsInsightLevel,
+  MetaCampaignStatus,
+  ReachEstimateInput,
+  SendConversionEventsInput,
+  SyncAudienceUsersInput,
 } from "@patronage/meta-ads";
+import {
+  deployMetaBoostPlan,
+  deployMetaCampaignPlan,
+} from "@patronage/meta-ads/deployment";
+import type {
+  MetaBoostDeploymentReceipt,
+  MetaCampaignDeploymentReceipt,
+  MetaCampaignDeploymentPlan,
+} from "@patronage/meta-ads/deployment";
 import { Command } from "commander";
 
 import { loadLocalDotenv } from "./local-env.js";
-import { writeRunLog } from "./run-log.js";
+import { toSecretSafeManagedPage } from "./managed-page-output.js";
+import { runCliMutationHarness } from "./mutation-harness.js";
 
-const cliSourceDirectory = dirname(fileURLToPath(import.meta.url));
-const defaultRunLogDir = ".patronage/run-logs/meta-ads";
-
-type Mode = "execute" | "validate";
+const cliSourceDirectory = import.meta.dirname;
+const defaultRunLogDir = "run-logs/meta-ads";
 
 interface MetaAdsCommandOptions {
   accessToken?: string;
@@ -269,7 +273,7 @@ function createLeadsCommand(): Command {
           fallbackAccessToken: pageAccessToken,
           requireAdAccount: false,
         }).listLeadForms({
-          pageAccessToken,
+          accessToken: pageAccessToken,
           pageId: options.pageId,
         });
         writeOutput(renderOutput(result, options.format));
@@ -298,9 +302,10 @@ function createLeadsCommand(): Command {
           fallbackAccessToken: pageAccessToken,
           requireAdAccount: false,
         }).getLeads({
+          accessToken: pageAccessToken,
+          createdAfterUnix:
+            options.since === undefined ? undefined : Number(options.since),
           formId: options.formId,
-          pageAccessToken,
-          since: options.since,
         });
         writeOutput(renderOutput(result, options.format));
       }
@@ -405,16 +410,7 @@ function createTokenCommand(): Command {
         }
         writeOutput(
           `${JSON.stringify(
-            options.showTokens
-              ? pages
-              : pages.map((page) => ({
-                  category: page.category,
-                  fan_count: page.fan_count,
-                  followers_count: page.followers_count,
-                  id: page.id,
-                  link: page.link,
-                  name: page.name,
-                })),
+            options.showTokens ? pages : pages.map(toSecretSafeManagedPage),
             null,
             2
           )}\n`
@@ -474,30 +470,49 @@ async function runPerformance(options: PerformanceOptions): Promise<void> {
 }
 
 async function runDeploy(options: DeployOptions): Promise<void> {
-  const input = readJson<{
-    adSets?: CreateAdSetInput[];
-    ads?: CreateAdInput[];
-    campaign: CreateCampaignInput;
-  }>(options.input);
-  const mode = resolveMode(options);
+  const input = readJson<MetaCampaignDeploymentPlan>(options.input);
   const operations = [
     { createCampaign: input.campaign },
     ...(input.adSets ?? []).map((adSet) => ({ createAdSet: adSet })),
     ...(input.ads ?? []).map((ad) => ({ createAd: ad })),
   ];
-  const result =
-    mode === "execute"
-      ? await executeDeploy(createLocalMetaAdsClient(options), input)
-      : { plan: operations };
-
-  writeLoggedMutation({
+  const command = "meta ads campaigns deploy";
+  const resumeKey = metaMutationResumeKey(command, {
+    adAccountId: metaResumeAccount(options),
+    plan: input,
+  });
+  const resumeReceipt = readLatestMetaReceipt(
+    options.runLogDir ?? defaultRunLogDir,
+    command,
+    resumeKey
+  ) as MetaCampaignDeploymentReceipt | undefined;
+  const operationId = resumeReceipt?.operationId ?? `cli-${randomUUID()}`;
+  await runCliMutationHarness({
     command: "meta ads campaigns deploy",
+    createClient: () => createLocalMetaAdsClient(options),
+    execute: options.execute,
+    format: options.format,
     input,
     inputFile: options.input,
-    mode,
+    localPlan: operations,
+    logOperations: (result) => {
+      const resultPlan = asRecord(result).plan;
+      return isMetaCampaignPlan(resultPlan)
+        ? campaignOperations(resultPlan)
+        : operations;
+    },
+    logResult: (result) => flattenMetaLog(result, resumeKey),
     operations,
-    options,
-    result,
+    output: writeOutput,
+    presentation: metaHarnessPresentation,
+    provider: "meta-ads",
+    run: (client) =>
+      deployMetaCampaignPlan(client, input, {
+        operationId,
+        ...(resumeReceipt ? { resumeReceipt } : {}),
+      }),
+    runLogDir: options.runLogDir ?? defaultRunLogDir,
+    validation: "local",
   });
 }
 
@@ -514,20 +529,41 @@ async function runBoost(options: BoostOptions): Promise<void> {
     specialAdCategories: parseCsv(options.specialAdCategories),
     status: options.status ?? "PAUSED",
   };
-  const mode = resolveMode(options);
   const plan = buildBoostPostPlan(input);
-  const result =
-    mode === "execute"
-      ? await createLocalMetaAdsClient(options).boostPost(input)
-      : { plan };
-
-  writeLoggedMutation({
-    command: "meta ads boosts create",
+  const command = "meta ads boosts create";
+  const resumeKey = metaMutationResumeKey(command, {
+    adAccountId: metaResumeAccount(options),
+    plan,
+  });
+  const resumeReceipt = readLatestMetaReceipt(
+    options.runLogDir ?? defaultRunLogDir,
+    command,
+    resumeKey
+  ) as MetaBoostDeploymentReceipt | undefined;
+  const operationId = resumeReceipt?.operationId ?? `cli-${randomUUID()}`;
+  await runCliMutationHarness({
+    command,
+    createClient: () => createLocalMetaAdsClient(options),
+    execute: options.execute,
+    format: options.format,
     input,
-    mode,
+    localPlan: plan,
+    logOperations: (result) => {
+      const resultPlan = asRecord(result).plan;
+      return Array.isArray(resultPlan) ? resultPlan : [resultPlan ?? plan];
+    },
+    logResult: (result) => flattenMetaLog(result, resumeKey),
     operations: [plan],
-    options,
-    result,
+    output: writeOutput,
+    presentation: metaHarnessPresentation,
+    provider: "meta-ads",
+    run: (client) =>
+      deployMetaBoostPlan(client, plan, {
+        operationId,
+        ...(resumeReceipt ? { resumeReceipt } : {}),
+      }),
+    runLogDir: options.runLogDir ?? defaultRunLogDir,
+    validation: "local",
   });
 }
 
@@ -604,11 +640,11 @@ async function runConversionsTest(
       {
         action_source: "website",
         event_name: "PageView",
-        event_source_url: "https://test.paitronage.com",
+        event_source_url: "https://example.com",
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           client_ip_address: "0.0.0.0",
-          client_user_agent: "Paitronage/1.0 (Conversions API Test)",
+          client_user_agent: "Patronage/1.0 (Conversions API Test)",
         },
       },
     ],
@@ -632,62 +668,29 @@ async function runSimpleMutation<Input>(
     inputFile?: string;
     operation: unknown;
     requireAdAccount?: boolean;
-    run(client: MetaAdsClient): Promise<unknown>;
+    run: (client: MetaAdsClient) => Promise<unknown>;
   }
 ): Promise<void> {
-  const mode = resolveMode(options);
-  const result =
-    mode === "execute"
-      ? await definition.run(
-          createLocalMetaAdsClient(options, {
-            requireAdAccount: definition.requireAdAccount ?? true,
-          })
-        )
-      : { plan: definition.operation };
-  writeLoggedMutation({
+  await runCliMutationHarness({
     command: definition.command,
+    createClient: () =>
+      createLocalMetaAdsClient(options, {
+        requireAdAccount: definition.requireAdAccount ?? true,
+      }),
+    execute: options.execute,
+    format: options.format,
     input: definition.input,
     inputFile: definition.inputFile,
-    mode,
+    localPlan: definition.operation,
+    logResult: flattenMetaSimpleLog,
     operations: [definition.operation],
-    options,
-    result,
+    output: writeOutput,
+    presentation: metaHarnessPresentation,
+    provider: "meta-ads",
+    run: (client) => definition.run(client),
+    runLogDir: options.runLogDir ?? defaultRunLogDir,
+    validation: "local",
   });
-}
-
-async function executeDeploy(
-  client: MetaAdsClient,
-  input: {
-    adSets?: CreateAdSetInput[];
-    ads?: CreateAdInput[];
-    campaign: CreateCampaignInput;
-  }
-): Promise<unknown> {
-  const campaign = await client.createCampaign(input.campaign);
-  const adSets = [];
-  const adSetPlaceholders = new Map<string, string>();
-  for (const [index, adSet] of (input.adSets ?? []).entries()) {
-    const createdAdSet = await client.createAdSet({
-      ...adSet,
-      campaignId:
-        adSet.campaignId === "$campaignId" ? campaign.id : adSet.campaignId,
-    });
-    adSets.push(createdAdSet);
-    adSetPlaceholders.set(`$adSetId${index + 1}`, createdAdSet.id);
-    if (index === 0) {
-      adSetPlaceholders.set("$adSetId", createdAdSet.id);
-    }
-  }
-  const ads = [];
-  for (const ad of input.ads ?? []) {
-    ads.push(
-      await client.createAd({
-        ...ad,
-        adsetId: adSetPlaceholders.get(ad.adsetId) ?? ad.adsetId,
-      })
-    );
-  }
-  return { ads, adSets, campaign };
 }
 
 function createLocalMetaAdsClient(
@@ -732,34 +735,119 @@ function createLocalMetaAdsUtilityClient(accessToken: string): MetaAdsClient {
   });
 }
 
-function writeLoggedMutation(input: {
-  command: string;
-  input: unknown;
-  inputFile?: string;
-  mode: Mode;
-  operations: unknown[];
-  options: MutationOptions;
-  result: unknown;
-}): void {
-  const runLog = writeRunLog({
-    command: input.command,
-    input: input.input,
-    inputFile: input.inputFile,
-    mode: input.mode,
-    operations: input.operations,
-    provider: "meta-ads",
-    result: input.result,
-    runLogDir: input.options.runLogDir ?? defaultRunLogDir,
-  });
-  writeOutput(
-    input.options.format === "json"
-      ? `${JSON.stringify({ result: input.result, runLogPath: runLog.path }, null, 2)}\n`
-      : `${input.mode === "execute" ? "Executed" : "Validated"} ${input.command}\nRun log: ${runLog.path}\n${JSON.stringify(input.result, null, 2)}\n`
+function campaignOperations(plan: MetaCampaignDeploymentPlan): unknown[] {
+  return [
+    { createCampaign: plan.campaign },
+    ...(plan.adSets ?? []).map((adSet) => ({ createAdSet: adSet })),
+    ...(plan.ads ?? []).map((ad) => ({ createAd: ad })),
+  ];
+}
+
+function isMetaCampaignPlan(
+  value: unknown
+): value is MetaCampaignDeploymentPlan {
+  return Boolean(value && typeof value === "object" && "campaign" in value);
+}
+
+type MetaDeploymentReceipt =
+  | MetaBoostDeploymentReceipt
+  | MetaCampaignDeploymentReceipt;
+
+function readLatestMetaReceipt(
+  runLogDir: string,
+  command: string,
+  resumeKey: string
+): MetaDeploymentReceipt | undefined {
+  let filenames: string[];
+  try {
+    filenames = readdirSync(runLogDir).toSorted((left, right) => {
+      const leftTime = statSync(nodePath.join(runLogDir, left), {
+        bigint: true,
+      }).mtimeNs;
+      const rightTime = statSync(nodePath.join(runLogDir, right), {
+        bigint: true,
+      }).mtimeNs;
+      if (leftTime === rightTime) {
+        return 0;
+      }
+      return leftTime > rightTime ? -1 : 1;
+    });
+  } catch {
+    return undefined;
+  }
+  for (const filename of filenames) {
+    try {
+      const runLog = asRecord(
+        JSON.parse(readFileSync(nodePath.join(runLogDir, filename), "utf-8"))
+      );
+      const result = asRecord(runLog.result);
+      if (runLog.command !== command || result.resumeKey !== resumeKey) {
+        continue;
+      }
+      const receipt = asRecord(result.receipt);
+      if (typeof receipt.operationId === "string") {
+        return receipt.status === "succeeded"
+          ? undefined
+          : (receipt as unknown as MetaDeploymentReceipt);
+      }
+    } catch {
+      // Ignore malformed or unrelated historical logs.
+    }
+  }
+  return undefined;
+}
+
+function metaMutationResumeKey(command: string, input: unknown): string {
+  return createHash("sha256")
+    .update(JSON.stringify({ command, input }))
+    .digest("hex");
+}
+
+function metaResumeAccount(options: MetaAdsCommandOptions): string {
+  return normalizeAdAccountId(
+    options.adAccountId?.trim() ??
+      readOptionalEnv("META_AD_ACCOUNT_ID") ??
+      "unspecified"
   );
 }
 
-function resolveMode(options: MutationOptions): Mode {
-  return options.execute ? "execute" : "validate";
+function flattenMetaLog(
+  input: { lifecycle: string; result: unknown },
+  resumeKey: string
+): unknown {
+  return {
+    lifecycle: input.lifecycle,
+    resumeKey,
+    ...asRecord(input.result),
+  };
+}
+
+function flattenMetaSimpleLog(input: {
+  lifecycle: string;
+  result: unknown;
+}): unknown {
+  const result = asRecord(input.result);
+  return Object.keys(result).length > 0
+    ? { lifecycle: input.lifecycle, ...result }
+    : { lifecycle: input.lifecycle, providerResult: input.result };
+}
+
+function metaHarnessPresentation(input: {
+  lifecycle: string;
+  result: unknown;
+  runLogPath: string;
+}): unknown {
+  return {
+    lifecycle: input.lifecycle,
+    result: input.result,
+    runLogPath: input.runLogPath,
+  };
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
 }
 
 function resolveDateRange(options: {
@@ -792,7 +880,7 @@ function resolveDateRange(options: {
 }
 
 function readJson<T>(filePath: string): T {
-  return JSON.parse(readFileSync(filePath, "utf8")) as T;
+  return JSON.parse(readFileSync(filePath, "utf-8")) as T;
 }
 
 function resolveRequiredEnv(value: string | undefined, name: string): string {
@@ -885,10 +973,10 @@ function parsePositiveNumber(value: string, optionName: string): number {
 }
 
 function parseCsv(value: string | undefined): string[] | undefined {
-  const values = value
-    ?.split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const values = value?.split(",").flatMap((item) => {
+    const trimmed = item.trim();
+    return trimmed ? [trimmed] : [];
+  });
   return values && values.length > 0 ? values : undefined;
 }
 
@@ -933,8 +1021,8 @@ function writeOutput(value: string): void {
 
 function slugEnv(value: string): string {
   return value
-    .replaceAll(/[^a-z0-9]+/gi, "_")
-    .replaceAll(/^_|_$/g, "")
+    .replaceAll(/[^a-z0-9]+/giu, "_")
+    .replaceAll(/^_|_$/gu, "")
     .toUpperCase();
 }
 

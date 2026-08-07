@@ -1,0 +1,343 @@
+{
+  "streams": [
+    {
+      "cursor_field": ["date_start"],
+      "destination_sync_mode": "append_dedup",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["date_start"], ["account_id"], ["campaign_id"]],
+      "stream": {
+        "json_schema": {
+          "properties": {
+            "account_currency": { "type": ["string", "null"] },
+            "account_id": { "type": ["string", "null"] },
+            "account_name": { "type": ["string", "null"] },
+            "action_values": { "type": ["array", "null"] },
+            "actions": { "type": ["array", "null"] },
+            "campaign_id": { "type": ["string", "null"] },
+            "campaign_name": { "type": ["string", "null"] },
+            "clicks": { "type": ["string", "number", "null"] },
+            "cost_per_action_type": { "type": ["array", "null"] },
+            "cost_per_inline_link_click": {
+              "type": ["string", "number", "null"]
+            },
+            "cost_per_outbound_click": { "type": ["array", "null"] },
+            "cost_per_thruplay": { "type": ["array", "null"] },
+            "cost_per_unique_action_type": { "type": ["array", "null"] },
+            "cpc": { "type": ["string", "number", "null"] },
+            "cpm": { "type": ["string", "number", "null"] },
+            "ctr": { "type": ["string", "number", "null"] },
+            "date_start": { "type": ["string", "null"] },
+            "date_stop": { "type": ["string", "null"] },
+            "frequency": { "type": ["string", "number", "null"] },
+            "impressions": { "type": ["string", "number", "null"] },
+            "inline_link_click_ctr": { "type": ["string", "number", "null"] },
+            "inline_link_clicks": { "type": ["string", "number", "null"] },
+            "inline_post_engagement": { "type": ["string", "number", "null"] },
+            "objective": { "type": ["string", "null"] },
+            "outbound_clicks": { "type": ["array", "null"] },
+            "outbound_clicks_ctr": { "type": ["array", "null"] },
+            "reach": { "type": ["string", "number", "null"] },
+            "spend": { "type": ["string", "number", "null"] },
+            "unique_actions": { "type": ["array", "null"] },
+            "video_avg_time_watched_actions": { "type": ["array", "null"] },
+            "video_continuous_2_sec_watched_actions": {
+              "type": ["array", "null"]
+            },
+            "video_p100_watched_actions": { "type": ["array", "null"] },
+            "video_p25_watched_actions": { "type": ["array", "null"] },
+            "video_p50_watched_actions": { "type": ["array", "null"] },
+            "video_p75_watched_actions": { "type": ["array", "null"] },
+            "video_p95_watched_actions": { "type": ["array", "null"] },
+            "video_play_actions": { "type": ["array", "null"] },
+            "video_thruplay_watched_actions": { "type": ["array", "null"] },
+            "website_purchase_roas": { "type": ["array", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "customcampaign_daily_performance",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "incremental"
+    },
+    {
+      "cursor_field": ["date_start"],
+      "destination_sync_mode": "append_dedup",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["date_start"], ["account_id"], ["adset_id"]],
+      "stream": {
+        "json_schema": {
+          "properties": {
+            "account_currency": { "type": ["string", "null"] },
+            "account_id": { "type": ["string", "null"] },
+            "account_name": { "type": ["string", "null"] },
+            "action_values": { "type": ["array", "null"] },
+            "actions": { "type": ["array", "null"] },
+            "adset_id": { "type": ["string", "null"] },
+            "adset_name": { "type": ["string", "null"] },
+            "campaign_id": { "type": ["string", "null"] },
+            "campaign_name": { "type": ["string", "null"] },
+            "clicks": { "type": ["string", "number", "null"] },
+            "cost_per_action_type": { "type": ["array", "null"] },
+            "cost_per_inline_link_click": {
+              "type": ["string", "number", "null"]
+            },
+            "cost_per_outbound_click": { "type": ["array", "null"] },
+            "cost_per_thruplay": { "type": ["array", "null"] },
+            "cost_per_unique_action_type": { "type": ["array", "null"] },
+            "cpc": { "type": ["string", "number", "null"] },
+            "cpm": { "type": ["string", "number", "null"] },
+            "ctr": { "type": ["string", "number", "null"] },
+            "date_start": { "type": ["string", "null"] },
+            "date_stop": { "type": ["string", "null"] },
+            "frequency": { "type": ["string", "number", "null"] },
+            "impressions": { "type": ["string", "number", "null"] },
+            "inline_link_click_ctr": { "type": ["string", "number", "null"] },
+            "inline_link_clicks": { "type": ["string", "number", "null"] },
+            "inline_post_engagement": { "type": ["string", "number", "null"] },
+            "optimization_goal": { "type": ["string", "null"] },
+            "outbound_clicks": { "type": ["array", "null"] },
+            "outbound_clicks_ctr": { "type": ["array", "null"] },
+            "reach": { "type": ["string", "number", "null"] },
+            "spend": { "type": ["string", "number", "null"] },
+            "unique_actions": { "type": ["array", "null"] },
+            "video_avg_time_watched_actions": { "type": ["array", "null"] },
+            "video_continuous_2_sec_watched_actions": {
+              "type": ["array", "null"]
+            },
+            "video_p100_watched_actions": { "type": ["array", "null"] },
+            "video_p25_watched_actions": { "type": ["array", "null"] },
+            "video_p50_watched_actions": { "type": ["array", "null"] },
+            "video_p75_watched_actions": { "type": ["array", "null"] },
+            "video_p95_watched_actions": { "type": ["array", "null"] },
+            "video_play_actions": { "type": ["array", "null"] },
+            "video_thruplay_watched_actions": { "type": ["array", "null"] },
+            "website_purchase_roas": { "type": ["array", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "customadset_daily_performance",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "incremental"
+    },
+    {
+      "cursor_field": ["date_start"],
+      "destination_sync_mode": "append_dedup",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["date_start"], ["account_id"], ["ad_id"]],
+      "stream": {
+        "json_schema": {
+          "properties": {
+            "account_currency": { "type": ["string", "null"] },
+            "account_id": { "type": ["string", "null"] },
+            "account_name": { "type": ["string", "null"] },
+            "action_values": { "type": ["array", "null"] },
+            "actions": { "type": ["array", "null"] },
+            "ad_id": { "type": ["string", "null"] },
+            "ad_name": { "type": ["string", "null"] },
+            "adset_id": { "type": ["string", "null"] },
+            "adset_name": { "type": ["string", "null"] },
+            "campaign_id": { "type": ["string", "null"] },
+            "campaign_name": { "type": ["string", "null"] },
+            "clicks": { "type": ["string", "number", "null"] },
+            "conversion_rate_ranking": { "type": ["string", "null"] },
+            "cost_per_action_type": { "type": ["array", "null"] },
+            "cost_per_inline_link_click": {
+              "type": ["string", "number", "null"]
+            },
+            "cost_per_outbound_click": { "type": ["array", "null"] },
+            "cost_per_thruplay": { "type": ["array", "null"] },
+            "cost_per_unique_action_type": { "type": ["array", "null"] },
+            "cpc": { "type": ["string", "number", "null"] },
+            "cpm": { "type": ["string", "number", "null"] },
+            "ctr": { "type": ["string", "number", "null"] },
+            "date_start": { "type": ["string", "null"] },
+            "date_stop": { "type": ["string", "null"] },
+            "engagement_rate_ranking": { "type": ["string", "null"] },
+            "frequency": { "type": ["string", "number", "null"] },
+            "impressions": { "type": ["string", "number", "null"] },
+            "inline_link_click_ctr": { "type": ["string", "number", "null"] },
+            "inline_link_clicks": { "type": ["string", "number", "null"] },
+            "inline_post_engagement": { "type": ["string", "number", "null"] },
+            "outbound_clicks": { "type": ["array", "null"] },
+            "outbound_clicks_ctr": { "type": ["array", "null"] },
+            "quality_ranking": { "type": ["string", "null"] },
+            "reach": { "type": ["string", "number", "null"] },
+            "spend": { "type": ["string", "number", "null"] },
+            "unique_actions": { "type": ["array", "null"] },
+            "video_avg_time_watched_actions": { "type": ["array", "null"] },
+            "video_continuous_2_sec_watched_actions": {
+              "type": ["array", "null"]
+            },
+            "video_p100_watched_actions": { "type": ["array", "null"] },
+            "video_p25_watched_actions": { "type": ["array", "null"] },
+            "video_p50_watched_actions": { "type": ["array", "null"] },
+            "video_p75_watched_actions": { "type": ["array", "null"] },
+            "video_p95_watched_actions": { "type": ["array", "null"] },
+            "video_play_actions": { "type": ["array", "null"] },
+            "video_thruplay_watched_actions": { "type": ["array", "null"] },
+            "website_purchase_roas": { "type": ["array", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "customad_daily_performance",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "incremental"
+    },
+    {
+      "cursor_field": [],
+      "destination_sync_mode": "overwrite",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["id"]],
+      "stream": {
+        "json_schema": {
+          "additionalProperties": true,
+          "properties": {
+            "account_id": { "type": ["string", "null"] },
+            "adset_id": { "type": ["string", "null"] },
+            "campaign_id": { "type": ["string", "null"] },
+            "configured_status": { "type": ["string", "null"] },
+            "created_time": { "type": ["string", "null"] },
+            "creative": {
+              "additionalProperties": true,
+              "properties": {
+                "creative_id": { "type": ["string", "null"] },
+                "id": { "type": ["string", "null"] }
+              },
+              "type": ["object", "null"]
+            },
+            "effective_status": { "type": ["string", "null"] },
+            "id": { "type": ["string", "null"] },
+            "name": { "type": ["string", "null"] },
+            "preview_shareable_link": { "type": ["string", "null"] },
+            "source_ad_id": { "type": ["string", "null"] },
+            "status": { "type": ["string", "null"] },
+            "tracking_specs": { "type": ["array", "null"] },
+            "updated_time": { "type": ["string", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "ads",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "full_refresh"
+    },
+    {
+      "cursor_field": [],
+      "destination_sync_mode": "overwrite",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["id"]],
+      "stream": {
+        "json_schema": {
+          "additionalProperties": true,
+          "properties": {
+            "account_id": { "type": ["string", "null"] },
+            "actor_id": { "type": ["string", "null"] },
+            "asset_feed_spec": { "type": ["object", "null"] },
+            "body": { "type": ["string", "null"] },
+            "call_to_action_type": { "type": ["string", "null"] },
+            "effective_instagram_media_id": { "type": ["string", "null"] },
+            "effective_object_story_id": { "type": ["string", "null"] },
+            "id": { "type": ["string", "null"] },
+            "image_hash": { "type": ["string", "null"] },
+            "image_url": { "type": ["string", "null"] },
+            "instagram_permalink_url": { "type": ["string", "null"] },
+            "instagram_user_id": { "type": ["string", "null"] },
+            "link_url": { "type": ["string", "null"] },
+            "name": { "type": ["string", "null"] },
+            "object_id": { "type": ["string", "null"] },
+            "object_story_id": { "type": ["string", "null"] },
+            "object_story_spec": { "type": ["object", "null"] },
+            "object_type": { "type": ["string", "null"] },
+            "object_url": { "type": ["string", "null"] },
+            "source_instagram_media_id": { "type": ["string", "null"] },
+            "status": { "type": ["string", "null"] },
+            "thumbnail_data_url": { "type": ["string", "null"] },
+            "thumbnail_url": { "type": ["string", "null"] },
+            "title": { "type": ["string", "null"] },
+            "url_tags": { "type": ["string", "null"] },
+            "video_id": { "type": ["string", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "ad_creatives",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "full_refresh"
+    },
+    {
+      "cursor_field": [],
+      "destination_sync_mode": "overwrite",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["hash"]],
+      "stream": {
+        "json_schema": {
+          "additionalProperties": true,
+          "properties": {
+            "account_id": { "type": ["string", "null"] },
+            "creatives": { "type": ["array", "null"] },
+            "created_time": { "type": ["string", "null"] },
+            "hash": { "type": ["string", "null"] },
+            "height": { "type": ["integer", "null"] },
+            "id": { "type": ["string", "null"] },
+            "name": { "type": ["string", "null"] },
+            "permalink_url": { "type": ["string", "null"] },
+            "updated_time": { "type": ["string", "null"] },
+            "url": { "type": ["string", "null"] },
+            "url_128": { "type": ["string", "null"] },
+            "width": { "type": ["integer", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "images",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "full_refresh"
+    },
+    {
+      "cursor_field": [],
+      "destination_sync_mode": "overwrite",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [["id"]],
+      "stream": {
+        "json_schema": {
+          "additionalProperties": true,
+          "properties": {
+            "account_id": { "type": ["string", "null"] },
+            "created_time": { "type": ["string", "null"] },
+            "description": { "type": ["string", "null"] },
+            "format": { "type": ["array", "null"] },
+            "id": { "type": ["string", "null"] },
+            "length": { "type": ["number", "null"] },
+            "permalink_url": { "type": ["string", "null"] },
+            "picture": { "type": ["string", "null"] },
+            "source": { "type": ["string", "null"] },
+            "thumbnails": { "type": ["array", "null"] },
+            "title": { "type": ["string", "null"] },
+            "updated_time": { "type": ["string", "null"] },
+            "views": { "type": ["integer", "null"] }
+          },
+          "type": "object"
+        },
+        "name": "videos",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "full_refresh"
+    }
+  ]
+}

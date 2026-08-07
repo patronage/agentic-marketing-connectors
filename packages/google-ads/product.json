@@ -1,0 +1,42 @@
+{
+  "boundaries": [
+    "Callers provide resolved authentication and enforce tenant policy, approvals, and audit logging.",
+    "Writes require an explicit validation or execution mode."
+  ],
+  "capabilities": [
+    {
+      "description": "Query the Google Ads REST API through explicit, fetch-based clients that are safe to load in Workers.",
+      "id": "rest-client",
+      "title": "Worker-safe REST client"
+    },
+    {
+      "description": "Normalize campaign, keyword, search-term, video, reach, and frequency evidence into stable report objects.",
+      "id": "performance-reports",
+      "title": "Performance reports"
+    },
+    {
+      "description": "Plan and validate campaign deployment, keyword, targeting, creative, bidding, budget, experiment, and recommendation changes.",
+      "id": "guarded-workflows",
+      "title": "Guarded campaign workflows"
+    }
+  ],
+  "description": "Worker-safe Google Ads REST, reporting, deployment, and guarded workflow primitives for agent-run campaign operations.",
+  "id": "google-ads",
+  "name": "Google Ads",
+  "nonGoals": [],
+  "packageName": "@patronage/google-ads",
+  "packageSurfaces": [
+    "core",
+    "rest",
+    "reports",
+    "research",
+    "resolvers",
+    "compliance",
+    "cloudflare",
+    "deploy",
+    "workflows"
+  ],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "Typed Google Ads operations for Worker-native agents."
+}

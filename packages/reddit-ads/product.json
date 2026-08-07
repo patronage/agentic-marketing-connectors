@@ -1,0 +1,27 @@
+{
+  "boundaries": [
+    "Callers provide tokens and own authorization, approvals, secret resolution, and audit logs.",
+    "The package uses a narrow direct REST surface and does not read environment variables at runtime."
+  ],
+  "capabilities": [
+    {
+      "description": "Read businesses, ad accounts, campaigns, ad groups, promoted posts, funding instruments, and targeting values through an explicit fetch-based client.",
+      "id": "account-operations",
+      "title": "Account and campaign reads"
+    },
+    {
+      "description": "Retrieve typed Reddit Ads reports with account-timezone defaults and contract validation.",
+      "id": "reporting",
+      "title": "Campaign reporting"
+    }
+  ],
+  "description": "Worker-safe Reddit Ads reads and reporting primitives with explicit post-promotion contracts.",
+  "id": "reddit-ads",
+  "name": "Reddit Ads",
+  "nonGoals": [],
+  "packageName": "@patronage/reddit-ads",
+  "packageSurfaces": ["root", "product"],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "Reddit campaign evidence without CLI or environment coupling."
+}

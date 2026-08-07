@@ -1,18 +1,14 @@
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-import {
-  compareProviders,
-  listRecentPosts,
-  type CompareProvidersResult,
-  type ListRecentPostsResult,
-  type XProviderName,
+import { compareProviders, listRecentPosts } from "@patronage/x-posts";
+import type {
+  CompareProvidersResult,
+  ListRecentPostsResult,
+  XProviderName,
 } from "@patronage/x-posts";
 import { Command } from "commander";
 
 import { loadLocalDotenv } from "./local-env.js";
 
-const cliSourceDirectory = dirname(fileURLToPath(import.meta.url));
+const cliSourceDirectory = import.meta.dirname;
 
 export interface CreateXCommandDependencies {
   compareProviders?: typeof compareProviders;
@@ -150,9 +146,9 @@ function renderPostsOutput(
       const mediaLabel =
         post.mediaTypes.length > 0 ? post.mediaTypes.join(", ") : "text";
       lines.push(
-        `- ${post.publishedAt} | ${post.id} | ${mediaLabel} | ${post.url}`
+        `- ${post.publishedAt} | ${post.id} | ${mediaLabel} | ${post.url}`,
+        `  ${post.text}`
       );
-      lines.push(`  ${post.text}`);
     }
   }
 

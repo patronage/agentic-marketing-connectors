@@ -39,7 +39,7 @@ function readConfigFile(configPath: string): Partial<PatronageCliConfig> {
   }
 
   const parsed = configSchema.parse(
-    JSON.parse(readFileSync(configPath, "utf8"))
+    JSON.parse(readFileSync(configPath, "utf-8"))
   );
   return parsed;
 }

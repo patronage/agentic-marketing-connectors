@@ -1,0 +1,90 @@
+{
+  "campaignBudget": {
+    "budgets": [
+      {
+        "budgetId": "2222222222",
+        "amountMicros": 300000000,
+        "deliveryMethod": "STANDARD"
+      }
+    ]
+  },
+  "campaignBidding": {
+    "campaignBidding": [
+      {
+        "campaignId": "3333333333",
+        "strategyType": "MAXIMIZE_CONVERSIONS",
+        "switchStrategy": false,
+        "targetCpaMicros": 50000000
+      }
+    ]
+  },
+  "campaignCriteria": {
+    "criteria": [
+      {
+        "type": "adSchedule",
+        "campaignId": "3333333333",
+        "dayOfWeek": "MONDAY",
+        "startHour": 9,
+        "startMinute": "ZERO",
+        "endHour": 17,
+        "endMinute": "ZERO"
+      }
+    ]
+  },
+  "uploadClickConversionActions": {
+    "conversionActions": [
+      {
+        "name": "Example Validate Only Action",
+        "viewThroughLookbackWindowDays": 30
+      }
+    ]
+  },
+  "customConversionGoals": {
+    "customConversionGoals": [
+      {
+        "name": "Example Conversion Goal",
+        "conversionActionIds": ["4444444444"]
+      }
+    ]
+  },
+  "responsiveSearchAds": {
+    "ads": [
+      {
+        "adId": "555555555555",
+        "headlines": [
+          {
+            "text": "Support Our Mission"
+          },
+          {
+            "text": "Give Today"
+          },
+          {
+            "text": "Make An Impact"
+          }
+        ],
+        "descriptions": [
+          {
+            "text": "Your gift helps families access the benefits they need."
+          },
+          {
+            "text": "Donate today and support economic justice."
+          }
+        ]
+      }
+    ]
+  },
+  "biddingAdjustments": {
+    "adjustments": [
+      {
+        "name": "Example Seasonality Adjustment",
+        "scope": "CAMPAIGN",
+        "campaigns": ["customers/1111111111/campaigns/3333333333"],
+        "type": "seasonalityAdjustment",
+        "conversionRateModifier": 1.2,
+        "startDateTime": "2026-08-10 00:00:00",
+        "endDateTime": "2026-08-14 00:00:00",
+        "devices": ["DESKTOP", "MOBILE"]
+      }
+    ]
+  }
+}

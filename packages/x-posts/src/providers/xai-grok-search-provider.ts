@@ -161,36 +161,42 @@ function cleanJsonPayload(text: string): string {
 }
 
 function extractAssistantText(response: XaiResponsesApiResponse): string {
-  return (
-    response.output
-      ?.filter(
-        (entry) => entry.type === "message" && entry.role === "assistant"
-      )
-      .flatMap((entry) => entry.content ?? [])
-      .filter((entry) => entry.type === "output_text")
-      .map((entry) => entry.text ?? "")
-      .join("") ?? ""
-  );
+  let text = "";
+  for (const output of response.output ?? []) {
+    if (output.type !== "message" || output.role !== "assistant") {
+      continue;
+    }
+    for (const content of output.content ?? []) {
+      if (content.type === "output_text") {
+        text += content.text ?? "";
+      }
+    }
+  }
+  return text;
 }
 
 function extractCitationUrls(response: XaiResponsesApiResponse): string[] {
   const topLevel = response.citations ?? [];
-  const fromAnnotations =
-    response.output
-      ?.filter(
-        (entry) => entry.type === "message" && entry.role === "assistant"
-      )
-      .flatMap((entry) => entry.content ?? [])
-      .flatMap((entry) => entry.annotations ?? [])
-      .map((annotation) => annotation.url)
-      .filter(isNonEmptyString) ?? [];
+  const fromAnnotations: string[] = [];
+  for (const output of response.output ?? []) {
+    if (output.type !== "message" || output.role !== "assistant") {
+      continue;
+    }
+    for (const content of output.content ?? []) {
+      for (const annotation of content.annotations ?? []) {
+        if (isNonEmptyString(annotation.url)) {
+          fromAnnotations.push(annotation.url);
+        }
+      }
+    }
+  }
 
   return [...new Set([...topLevel, ...fromAnnotations])];
 }
 
 function extractIdFromUrl(url?: string): string {
-  const match = url?.match(/\/status\/(\d+)/u);
-  return match?.[1] ?? "";
+  const match = url?.match(/\/status\/(?<statusId>\d+)/u);
+  return match?.groups?.statusId ?? "";
 }
 
 function findCitationForPost(
