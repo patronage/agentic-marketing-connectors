@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsExperimentClient } from "../rest/index.js";
 import {
   buildCreateCampaignExperimentArmOperations,
   buildCreateCampaignExperimentOperations,
@@ -7,6 +8,8 @@ import {
   createCampaignExperimentArms,
   endCampaignExperiment,
   extractTreatmentInDesignCampaignResourceName,
+  graduateCampaignExperiment,
+  promoteCampaignExperiment,
   scheduleCampaignExperiment,
 } from "./create-campaign-experiment.js";
 
@@ -24,7 +27,7 @@ describe("create campaign experiment workflow", () => {
         syncEnabled: true,
         treatmentTrafficSplit: 20,
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         create: {
           description: "One-day Week 1 shakedown",
@@ -49,7 +52,7 @@ describe("create campaign experiment workflow", () => {
         experimentResourceName: "customers/1234567890/experiments/222",
         treatmentTrafficSplit: 30,
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         create: {
           campaigns: ["customers/1234567890/campaigns/111"],
@@ -117,22 +120,39 @@ describe("create campaign experiment workflow", () => {
 
   it("defaults experiment service calls to validate-only and blocks execution", async () => {
     const client = {
-      endExperiment: vi.fn().mockResolvedValue({
-        experiment: { resourceName: "customers/1234567890/experiments/222" },
-        requestId: "end-request",
-      }),
-      mutateExperimentArms: vi.fn().mockResolvedValue({
-        requestId: "arms-request",
-        results: [],
-      }),
-      mutateExperiments: vi.fn().mockResolvedValue({
-        requestId: "experiment-request",
-        results: [],
-      }),
-      scheduleExperiment: vi.fn().mockResolvedValue({
-        name: "operations/schedule",
-        requestId: "schedule-request",
-      }),
+      endExperiment: vi
+        .fn<GoogleAdsExperimentClient["endExperiment"]>()
+        .mockResolvedValue({
+          experiment: { resourceName: "customers/1234567890/experiments/222" },
+          requestId: "end-request",
+        }),
+      graduateExperiment: vi
+        .fn<GoogleAdsExperimentClient["graduateExperiment"]>()
+        .mockResolvedValue({ requestId: "graduate-request" }),
+      mutateExperimentArms: vi
+        .fn<GoogleAdsExperimentClient["mutateExperimentArms"]>()
+        .mockResolvedValue({
+          requestId: "arms-request",
+          results: [],
+        }),
+      mutateExperiments: vi
+        .fn<GoogleAdsExperimentClient["mutateExperiments"]>()
+        .mockResolvedValue({
+          requestId: "experiment-request",
+          results: [],
+        }),
+      promoteExperiment: vi
+        .fn<GoogleAdsExperimentClient["promoteExperiment"]>()
+        .mockResolvedValue({
+          name: "operations/promote",
+          requestId: "promote-request",
+        }),
+      scheduleExperiment: vi
+        .fn<GoogleAdsExperimentClient["scheduleExperiment"]>()
+        .mockResolvedValue({
+          name: "operations/schedule",
+          requestId: "schedule-request",
+        }),
     };
 
     await createCampaignExperiment(client, {
@@ -157,6 +177,16 @@ describe("create campaign experiment workflow", () => {
       customerId: "1234567890",
       experimentResourceName: "customers/1234567890/experiments/222",
     });
+    await promoteCampaignExperiment(client, {
+      customerId: "1234567890",
+      experimentResourceName: "customers/1234567890/experiments/222",
+    });
+    await graduateCampaignExperiment(client, {
+      campaignBudgetResourceName: "customers/1234567890/campaignBudgets/444",
+      customerId: "1234567890",
+      experimentCampaignResourceName: "customers/1234567890/campaigns/333",
+      experimentResourceName: "customers/1234567890/experiments/222",
+    });
 
     expect(client.endExperiment).toHaveBeenCalledWith({
       experimentResourceName: "customers/1234567890/experiments/222",
@@ -172,6 +202,20 @@ describe("create campaign experiment workflow", () => {
       customerId: "1234567890",
       operations: expect.any(Array),
       responseContentType: "MUTABLE_RESOURCE",
+      validateOnly: true,
+    });
+    expect(client.promoteExperiment).toHaveBeenCalledWith({
+      resourceName: "customers/1234567890/experiments/222",
+      validateOnly: true,
+    });
+    expect(client.graduateExperiment).toHaveBeenCalledWith({
+      campaignBudgetMappings: [
+        {
+          campaignBudget: "customers/1234567890/campaignBudgets/444",
+          experimentCampaign: "customers/1234567890/campaigns/333",
+        },
+      ],
+      experiment: "customers/1234567890/experiments/222",
       validateOnly: true,
     });
     expect(client.scheduleExperiment).toHaveBeenCalledWith({
@@ -198,6 +242,40 @@ describe("create campaign experiment workflow", () => {
       endCampaignExperiment(client, {
         customerId: "1234567890",
         experimentResourceName: "customers/9999999999/experiments/222",
+      })
+    ).rejects.toThrow("customer ID does not match");
+
+    await expect(
+      promoteCampaignExperiment(client, {
+        customerId: "1234567890",
+        experimentResourceName: "customers/1234567890/experiments/222",
+        mode: "execute",
+      })
+    ).rejects.toThrow("requires Loop approval");
+
+    await expect(
+      promoteCampaignExperiment(client, {
+        customerId: "1234567890",
+        experimentResourceName: "customers/9999999999/experiments/222",
+      })
+    ).rejects.toThrow("customer ID does not match");
+
+    await expect(
+      graduateCampaignExperiment(client, {
+        campaignBudgetResourceName: "customers/1234567890/campaignBudgets/444",
+        customerId: "1234567890",
+        experimentCampaignResourceName: "customers/1234567890/campaigns/333",
+        experimentResourceName: "customers/1234567890/experiments/222",
+        mode: "execute",
+      })
+    ).rejects.toThrow("requires Loop approval");
+
+    await expect(
+      graduateCampaignExperiment(client, {
+        campaignBudgetResourceName: "customers/9999999999/campaignBudgets/444",
+        customerId: "1234567890",
+        experimentCampaignResourceName: "customers/1234567890/campaigns/333",
+        experimentResourceName: "customers/1234567890/experiments/222",
       })
     ).rejects.toThrow("customer ID does not match");
   });

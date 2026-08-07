@@ -18,7 +18,7 @@ function makeResult(
   };
 }
 
-describe("compareProviders", () => {
+describe(compareProviders, () => {
   it("returns partial results when one provider is unavailable", async () => {
     const result = await compareProviders(
       {
@@ -98,7 +98,7 @@ describe("compareProviders", () => {
       }
     );
 
-    expect(result.comparison).toEqual({
+    expect(result.comparison).toStrictEqual({
       metricsAvailability: {
         "x-api": 1,
         "xai-grok": 0,

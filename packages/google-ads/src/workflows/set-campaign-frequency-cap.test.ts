@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import {
   buildSetCampaignFrequencyCapOperations,
   setCampaignFrequencyCap,
@@ -24,7 +25,7 @@ describe("set campaign frequency cap workflow", () => {
         customerId: "123-456-7890",
         replaceAll: true,
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         campaignOperation: {
           update: {
@@ -143,12 +144,12 @@ describe("set campaign frequency cap workflow", () => {
 
   it("defaults writes to validation mode and blocks execution until apply guards exist", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     const campaignFrequencyCaps = [

@@ -2,6 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createXCommand } from "./x.js";
 
+type XCommandDependencies = NonNullable<Parameters<typeof createXCommand>[0]>;
+type CompareProviders = NonNullable<XCommandDependencies["compareProviders"]>;
+type ListRecentPosts = NonNullable<XCommandDependencies["listRecentPosts"]>;
+
 function createStream() {
   let text = "";
 
@@ -19,7 +23,7 @@ function createStream() {
 describe("X CLI commands", () => {
   it("lists posts with provider credentials from env", async () => {
     const stdout = createStream();
-    const listRecentPosts = vi.fn().mockResolvedValue({
+    const listRecentPosts = vi.fn<ListRecentPosts>().mockResolvedValue({
       handle: "ExampleCommunityFund",
       posts: [],
       provider: "x-api",
@@ -61,7 +65,7 @@ describe("X CLI commands", () => {
 
   it("compares providers with markdown output by default", async () => {
     const stdout = createStream();
-    const compareProviders = vi.fn().mockResolvedValue({
+    const compareProviders = vi.fn<CompareProviders>().mockResolvedValue({
       comparison: {
         metricsAvailability: {
           "x-api": 1,
@@ -115,7 +119,7 @@ describe("X CLI commands", () => {
 
   it("rejects invalid date windows", async () => {
     const command = createXCommand({
-      listRecentPosts: vi.fn(),
+      listRecentPosts: vi.fn<ListRecentPosts>(),
       stderr: createStream() as never,
       stdout: createStream() as never,
     });

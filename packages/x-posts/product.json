@@ -1,0 +1,27 @@
+{
+  "boundaries": [
+    "Local operator commands and environment bootstrap live in the shared Patronage CLI.",
+    "The package ingests authored posts; it does not provide a general-purpose X automation client."
+  ],
+  "capabilities": [
+    {
+      "description": "List recent authored posts with media hints and engagement metrics using explicit function inputs.",
+      "id": "authored-posts",
+      "title": "Authored-post ingestion"
+    },
+    {
+      "description": "Prefer the X API for canonical reads while supporting xAI Grok as a secondary comparison provider.",
+      "id": "provider-comparison",
+      "title": "Provider comparison"
+    }
+  ],
+  "description": "Worker-safe X authored-post ingestion for promotion intake and boosting-report workflows.",
+  "id": "x-posts",
+  "name": "X Posts",
+  "nonGoals": [],
+  "packageName": "@patronage/x-posts",
+  "packageSurfaces": ["list-recent-posts", "compare-providers", "types"],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "Recent post evidence without browser or CLI state."
+}

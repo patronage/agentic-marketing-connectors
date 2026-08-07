@@ -1,0 +1,27 @@
+{
+  "name": "@patronage/ads-sync-deploy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter @patronage/ads-sync build && wrangler deploy --dry-run --config wrangler.jsonc",
+    "check": "pnpm typecheck && pnpm test && pnpm check:public-imports",
+    "check:public-imports": "node --experimental-strip-types ./scripts/check-public-imports.ts",
+    "deploy": "pnpm --filter @patronage/ads-sync build && wrangler deploy --config wrangler.jsonc",
+    "dev": "pnpm --filter @patronage/ads-sync build && wrangler dev --config wrangler.jsonc --ip 127.0.0.1 --port 8796",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@patronage/ads-sync": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20260710.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10",
+    "wrangler": "4.110.0"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  }
+}

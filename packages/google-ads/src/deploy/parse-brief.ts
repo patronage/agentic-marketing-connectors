@@ -3,6 +3,7 @@ import { parse as parseYaml } from "yaml";
 import type {
   BriefAd,
   BriefAdGroup,
+  BriefBiddingStrategy,
   BriefExtensions,
   BriefFrontmatter,
   BriefKeyword,
@@ -11,12 +12,71 @@ import type {
   BriefSitelink,
   CampaignBrief,
 } from "./types.js";
+import { validateCampaignBrief } from "./validate-brief.js";
+import type { CampaignBriefFinding } from "./validate-brief.js";
 
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+export type CampaignBriefFormat = "json" | "markdown";
+export type { CampaignBriefFinding } from "./validate-brief.js";
+export { validateCampaignBrief } from "./validate-brief.js";
 
-export function parseBriefContent(content: string): CampaignBrief {
+export interface CampaignBriefParseOptions {
+  defaultBidding?: BriefBiddingStrategy;
+  format: CampaignBriefFormat;
+}
+
+export class CampaignBriefParseError extends Error {
+  readonly findings: CampaignBriefFinding[];
+  readonly format: CampaignBriefFormat;
+
+  constructor(input: {
+    cause?: unknown;
+    findings: CampaignBriefFinding[];
+    format: CampaignBriefFormat;
+  }) {
+    super(
+      `Invalid ${input.format} Campaign Brief:\n${input.findings
+        .map(({ message, path }) => `${path}: ${message}`)
+        .join("\n")}`,
+      input.cause === undefined ? undefined : { cause: input.cause }
+    );
+    this.name = "CampaignBriefParseError";
+    this.findings = input.findings;
+    this.format = input.format;
+  }
+}
+
+export function parseCampaignBrief(
+  content: string,
+  options: CampaignBriefParseOptions
+): CampaignBrief {
+  const defaultBidding = options.defaultBidding ?? "manual-cpc";
+  let brief: CampaignBrief;
+  try {
+    brief =
+      options.format === "json"
+        ? parseJsonBriefContent(content, defaultBidding)
+        : parseMarkdownBriefContent(content, defaultBidding);
+  } catch (error) {
+    throw new CampaignBriefParseError({
+      cause: error,
+      findings: [findingFromError(error)],
+      format: options.format,
+    });
+  }
+
+  const findings = validateCampaignBrief(brief);
+  if (findings.length > 0) {
+    throw new CampaignBriefParseError({ findings, format: options.format });
+  }
+  return brief;
+}
+
+function parseMarkdownBriefContent(
+  content: string,
+  defaultBidding: BriefBiddingStrategy
+): CampaignBrief {
   const normalizedContent = normalizeMarkdownLineEndings(content);
-  const frontmatter = parseFrontmatter(normalizedContent);
+  const frontmatter = parseFrontmatter(normalizedContent, defaultBidding);
   const body = extractBody(normalizedContent);
 
   return {
@@ -28,7 +88,10 @@ export function parseBriefContent(content: string): CampaignBrief {
   };
 }
 
-export function parseJsonBriefContent(content: string): CampaignBrief {
+function parseJsonBriefContent(
+  content: string,
+  defaultBidding: BriefBiddingStrategy
+): CampaignBrief {
   let raw: unknown;
 
   try {
@@ -40,12 +103,15 @@ export function parseJsonBriefContent(content: string): CampaignBrief {
     );
   }
 
-  return normalizeCampaignBrief(raw);
+  return normalizeCampaignBrief(raw, defaultBidding);
 }
 
-export function parseFrontmatter(content: string): BriefFrontmatter {
+function parseFrontmatter(
+  content: string,
+  defaultBidding: BriefBiddingStrategy
+): BriefFrontmatter {
   const match = normalizeMarkdownLineEndings(content).match(
-    /^---\n([\s\S]*?)\n?---(?:\n|$)/
+    /^---\n(?<capture1>[\s\S]*?)\n?---(?:\n|$)/u
   );
   if (!match) {
     throw new Error("No YAML frontmatter found (expected --- delimiters)");
@@ -69,6 +135,7 @@ export function parseFrontmatter(content: string): BriefFrontmatter {
   }
 
   return {
+    bidding: normalizeBidding(raw.bidding, defaultBidding),
     budget_daily: requireNumber(raw.budget_daily, "frontmatter.budget_daily"),
     campaign_name: requireString(
       raw.campaign_name,
@@ -88,13 +155,47 @@ export function parseFrontmatter(content: string): BriefFrontmatter {
           ),
         ],
     language: requireString(raw.language, "frontmatter.language"),
+    // Spread so an absent field stays absent: downstream plan fingerprinting
+    // rejects objects carrying explicit undefined values.
+    ...optionalMaxCpcEntry(raw.max_cpc),
     start_date: requireString(raw.start_date, "frontmatter.start_date"),
   };
 }
 
-export function parseAdGroups(body: string): BriefAdGroup[] {
+function optionalMaxCpcEntry(value: unknown): { max_cpc?: number } {
+  const maxCpc = optionalPositiveNumber(value, "frontmatter.max_cpc");
+  return maxCpc === undefined ? {} : { max_cpc: maxCpc };
+}
+
+function optionalPositiveNumber(
+  value: unknown,
+  field: string
+): number | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  // Stricter than requireNumber's coercion on purpose: `max_cpc: true` or a
+  // quoted scalar must not silently become a bid ceiling.
+  if (typeof value !== "number") {
+    throw new TypeError(`${field} must be a number`);
+  }
+  const numericValue = requireNumber(value, field);
+  if (numericValue <= 0) {
+    throw new TypeError(`${field} must be a positive number`);
+  }
+  const cents = Math.round(numericValue * 100);
+  if (Math.abs(numericValue * 100 - cents) > 1e-6) {
+    throw new TypeError(`${field} must be a whole number of cents`);
+  }
+  if (cents < 1 || cents > 100_000) {
+    throw new TypeError(`${field} must be between $0.01 and $1000`);
+  }
+  return numericValue;
+}
+
+function parseAdGroups(body: string): BriefAdGroup[] {
   const adGroups: BriefAdGroup[] = [];
-  const sections = body.split(/### Ad Group:\s*/);
+  const sections = body.split(/### Ad Group:\s*/u);
 
   for (let i = 1; i < sections.length; i += 1) {
     const section = sections[i];
@@ -110,8 +211,10 @@ export function parseAdGroups(body: string): BriefAdGroup[] {
   return adGroups;
 }
 
-export function parseKeywordLine(line: string): BriefKeyword | null {
-  const match = line.match(/^[""]?(.+?)[""]?\s*\[(exact|phrase|broad)\]\s*$/i);
+function parseKeywordLine(line: string): BriefKeyword | null {
+  const match = line.match(
+    /^[""]?(?<capture1>.+?)[""]?\s*\[(?<capture2>exact|phrase|broad)\]\s*$/iu
+  );
   if (!match) {
     return null;
   }
@@ -120,23 +223,21 @@ export function parseKeywordLine(line: string): BriefKeyword | null {
     match_type: capture(match, 2).toUpperCase() as BriefMatchType,
     text: capture(match, 1)
       .trim()
-      .replaceAll(/^[""]|[""]$/g, ""),
+      .replaceAll(/^[""]|[""]$/gu, ""),
   };
 }
 
-export function parseNegativeKeywordLine(
-  line: string
-): BriefNegativeKeyword | null {
+function parseNegativeKeywordLine(line: string): BriefNegativeKeyword | null {
   const parsed = parseKeywordLine(line);
   if (parsed) {
     return parsed;
   }
 
-  const text = line.replaceAll(/^[""]|[""]$/g, "").trim();
+  const text = line.replaceAll(/^[""]|[""]$/gu, "").trim();
   return text ? { match_type: "BROAD", text } : null;
 }
 
-export function parseAdLines(lines: string[]): BriefAd[] {
+function parseAdLines(lines: string[]): BriefAd[] {
   const ads: BriefAd[] = [];
   let descriptions: string[] = [];
   let finalUrl = "";
@@ -178,10 +279,12 @@ export function parseAdLines(lines: string[]): BriefAd[] {
     path2 !== undefined;
 
   for (const raw of lines) {
-    const line = raw.replace(/^-\s+/, "");
-    const headlineMatch = line.match(/^Headline\s+(\d+):\s*(.+)/i);
+    const line = raw.replace(/^-\s+/u, "");
+    const headlineMatch = line.match(
+      /^Headline\s+(?<capture1>\d+):\s*(?<capture2>.+)/iu
+    );
     if (headlineMatch) {
-      const headlineNumber = Number.parseInt(capture(headlineMatch, 1), 10);
+      const headlineNumber = Math.trunc(Number(capture(headlineMatch, 1)));
       if (headlineNumber === 1 && hasAdContent()) {
         flushAd();
       }
@@ -189,25 +292,25 @@ export function parseAdLines(lines: string[]): BriefAd[] {
       continue;
     }
 
-    const descMatch = line.match(/^Description\s+\d+:\s*(.+)/i);
+    const descMatch = line.match(/^Description\s+\d+:\s*(?<capture1>.+)/iu);
     if (descMatch) {
       descriptions.push(capture(descMatch, 1).trim());
       continue;
     }
 
-    const urlMatch = line.match(/^Final URL:\s*(.+)/i);
+    const urlMatch = line.match(/^Final URL:\s*(?<capture1>.+)/iu);
     if (urlMatch) {
       finalUrl = capture(urlMatch, 1).trim();
       continue;
     }
 
-    const path1Match = line.match(/^Path\s*1:\s*(.+)/i);
+    const path1Match = line.match(/^Path\s*1:\s*(?<capture1>.+)/iu);
     if (path1Match) {
       path1 = validatePath(capture(path1Match, 1).trim(), "Path 1");
       continue;
     }
 
-    const path2Match = line.match(/^Path\s*2:\s*(.+)/i);
+    const path2Match = line.match(/^Path\s*2:\s*(?<capture1>.+)/iu);
     if (path2Match) {
       path2 = validatePath(capture(path2Match, 1).trim(), "Path 2");
     }
@@ -217,8 +320,10 @@ export function parseAdLines(lines: string[]): BriefAd[] {
   return ads;
 }
 
-export function parseExtensions(body: string): BriefExtensions {
-  const section = body.match(/## Extensions\s*\n([\s\S]*?)(?=\n## |$)/);
+function parseExtensions(body: string): BriefExtensions {
+  const section = body.match(
+    /## Extensions\s*\n(?<capture1>[\s\S]*?)(?=\n## |$)/u
+  );
   if (!section) {
     return { callouts: [], sitelinks: [], structured_snippets: [] };
   }
@@ -231,106 +336,9 @@ export function parseExtensions(body: string): BriefExtensions {
   };
 }
 
-export function validateBrief(brief: CampaignBrief): string[] {
-  const errors: string[] = [];
-
-  if (brief.ad_groups.length === 0) {
-    errors.push("Brief must contain at least one ad group");
-  }
-
-  for (const adGroup of brief.ad_groups) {
-    const prefix = `Ad Group "${adGroup.name}"`;
-
-    if (adGroup.keywords.length === 0) {
-      errors.push(`${prefix}: must have at least one keyword`);
-    }
-
-    if (adGroup.ads.length === 0) {
-      errors.push(`${prefix}: must have at least one ad`);
-    }
-
-    for (const ad of adGroup.ads) {
-      if (ad.headlines.length < 3) {
-        errors.push(
-          `${prefix}: responsive search ads require at least 3 headlines (found ${ad.headlines.length})`
-        );
-      }
-
-      if (ad.descriptions.length < 2) {
-        errors.push(
-          `${prefix}: responsive search ads require at least 2 descriptions (found ${ad.descriptions.length})`
-        );
-      }
-
-      for (const headline of ad.headlines) {
-        if (headline.length > 30) {
-          errors.push(
-            `${prefix}: headline "${headline}" exceeds 30 characters (${headline.length})`
-          );
-        }
-      }
-
-      for (const description of ad.descriptions) {
-        if (description.length > 90) {
-          errors.push(
-            `${prefix}: description exceeds 90 characters (${description.length})`
-          );
-        }
-      }
-
-      if (!ad.final_url) {
-        errors.push(`${prefix}: ad is missing Final URL`);
-      }
-    }
-  }
-
-  errors.push(...validateFrontmatter(brief.frontmatter));
-
-  return errors;
-}
-
-function validateFrontmatter(frontmatter: BriefFrontmatter): string[] {
-  const errors: string[] = [];
-
-  if (!Number.isFinite(frontmatter.budget_daily)) {
-    errors.push("Daily budget must be a finite number");
-  } else if (frontmatter.budget_daily <= 0) {
-    errors.push("Daily budget must be positive");
-  }
-
-  if (!frontmatter.campaign_name.trim()) {
-    errors.push("Campaign name must not be empty");
-  }
-
-  const hasValidStartDate = DATE_PATTERN.test(frontmatter.start_date);
-  const hasValidEndDate = DATE_PATTERN.test(frontmatter.end_date);
-
-  if (!hasValidStartDate) {
-    errors.push("Start date must be in YYYY-MM-DD format");
-  }
-
-  if (!hasValidEndDate) {
-    errors.push("End date must be in YYYY-MM-DD format");
-  }
-
-  if (
-    hasValidStartDate &&
-    hasValidEndDate &&
-    frontmatter.start_date > frontmatter.end_date
-  ) {
-    errors.push("Start date must not be after end date");
-  }
-
-  if (frontmatter.geographic_targets.length === 0) {
-    errors.push("Must have at least one geographic target");
-  }
-
-  return errors;
-}
-
 function extractBody(content: string): string {
   const match = normalizeMarkdownLineEndings(content).match(
-    /^---\n[\s\S]*?\n?---(?:\n|$)([\s\S]*)$/
+    /^---\n[\s\S]*?\n?---(?:\n|$)(?<capture1>[\s\S]*)$/u
   );
   return match?.[1] ?? content;
 }
@@ -340,7 +348,9 @@ function normalizeMarkdownLineEndings(content: string): string {
 }
 
 function parseObjective(body: string): string {
-  const match = body.match(/## Objective\s*\n\n([\s\S]*?)(?=\n## |\n### |$)/);
+  const match = body.match(
+    /## Objective\s*\n\n(?<capture1>[\s\S]*?)(?=\n## |\n### |$)/u
+  );
   return match?.[1]?.trim() ?? "";
 }
 
@@ -361,7 +371,7 @@ function parseAdGroupSection(section: string): BriefAdGroup | null {
 }
 
 function extractField(section: string, field: string): string {
-  const match = section.match(new RegExp(`\\*\\*${field}:\\*\\*\\s*(.+)`));
+  const match = section.match(new RegExp(`\\*\\*${field}:\\*\\*\\s*(.+)`, "u"));
   return match?.[1]?.trim() ?? "";
 }
 
@@ -379,31 +389,26 @@ function extractNegativeKeywords(section: string): BriefNegativeKeyword[] {
 
 function extractListBlock(section: string, label: string): string[] {
   const regex = new RegExp(
-    `\\*\\*${label}:\\*\\*\\s*\\n([\\s\\S]*?)(?=\\n\\*\\*|\\n###|$)`
+    `\\*\\*${label}:\\*\\*\\s*\\n([\\s\\S]*?)(?=\\n\\*\\*|\\n###|$)`,
+    "u"
   );
   const match = section.match(regex);
   if (!match) {
     return [];
   }
 
-  return capture(match, 1)
-    .split("\n")
-    .map((line) => line.replace(/^-\s+/, "").trim())
-    .filter(Boolean);
+  return normalizeListLines(capture(match, 1));
 }
 
 function extractAds(section: string): BriefAd[] {
   const adsBlock = section.match(
-    /\*\*Ads:\*\*\s*\n([\s\S]*?)(?=\n\*\*|(?:\n###(?! ))|$)/
+    /\*\*Ads:\*\*\s*\n(?<capture1>[\s\S]*?)(?=\n\*\*|(?:\n###(?! ))|$)/u
   );
   if (!adsBlock) {
     return [];
   }
 
-  const lines = capture(adsBlock, 1)
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  const lines = normalizeListLines(capture(adsBlock, 1), false);
 
   return parseAdLines(lines);
 }
@@ -418,78 +423,75 @@ function validatePath(value: string, label: string): string {
 }
 
 function parseSitelinks(content: string): BriefSitelink[] {
-  const section = content.match(/### Sitelinks\s*\n([\s\S]*?)(?=\n###|$)/);
+  const section = content.match(
+    /### Sitelinks\s*\n(?<capture1>[\s\S]*?)(?=\n###|$)/u
+  );
   if (!section) {
     return [];
   }
 
-  return capture(section, 1)
-    .split("\n")
-    .map((line) => line.replace(/^-\s+/, "").trim())
-    .filter(Boolean)
-    .map((line): BriefSitelink | null => {
-      const match = line.match(/^(.+?)\s*\|\s*(.+)$/);
+  return normalizeListLines(capture(section, 1)).flatMap(
+    (line): BriefSitelink[] => {
+      const match = line.match(/^(?<capture1>.+?)\s*\|\s*(?<capture2>.+)$/u);
       if (!match) {
-        return null;
+        return [];
       }
 
       const linkText = capture(match, 1).trim();
       const destination = capture(match, 2).trim();
       if (!destination) {
-        return null;
+        return [];
       }
 
-      return /^https?:\/\//i.test(destination)
-        ? { final_url: destination, link_text: linkText }
-        : { link_text: linkText, path: destination };
-    })
-    .filter((sitelink): sitelink is BriefSitelink => sitelink !== null);
+      return [
+        /^https?:\/\//iu.test(destination)
+          ? { final_url: destination, link_text: linkText }
+          : { link_text: linkText, path: destination },
+      ];
+    }
+  );
 }
 
 function parseCallouts(content: string): string[] {
-  const section = content.match(/### Callouts\s*\n([\s\S]*?)(?=\n###|$)/);
+  const section = content.match(
+    /### Callouts\s*\n(?<capture1>[\s\S]*?)(?=\n###|$)/u
+  );
   if (!section) {
     return [];
   }
 
-  return capture(section, 1)
-    .split("\n")
-    .map((line) => line.replace(/^-\s+/, "").trim())
-    .filter(Boolean);
+  return normalizeListLines(capture(section, 1));
 }
 
 function parseStructuredSnippets(
   content: string
 ): BriefExtensions["structured_snippets"] {
   const section = content.match(
-    /### Structured Snippets\s*\n([\s\S]*?)(?=\n###|$)/
+    /### Structured Snippets\s*\n(?<capture1>[\s\S]*?)(?=\n###|$)/u
   );
   if (!section) {
     return [];
   }
 
-  return capture(section, 1)
-    .split("\n")
-    .map((line) => line.replace(/^-\s+/, "").trim())
-    .filter(Boolean)
-    .map((line) => {
-      const match = line.match(/^(.+?):\s*(.+)$/);
-      return match
-        ? {
+  return normalizeListLines(capture(section, 1)).flatMap((line) => {
+    const match = line.match(/^(?<capture1>.+?):\s*(?<capture2>.+)$/u);
+    return match
+      ? [
+          {
             header: capture(match, 1).trim(),
             values: capture(match, 2)
               .split(",")
               .map((value) => value.trim()),
-          }
-        : null;
-    })
-    .filter(
-      (snippet): snippet is { header: string; values: string[] } =>
-        snippet !== null
-    );
+          },
+        ]
+      : [];
+  });
 }
 
-function normalizeCampaignBrief(raw: unknown): CampaignBrief {
+function normalizeCampaignBrief(
+  raw: unknown,
+  defaultBidding: BriefBiddingStrategy
+): CampaignBrief {
   const brief = requireRecord(raw, "brief");
 
   return {
@@ -500,15 +502,19 @@ function normalizeCampaignBrief(raw: unknown): CampaignBrief {
       true
     ),
     extensions: normalizeExtensions(brief.extensions),
-    frontmatter: normalizeFrontmatter(brief.frontmatter),
+    frontmatter: normalizeFrontmatter(brief.frontmatter, defaultBidding),
     objective: requireString(brief.objective, "objective"),
   };
 }
 
-function normalizeFrontmatter(raw: unknown): BriefFrontmatter {
+function normalizeFrontmatter(
+  raw: unknown,
+  defaultBidding: BriefBiddingStrategy
+): BriefFrontmatter {
   const frontmatter = requireRecord(raw, "frontmatter");
 
   return {
+    bidding: normalizeBidding(frontmatter.bidding, defaultBidding),
     budget_daily: requireNumber(
       frontmatter.budget_daily,
       "frontmatter.budget_daily"
@@ -525,8 +531,19 @@ function normalizeFrontmatter(raw: unknown): BriefFrontmatter {
       "frontmatter.geographic_targets"
     ),
     language: requireString(frontmatter.language, "frontmatter.language"),
+    ...optionalMaxCpcEntry(frontmatter.max_cpc),
     start_date: requireString(frontmatter.start_date, "frontmatter.start_date"),
   };
+}
+
+function normalizeBidding(
+  value: unknown,
+  defaultBidding: BriefBiddingStrategy
+): BriefBiddingStrategy {
+  if (value === undefined) {
+    return defaultBidding;
+  }
+  return requireString(value, "frontmatter.bidding") as BriefBiddingStrategy;
 }
 
 function normalizeCampaignType(value: unknown): "SEARCH" {
@@ -774,4 +791,20 @@ function capture(match: RegExpMatchArray, index: number): string {
     throw new Error(`Expected regex capture group ${index}`);
   }
   return value;
+}
+
+function normalizeListLines(value: string, stripBullet = true): string[] {
+  return value.split("\n").flatMap((line) => {
+    const normalized = (stripBullet ? line.replace(/^-\s+/u, "") : line).trim();
+    return normalized ? [normalized] : [];
+  });
+}
+
+function findingFromError(error: unknown): CampaignBriefFinding {
+  const message = error instanceof Error ? error.message : String(error);
+  const path =
+    /^(?<path>(?:ad_groups|campaign_negative_keywords|extensions|frontmatter|objective)[\w.[\]-]*)\s/iu.exec(
+      message
+    )?.groups?.path;
+  return { message, path: path ?? "$" };
 }

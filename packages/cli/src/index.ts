@@ -5,11 +5,16 @@ import chalk from "chalk";
 import { Command } from "commander";
 
 import { createGoogleCommand } from "./google.js";
+import type { GoogleCommandOptions } from "./google.js";
 import { createLinkedInCommand } from "./linkedin.js";
 import { createMetaCommand } from "./meta.js";
 import { createXCommand } from "./x.js";
 
-export function createProgram(): Command {
+export interface ProgramOptions {
+  google?: GoogleCommandOptions;
+}
+
+export function createProgram(options: ProgramOptions = {}): Command {
   const program = new Command();
 
   program
@@ -17,7 +22,7 @@ export function createProgram(): Command {
     .description("Local CLI harness for Patronage Open Source Core")
     .version("0.0.0");
 
-  program.addCommand(createGoogleCommand());
+  program.addCommand(createGoogleCommand(options.google));
   program.addCommand(createLinkedInCommand());
   program.addCommand(createMetaCommand());
   program.addCommand(createXCommand());
@@ -25,8 +30,11 @@ export function createProgram(): Command {
   return program;
 }
 
-export async function run(argv: string[] = process.argv): Promise<void> {
-  await createProgram().parseAsync(argv);
+export async function run(
+  argv: string[] = process.argv,
+  options: ProgramOptions = {}
+): Promise<void> {
+  await createProgram(options).parseAsync(argv);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {

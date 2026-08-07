@@ -11,6 +11,31 @@ import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import { createMetaCommand } from "./meta.js";
+import type { CreateMetaCommandDependencies } from "./meta.js";
+
+type CreateMetaSocialClient = NonNullable<
+  CreateMetaCommandDependencies["createMetaSocialClient"]
+>;
+type MetaSocialClient = ReturnType<CreateMetaSocialClient>;
+
+function createMockMetaSocialClient(
+  overrides: Partial<MetaSocialClient>
+): MetaSocialClient {
+  return {
+    getInstagramMedia: vi.fn<MetaSocialClient["getInstagramMedia"]>(),
+    getPageInsights: vi.fn<MetaSocialClient["getPageInsights"]>(),
+    getPagePosts: vi.fn<MetaSocialClient["getPagePosts"]>(),
+    hideComment: vi.fn<MetaSocialClient["hideComment"]>(),
+    listComments: vi.fn<MetaSocialClient["listComments"]>(),
+    listManagedPages: vi.fn<MetaSocialClient["listManagedPages"]>(),
+    moderateComment: vi.fn<MetaSocialClient["moderateComment"]>(),
+    publishInstagramMedia: vi.fn<MetaSocialClient["publishInstagramMedia"]>(),
+    async request<T>(): Promise<T> {
+      throw new Error("Unexpected Meta Graph request in test.");
+    },
+    ...overrides,
+  };
+}
 
 function createStream() {
   let text = "";
@@ -29,16 +54,18 @@ function createStream() {
 describe("Meta social CLI commands", () => {
   it("lists managed pages with a user token", async () => {
     const stdout = createStream();
-    const client = {
-      listManagedPages: vi.fn().mockResolvedValue([
-        {
-          category: "Nonprofit Organization",
-          id: "123",
-          name: "Example Community Fund",
-        },
-      ]),
-    };
-    const createMetaSocialClient = vi.fn(() => client);
+    const client = createMockMetaSocialClient({
+      listManagedPages: vi
+        .fn<MetaSocialClient["listManagedPages"]>()
+        .mockResolvedValue([
+          {
+            category: "Nonprofit Organization",
+            id: "123",
+            name: "Example Community Fund",
+          },
+        ]),
+    });
+    const createMetaSocialClient = vi.fn<CreateMetaSocialClient>(() => client);
     const command = createMetaCommand({
       createMetaSocialClient: createMetaSocialClient as never,
       env: { META_ACCESS_TOKEN: "user-token" },
@@ -53,19 +80,89 @@ describe("Meta social CLI commands", () => {
     expect(stdout.text).toContain("Example Community Fund (123)");
   });
 
+  it("omits managed-page access tokens from default JSON output", async () => {
+    const stdout = createStream();
+    const canary = "canary-page-token-must-not-appear";
+    const client = createMockMetaSocialClient({
+      listManagedPages: vi
+        .fn<MetaSocialClient["listManagedPages"]>()
+        .mockResolvedValue([
+          {
+            access_token: canary,
+            category: "Nonprofit Organization",
+            id: "123",
+            name: "Example Community Fund",
+          },
+        ]),
+    });
+    const command = createMetaCommand({
+      createMetaSocialClient: vi.fn<CreateMetaSocialClient>(() => client),
+      env: { META_ACCESS_TOKEN: "user-token" },
+      stdout: stdout as never,
+    });
+
+    await command.parseAsync(["social", "pages", "list", "--format", "json"], {
+      from: "user",
+    });
+
+    expect(stdout.text).not.toContain(canary);
+    expect(JSON.parse(stdout.text)).toStrictEqual([
+      {
+        category: "Nonprofit Organization",
+        id: "123",
+        name: "Example Community Fund",
+      },
+    ]);
+  });
+
+  it("includes managed-page access tokens only when explicitly requested", async () => {
+    const stdout = createStream();
+    const client = createMockMetaSocialClient({
+      listManagedPages: vi
+        .fn<MetaSocialClient["listManagedPages"]>()
+        .mockResolvedValue([
+          {
+            access_token: "explicit-page-token",
+            id: "123",
+            name: "Example Community Fund",
+          },
+        ]),
+    });
+    const command = createMetaCommand({
+      createMetaSocialClient: vi.fn<CreateMetaSocialClient>(() => client),
+      env: { META_ACCESS_TOKEN: "user-token" },
+      stdout: stdout as never,
+    });
+
+    await command.parseAsync(
+      ["social", "pages", "list", "--format", "json", "--show-tokens"],
+      { from: "user" }
+    );
+
+    expect(JSON.parse(stdout.text)).toStrictEqual([
+      {
+        access_token: "explicit-page-token",
+        id: "123",
+        name: "Example Community Fund",
+      },
+    ]);
+  });
+
   it("lists page posts with an active-client page token", async () => {
     const stdout = createStream();
-    const client = {
-      getPagePosts: vi.fn().mockResolvedValue([
-        {
-          created_time: "2026-05-01T12:00:00+0000",
-          id: "post-1",
-          message: "Hello",
-          permalink_url: "https://facebook.com/post-1",
-        },
-      ]),
-    };
-    const createMetaSocialClient = vi.fn(() => client);
+    const client = createMockMetaSocialClient({
+      getPagePosts: vi
+        .fn<MetaSocialClient["getPagePosts"]>()
+        .mockResolvedValue([
+          {
+            created_time: "2026-05-01T12:00:00+0000",
+            id: "post-1",
+            message: "Hello",
+            permalink_url: "https://facebook.com/post-1",
+          },
+        ]),
+    });
+    const createMetaSocialClient = vi.fn<CreateMetaSocialClient>(() => client);
     const command = createMetaCommand({
       createMetaSocialClient: createMetaSocialClient as never,
       env: {
@@ -105,7 +202,7 @@ describe("Meta social CLI commands", () => {
 
   it("rejects impossible post window dates", async () => {
     const command = createMetaCommand({
-      createMetaSocialClient: vi.fn() as never,
+      createMetaSocialClient: vi.fn<CreateMetaSocialClient>(),
       env: { META_PAGE_ACCESS_TOKEN: "page-token" },
     });
 
@@ -127,7 +224,7 @@ describe("Meta social CLI commands", () => {
 
   it("rejects invalid post window months with CLI validation errors", async () => {
     const command = createMetaCommand({
-      createMetaSocialClient: vi.fn() as never,
+      createMetaSocialClient: vi.fn<CreateMetaSocialClient>(),
       env: { META_PAGE_ACCESS_TOKEN: "page-token" },
     });
 
@@ -149,17 +246,19 @@ describe("Meta social CLI commands", () => {
 
   it("lists Instagram media with an explicit token", async () => {
     const stdout = createStream();
-    const client = {
-      getInstagramMedia: vi.fn().mockResolvedValue([
-        {
-          id: "media-1",
-          media_type: "REELS",
-          permalink: "https://instagram.com/reel/1",
-          timestamp: "2026-05-01T12:00:00+0000",
-        },
-      ]),
-    };
-    const createMetaSocialClient = vi.fn(() => client);
+    const client = createMockMetaSocialClient({
+      getInstagramMedia: vi
+        .fn<MetaSocialClient["getInstagramMedia"]>()
+        .mockResolvedValue([
+          {
+            id: "media-1",
+            media_type: "REELS",
+            permalink: "https://instagram.com/reel/1",
+            timestamp: "2026-05-01T12:00:00+0000",
+          },
+        ]),
+    });
+    const createMetaSocialClient = vi.fn<CreateMetaSocialClient>(() => client);
     const command = createMetaCommand({
       createMetaSocialClient: createMetaSocialClient as never,
       stdout: stdout as never,
@@ -196,9 +295,13 @@ describe("Meta ads CLI commands", () => {
   it("validates boost creation without constructing a Meta client", async () => {
     const runLogDir = mkdtempSync(path.join(tmpdir(), "meta-ads-run-log-"));
     const command = createMetaCommand();
+    let stdout = "";
     const stdoutWrite = vi
       .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+      .mockImplementation((chunk) => {
+        stdout += String(chunk);
+        return true;
+      });
 
     try {
       await command.parseAsync(
@@ -228,25 +331,157 @@ describe("Meta ads CLI commands", () => {
     const [runLogFile] = readdirSync(runLogDir);
     expect(runLogFile).toContain("meta-ads-meta-ads-boosts-create-validate");
     const runLogPath = path.join(runLogDir, runLogFile ?? "");
-    const runLog = JSON.parse(readFileSync(runLogPath, "utf8")) as {
+    const runLog = JSON.parse(readFileSync(runLogPath, "utf-8")) as {
       mode: string;
       operations: unknown[];
+      result: { lifecycle: string };
     };
     expect(runLog.mode).toBe("validate");
     expect(runLog.operations).toHaveLength(1);
+    expect(runLog.result.lifecycle).toBe("local-planned");
+    expect(JSON.parse(stdout)).toStrictEqual({
+      lifecycle: "local-planned",
+      result: { plan: runLog.operations[0] },
+      runLogPath,
+    });
 
     rmSync(runLogDir, { force: true, recursive: true });
   });
 
+  it("preserves golden local-plan output and logs across simple mutation families", async () => {
+    const cases = [
+      {
+        args: ["audiences", "create-custom", "--input", "input.json"],
+        name: "create-custom",
+        operation: { createCustomAudience: {} },
+      },
+      {
+        args: ["audiences", "create-lookalike", "--input", "input.json"],
+        name: "create-lookalike",
+        operation: { createLookalikeAudience: {} },
+      },
+      {
+        args: [
+          "audiences",
+          "sync-users",
+          "--audience-id",
+          "audience-1",
+          "--input",
+          "input.json",
+        ],
+        name: "sync-users",
+        operation: { syncAudienceUsers: "audience-1" },
+      },
+      {
+        args: [
+          "conversions",
+          "send",
+          "--pixel-id",
+          "pixel-1",
+          "--input",
+          "input.json",
+        ],
+        name: "conversions-send",
+        operation: { sendConversionEvents: "pixel-1" },
+      },
+      {
+        args: [
+          "conversions",
+          "test",
+          "--pixel-id",
+          "pixel-1",
+          "--code",
+          "test-code",
+        ],
+        name: "conversions-test",
+        operation: { sendTestEvent: "pixel-1" },
+      },
+    ];
+    const goldens: unknown[] = [];
+
+    // oxlint-disable-next-line no-unreachable-loop -- every isolated command fixture contributes one golden contract entry.
+    for (const testCase of cases) {
+      const runLogDir = mkdtempSync(path.join(tmpdir(), "meta-golden-"));
+      const inputPath = path.join(runLogDir, "input.json");
+      writeFileSync(
+        inputPath,
+        JSON.stringify(
+          testCase.name === "conversions-send" ? { events: [] } : {}
+        )
+      );
+      const args = testCase.args.map((value) =>
+        value === "input.json" ? inputPath : value
+      );
+      let stdout = "";
+      const stdoutWrite = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation((chunk) => {
+          stdout += String(chunk);
+          return true;
+        });
+      try {
+        // oxlint-disable-next-line no-await-in-loop, react-doctor/async-await-in-loop -- each golden owns isolated Commander and run-log state.
+        await createMetaCommand().parseAsync(
+          ["ads", ...args, "--format", "json", "--run-log-dir", runLogDir],
+          { from: "user" }
+        );
+      } finally {
+        stdoutWrite.mockRestore();
+      }
+      const output = JSON.parse(stdout) as Record<string, unknown>;
+      const logFile = readdirSync(runLogDir).find((file) =>
+        file.endsWith("-validate.json")
+      );
+      if (!logFile) {
+        throw new Error(`Missing golden run log for ${testCase.name}.`);
+      }
+      const runLog = JSON.parse(
+        readFileSync(path.join(runLogDir, logFile), "utf-8")
+      ) as Record<string, unknown>;
+      goldens.push({
+        log: {
+          mode: runLog.mode,
+          operations: runLog.operations,
+          provider: runLog.provider,
+          result: runLog.result,
+        },
+        name: testCase.name,
+        output: {
+          ...output,
+          runLogPath: "<run-log>",
+        },
+      });
+      rmSync(runLogDir, { force: true, recursive: true });
+    }
+
+    expect(goldens).toStrictEqual(
+      cases.map((testCase) => ({
+        log: {
+          mode: "validate",
+          operations: [testCase.operation],
+          provider: "meta-ads",
+          result: {
+            lifecycle: "local-planned",
+            plan: testCase.operation,
+          },
+        },
+        name: testCase.name,
+        output: {
+          lifecycle: "local-planned",
+          result: { plan: testCase.operation },
+          runLogPath: "<run-log>",
+        },
+      }))
+    );
+  });
+
   it("inspects explicit tokens without requiring ad account env", async () => {
     const fetchMock = vi
-      .fn()
+      .fn<typeof fetch>()
       .mockResolvedValue(Response.json({ data: { is_valid: true } }));
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       await command.parseAsync(
@@ -270,14 +505,55 @@ describe("Meta ads CLI commands", () => {
     }
 
     const requestUrl = new URL(String(fetchMock.mock.calls[0]?.[0]));
-    expect(requestUrl.pathname).toBe("/v21.0/debug_token");
+    expect(requestUrl.pathname).toBe("/v25.0/debug_token");
     expect(requestUrl.searchParams.get("access_token")).toBe("app|secret");
     expect(requestUrl.searchParams.get("input_token")).toBe("user-token");
   });
 
+  it("omits managed-page tokens from Meta Ads account JSON by default", async () => {
+    const canary = "canary-ads-page-token-must-not-appear";
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      Response.json({
+        data: [
+          {
+            access_token: canary,
+            category: "Nonprofit Organization",
+            id: "page-1",
+            name: "Example Community Fund",
+          },
+        ],
+      })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const stdout = createStream();
+    const stdoutWrite = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation((chunk) => stdout.write(String(chunk)));
+    const command = createMetaCommand();
+
+    try {
+      await command.parseAsync(
+        ["ads", "token", "accounts", "user-token", "--format", "json"],
+        { from: "user" }
+      );
+    } finally {
+      stdoutWrite.mockRestore();
+      vi.unstubAllGlobals();
+    }
+
+    expect(stdout.text).not.toContain(canary);
+    expect(JSON.parse(stdout.text)).toStrictEqual([
+      {
+        category: "Nonprofit Organization",
+        id: "page-1",
+        name: "Example Community Fund",
+      },
+    ]);
+  });
+
   it("prints active-client page token aliases for token account env output", async () => {
     const previousActiveClient = process.env.ACTIVE_CLIENT;
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       Response.json({
         data: [
           {
@@ -327,7 +603,7 @@ describe("Meta ads CLI commands", () => {
 
   it("requires a page id before printing active-client page token aliases", async () => {
     const previousActiveClient = process.env.ACTIVE_CLIENT;
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       Response.json({
         data: [
           {
@@ -339,9 +615,7 @@ describe("Meta ads CLI commands", () => {
       })
     );
     vi.stubGlobal("fetch", fetchMock);
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
     const command = createMetaCommand();
 
     try {
@@ -397,15 +671,20 @@ describe("Meta ads CLI commands", () => {
       })
     );
     const fetchMock = vi
-      .fn()
+      .fn<typeof fetch>()
       .mockResolvedValueOnce(Response.json({ id: "campaign-1" }))
       .mockResolvedValueOnce(Response.json({ id: "adset-1" }))
       .mockResolvedValueOnce(Response.json({ id: "ad-1" }));
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
+    let deployStdout = "";
     const stdoutWrite = vi
       .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+      .mockImplementation((chunk) => {
+        deployStdout += String(chunk);
+        return true;
+      });
+    let deploymentRunLog: Record<string, unknown> | undefined;
 
     try {
       await command.parseAsync(
@@ -420,11 +699,21 @@ describe("Meta ads CLI commands", () => {
           "--access-token",
           "token",
           "--execute",
+          "--format",
+          "json",
           "--run-log-dir",
           runLogDir,
         ],
         { from: "user" }
       );
+      const logFile = readdirSync(runLogDir).find((file) =>
+        file.endsWith("-execute.json")
+      );
+      deploymentRunLog = logFile
+        ? (JSON.parse(
+            readFileSync(path.join(runLogDir, logFile), "utf-8")
+          ) as Record<string, unknown>)
+        : undefined;
     } finally {
       stdoutWrite.mockRestore();
       vi.unstubAllGlobals();
@@ -433,6 +722,27 @@ describe("Meta ads CLI commands", () => {
 
     const adBody = fetchMock.mock.calls[2]?.[1]?.body as URLSearchParams;
     expect(adBody.get("adset_id")).toBe("adset-1");
+    expect(deploymentRunLog).toMatchObject({
+      result: {
+        lifecycle: "executed",
+        receipt: { operationKind: "campaign.deploy", status: "succeeded" },
+      },
+    });
+    expect(JSON.stringify(deploymentRunLog?.operations)).toContain(
+      "[patronage:cli-"
+    );
+    const loggedResult = deploymentRunLog?.result as
+      | Record<string, unknown>
+      | undefined;
+    expect(JSON.parse(deployStdout)).toStrictEqual({
+      lifecycle: "executed",
+      result: {
+        plan: loggedResult?.plan,
+        receipt: loggedResult?.receipt,
+        result: loggedResult?.result,
+      },
+      runLogPath: expect.stringContaining("-execute.json"),
+    });
   });
 
   it("validates deploy plans without Meta credentials", async () => {
@@ -449,12 +759,10 @@ describe("Meta ads CLI commands", () => {
     );
     const previousAccessToken = process.env.META_ACCESS_TOKEN;
     const previousAdAccountId = process.env.META_AD_ACCOUNT_ID;
-    const fetchMock = vi.fn();
+    const fetchMock = vi.fn<typeof fetch>();
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       delete process.env.META_ACCESS_TOKEN;
@@ -489,16 +797,14 @@ describe("Meta ads CLI commands", () => {
     const previousAccessToken = process.env.META_ACCESS_TOKEN;
     const previousAppSecretProof = process.env.META_APPSECRET_PROOF;
     const previousAdAccountId = process.env.META_AD_ACCOUNT_ID;
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       Response.json({
         data: [{ id: "form-1", name: "Lead Form", status: "ACTIVE" }],
       })
     );
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       process.env.ACTIVE_CLIENT = "example_nonprofit";
@@ -513,7 +819,7 @@ describe("Meta ads CLI commands", () => {
           "forms",
           "list",
           "--page-id",
-          "page-1",
+          "123_1",
           "--format",
           "json",
         ],
@@ -530,25 +836,23 @@ describe("Meta ads CLI commands", () => {
     }
 
     const requestUrl = new URL(String(fetchMock.mock.calls[0]?.[0]));
-    expect(requestUrl.pathname).toBe("/v21.0/page-1/leadgen_forms");
+    expect(requestUrl.pathname).toBe("/v25.0/123_1/leadgen_forms");
     expect(requestUrl.searchParams.get("access_token")).toBe("page-token");
-    expect(requestUrl.searchParams.has("appsecret_proof")).toBe(false);
+    expect(requestUrl.searchParams.has("appsecret_proof")).toBeFalsy();
   });
 
   it("preserves global appsecret proof for explicit access tokens", async () => {
     const previousAccessToken = process.env.META_ACCESS_TOKEN;
     const previousAppSecretProof = process.env.META_APPSECRET_PROOF;
     const previousAdAccountId = process.env.META_AD_ACCOUNT_ID;
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       Response.json({
         data: [{ id: "audience-1", name: "Audience" }],
       })
     );
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       process.env.META_APPSECRET_PROOF = "explicit-token-proof";
@@ -593,21 +897,20 @@ describe("Meta ads CLI commands", () => {
           {
             action_source: "website",
             event_name: "PageView",
+            event_source_url: "https://example.com/",
             event_time: 1_777_000_000,
-            user_data: {},
+            user_data: { client_user_agent: "Mozilla/5.0" },
           },
         ],
       })
     );
     const previousAdAccountId = process.env.META_AD_ACCOUNT_ID;
     const fetchMock = vi
-      .fn()
+      .fn<typeof fetch>()
       .mockResolvedValue(Response.json({ events_received: 1 }));
     vi.stubGlobal("fetch", fetchMock);
     const command = createMetaCommand();
-    const stdoutWrite = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    const stdoutWrite = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       delete process.env.META_AD_ACCOUNT_ID;
@@ -617,7 +920,7 @@ describe("Meta ads CLI commands", () => {
           "conversions",
           "send",
           "--pixel-id",
-          "pixel-1",
+          "123_1",
           "--input",
           inputPath,
           "--access-token",
@@ -636,7 +939,7 @@ describe("Meta ads CLI commands", () => {
     }
 
     const requestUrl = new URL(String(fetchMock.mock.calls[0]?.[0]));
-    expect(requestUrl.pathname).toBe("/v21.0/pixel-1/events");
+    expect(requestUrl.pathname).toBe("/v25.0/123_1/events");
     expect(requestUrl.searchParams.get("access_token")).toBe("pixel-token");
   });
 });

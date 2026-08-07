@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import {
   buildPauseAdGroupOperations,
   pauseAdGroups,
@@ -12,7 +13,7 @@ describe("pause ad group workflow", () => {
         adGroupIds: ["111", "222"],
         customerId: "123-456-7890",
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         adGroupOperation: {
           update: {
@@ -66,12 +67,12 @@ describe("pause ad group workflow", () => {
 
   it("defaults typed writes to validation mode and requires explicit execution", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     await pauseAdGroups(client, {

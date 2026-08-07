@@ -1,0 +1,32 @@
+{
+  "boundaries": [
+    "The calling system owns approval policy, credentials, tenant boundaries, and execution audit logs.",
+    "Paid advertising operations stay separate from organic Page and Instagram reads."
+  ],
+  "capabilities": [
+    {
+      "description": "Read account and campaign insights through an explicit Graph API client that is safe in Workers.",
+      "id": "paid-reporting",
+      "title": "Paid media reporting"
+    },
+    {
+      "description": "Plan guarded campaign deployments, post boosts, and audience operations before live execution.",
+      "id": "campaign-deployment",
+      "title": "Campaign deployment"
+    },
+    {
+      "description": "Expose typed Lead Ads, Conversions API, token, and account utilities to authorized callers.",
+      "id": "conversion-operations",
+      "title": "Lead and conversion operations"
+    }
+  ],
+  "description": "Worker-safe Meta paid advertising reporting and explicit contracts for guarded deployment, audiences, leads, and conversions.",
+  "id": "meta-ads",
+  "name": "Meta Ads",
+  "nonGoals": [],
+  "packageName": "@patronage/meta-ads",
+  "packageSurfaces": ["root", "deployment", "product"],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "Paid social evidence and guarded execution primitives."
+}

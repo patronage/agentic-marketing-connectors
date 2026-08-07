@@ -1,13 +1,9 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const packageRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  ".."
-);
+const packageRoot = path.resolve(import.meta.dirname, "..");
 
 describe("connector safety contract", () => {
   afterEach(() => {
@@ -16,7 +12,7 @@ describe("connector safety contract", () => {
   });
 
   it("loads the root export without fetch access or runtime bootstrap", async () => {
-    const fetchTrap = vi.fn(() => {
+    const fetchTrap = vi.fn<typeof fetch>(() => {
       throw new Error("root import must not touch fetch");
     });
 
@@ -25,7 +21,7 @@ describe("connector safety contract", () => {
     vi.resetModules();
     const root = await import("./index.js");
 
-    expect(Object.keys(root).toSorted()).toEqual([
+    expect(Object.keys(root).toSorted()).toStrictEqual([
       "MetaSocialApiError",
       "createMetaSocialClient",
     ]);
@@ -37,7 +33,9 @@ describe("connector safety contract", () => {
 
     vi.resetModules();
     const root = await import("./index.js");
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ data: [] }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ data: [] }));
     const client = root.createMetaSocialClient({
       accessToken: "token",
       fetch: fetchMock,
@@ -55,8 +53,9 @@ describe("connector safety contract", () => {
       "src/meta-social-client.ts",
       "src/types.ts",
     ];
+    const privateConfigPackage = ["@paitronage", "config"].join("/");
     const forbidden = [
-      "@private-scope/config",
+      privateConfigPackage,
       "automation/meta",
       "child_process",
       "commander",
@@ -72,7 +71,8 @@ describe("connector safety contract", () => {
     ];
 
     for (const file of runtimeFiles) {
-      const source = await readFile(path.join(packageRoot, file), "utf8");
+      // oxlint-disable-next-line no-await-in-loop, react-doctor/async-await-in-loop -- imports are checked serially so a failing runtime boundary is attributable (#507).
+      const source = await readFile(path.join(packageRoot, file), "utf-8");
 
       for (const token of forbidden) {
         expect(source, `${file} must not contain ${token}`).not.toContain(

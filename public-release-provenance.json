@@ -1,0 +1,1259 @@
+{
+  "generator": {
+    "path": "scripts/public-release/index.ts",
+    "version": 1
+  },
+  "managedTree": {
+    "files": [
+      {
+        "path": ".gitignore",
+        "sha256": "790b2213221bc70bba5343140a5a98b9af3f074e624257b33ba007c466155985"
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "9b7e538af29270564d3520f92fe815d1fcbcf997cd67a6fc04877e13b34bf105"
+      },
+      {
+        "path": "package.json",
+        "sha256": "846f7100b60940c09eda7cde5108407c7f56ffc0d2fa019880a8bf133abbacb3"
+      },
+      {
+        "path": "packages/ads-sync/deploy/package.json",
+        "sha256": "4cbc2856bc3b21dd822486c9fb306512c1790d2a4a114adf7407d77b3ee5ac13"
+      },
+      {
+        "path": "packages/ads-sync/deploy/README.md",
+        "sha256": "429fbb5a7f1fb54a6bf3d4f605a8ab485b033917e3e116e206bb8ed726122aee"
+      },
+      {
+        "path": "packages/ads-sync/deploy/scripts/check-public-imports.ts",
+        "sha256": "da4856c3464c8268ad7c6aa8e4ec0a9c9d8e9585047dc1dbc2e771ff51d45c84"
+      },
+      {
+        "path": "packages/ads-sync/deploy/src/index.test.ts",
+        "sha256": "48b53502707c1e8af731476069f856bb6d6a0cb1052f5ffccc556587e1fb8aa3"
+      },
+      {
+        "path": "packages/ads-sync/deploy/src/index.ts",
+        "sha256": "10762ad4d13fadd059bcae7e30815a24a0bf550784b9bb46811f316ac9a10c34"
+      },
+      {
+        "path": "packages/ads-sync/deploy/src/worker.ts",
+        "sha256": "069de5a2e69078dac64ba7e273bb68c357fd9c136e7d66d7375bf08f6551f610"
+      },
+      {
+        "path": "packages/ads-sync/deploy/tsconfig.json",
+        "sha256": "78e09780ec90a89ab620a0c498ca9a9bcf24136dbbfeb008b5418e44460bc169"
+      },
+      {
+        "path": "packages/ads-sync/deploy/vitest.config.ts",
+        "sha256": "15132e3b285424b09c25b2322fd90e8fc0c79f70e8c6643b5e55c10d35a26231"
+      },
+      {
+        "path": "packages/ads-sync/deploy/wrangler.jsonc",
+        "sha256": "6e22fe183dc3c70942b4e940b938b1491f47b8c03e19680902b398b23d175094"
+      },
+      {
+        "path": "packages/ads-sync/package.json",
+        "sha256": "666ecaecbfe2de97af9576afba8633572134a262752ce5880cfbdfd8ed6ce87d"
+      },
+      {
+        "path": "packages/ads-sync/README.md",
+        "sha256": "f8f28f871877b4d733ac020f18734d352cd5acc79c214aae49f11ce59c81134b"
+      },
+      {
+        "path": "packages/ads-sync/src/canary.test.ts",
+        "sha256": "5b38e83035db4b85c86bb8e91fc8e317a283c6343c3b8f0b00c05e66e1180002"
+      },
+      {
+        "path": "packages/ads-sync/src/canary.ts",
+        "sha256": "a3938b2e86a48847beefe88a0f8d13921f6fcfca7ffa051f59c354c9c957b171"
+      },
+      {
+        "path": "packages/ads-sync/src/comparison.test.ts",
+        "sha256": "25bd1e345c281c3975c7b1bfd61fa6849a078000232bcf042e15e3937ad3ec48"
+      },
+      {
+        "path": "packages/ads-sync/src/comparison.ts",
+        "sha256": "a9af802640b19100b8ff439b555fb6d4eb97b45a46b287a752c4af6f6c899b0f"
+      },
+      {
+        "path": "packages/ads-sync/src/config.ts",
+        "sha256": "904871a089c3a4afa514510eda059ce6f2affb25b407f3707dbfae6234cade50"
+      },
+      {
+        "path": "packages/ads-sync/src/core.test.ts",
+        "sha256": "4056a22e974057b2ba1a7e6483c9267bdec5fe73992f0ed1b6ccdb798db49dff"
+      },
+      {
+        "path": "packages/ads-sync/src/core.ts",
+        "sha256": "56e9b52b941bdf891c0ded852bc9adec78b3d7fa5998c46fbc3e8c1c66eadede"
+      },
+      {
+        "path": "packages/ads-sync/src/index.ts",
+        "sha256": "66fd95ce6fa86675b49a59404ed124d5a41f19414773afa7df2d677c2f424d74"
+      },
+      {
+        "path": "packages/ads-sync/src/instance.test.ts",
+        "sha256": "f236c04acfc0990828494028816d166a1342944df5d26bc8ffb3e886b4fca077"
+      },
+      {
+        "path": "packages/ads-sync/src/instance.ts",
+        "sha256": "c795c58666a0c5c131b931f74ad74f0175eb200021e54ae1a2fc07891904e02d"
+      },
+      {
+        "path": "packages/ads-sync/src/test-fixtures/meta-catalog.example.json",
+        "sha256": "bcffd595612df47177f8b89a27984e9b8b757566ffdfbf293ec8931e88f4d649"
+      },
+      {
+        "path": "packages/ads-sync/src/tutorials/configure-connections.ts",
+        "sha256": "b31204afb17ea26feeb928c604ff29cfbb172dd816649dc1c45be9bc1dc3fea4"
+      },
+      {
+        "path": "packages/ads-sync/src/tutorials/prepare-bounded-run.ts",
+        "sha256": "5d59f02672b0a1fd7cd21fe393600a745655293435c24fc96a1804949aee09f9"
+      },
+      {
+        "path": "packages/ads-sync/src/tutorials/run-historical-comparison.ts",
+        "sha256": "eaff58f7033e455597c7538bfa1d946d247186543a8466061f976f62520a4f64"
+      },
+      {
+        "path": "packages/ads-sync/src/tutorials/tutorials.test.ts",
+        "sha256": "36f840f6f784789deb235530ededcc1b4131de9374539ddbad2642409f2e8633"
+      },
+      {
+        "path": "packages/ads-sync/tsconfig.json",
+        "sha256": "c28e420ac759b0617e561fe51d2101d58ddc8958b9f51b077a34438b6261a7c5"
+      },
+      {
+        "path": "packages/ads-sync/tsdown.config.ts",
+        "sha256": "e7ee6a55237f17a71ca911d0011a87a051dcbda178f4e0b714dbf673deaa7645"
+      },
+      {
+        "path": "packages/cli/package.json",
+        "sha256": "1ca484e17b79e1445143dea129450abbe1aeceea37fea8d6209534af33ff8b67"
+      },
+      {
+        "path": "packages/cli/src/config.test.ts",
+        "sha256": "6f509b1548c807ebefbb3c7bada4d39e9b269511ad60948b17f8c0456cdac22e"
+      },
+      {
+        "path": "packages/cli/src/config.ts",
+        "sha256": "2faf1153e42ed6fdf21031b5dd990af4361f713559b5be90550dc550728f1f74"
+      },
+      {
+        "path": "packages/cli/src/google-client.test.ts",
+        "sha256": "7d211d9ea9686adf35d7a780d200cd5944b6643ba550208418d70cfca5c3a4ab"
+      },
+      {
+        "path": "packages/cli/src/google-client.ts",
+        "sha256": "6326d30e825eeeae96cb1fedea0d070dc80736101df97b6ae5f82604f5c75fcc"
+      },
+      {
+        "path": "packages/cli/src/google-extra.test.ts",
+        "sha256": "08ca507edc8d43b55643be1204501ef57194031748e1148d18e963e23ce16286"
+      },
+      {
+        "path": "packages/cli/src/google-extra.ts",
+        "sha256": "8cae5bfdeb3ce0acb7c4462ff3294e3db9ce204b469ba21963209261f171feb4"
+      },
+      {
+        "path": "packages/cli/src/google-oauth.test.ts",
+        "sha256": "afeeb4778ee0c1c7e12e33cdd2c45cd391f94f214c0dfc95f27b7f7e02703d90"
+      },
+      {
+        "path": "packages/cli/src/google-oauth.ts",
+        "sha256": "b681852c153fad4394af2902106e4aa0153bdc6506ece30be740f3a5a93a6c36"
+      },
+      {
+        "path": "packages/cli/src/google.test.ts",
+        "sha256": "bd8bbfdf239f0a94a594ec4228837f866694ddce1e2fbf33d85e6357bd599b68"
+      },
+      {
+        "path": "packages/cli/src/google.ts",
+        "sha256": "9d8508f5baf2ac1f0d0523db47d077b455490e1bb16ae18428f0c60b4c200230"
+      },
+      {
+        "path": "packages/cli/src/index.ts",
+        "sha256": "e0214be5c3f160db5691b3268fef3cabb208685a584fccbdec3751471795a525"
+      },
+      {
+        "path": "packages/cli/src/linkedin-oauth.test.ts",
+        "sha256": "57a0244cf65a1f7876ec17ec50b9c75be2941fd954ace3edefdab5a7ecb31b86"
+      },
+      {
+        "path": "packages/cli/src/linkedin-oauth.ts",
+        "sha256": "967ed9f7315bb7d6c808202e959a804f36be65ece45381a8b96e9d5781150967"
+      },
+      {
+        "path": "packages/cli/src/linkedin.test.ts",
+        "sha256": "2f6405ddf4a8de9f2c1d503364ee36f9ed4bff909f620954fff31cfd8b80f2b5"
+      },
+      {
+        "path": "packages/cli/src/linkedin.ts",
+        "sha256": "33cb18a78fb4d9a88386d4ea18882d3e037b1d8e640f31c15b9f6d8399280477"
+      },
+      {
+        "path": "packages/cli/src/local-env.ts",
+        "sha256": "c2d1ed39443353cdd44c4b2de1b76e981d21a6c3ae94f8ec54f0aa114d9d1f42"
+      },
+      {
+        "path": "packages/cli/src/managed-page-output.ts",
+        "sha256": "e6be40f810cad50dd25189963aff1aba309c394299b74ddb77c8cbea6bed9771"
+      },
+      {
+        "path": "packages/cli/src/meta-ads.ts",
+        "sha256": "ca48ba7e265ee1e1fdcd3bb94f04d4f26e26957f07d3d4612c7a007299ee319e"
+      },
+      {
+        "path": "packages/cli/src/meta.test.ts",
+        "sha256": "46483d83afb17942617ad4c25f3cbfdc09db13a7af75b3619bc3ece7a260eda4"
+      },
+      {
+        "path": "packages/cli/src/meta.ts",
+        "sha256": "8dde57f6ef94a1d1039ae42dc3f55aefbc4db7dde1e08adcbfc89a2acc6647b6"
+      },
+      {
+        "path": "packages/cli/src/mutation-harness-integration.test.ts",
+        "sha256": "9579be21b96753d038c21771ad26891832856de1c50bfac7d0c7ebe2cead1b5f"
+      },
+      {
+        "path": "packages/cli/src/mutation-harness.test.ts",
+        "sha256": "a7a4526bf5e076664a759694a28092d46f2a3f99d6230b6a812c936fd653d0c0"
+      },
+      {
+        "path": "packages/cli/src/mutation-harness.ts",
+        "sha256": "4407354e240a988bb5e092ed99f4c53a7791dd5cd66368c8b52ba5e8a0ed43ce"
+      },
+      {
+        "path": "packages/cli/src/run-log.test.ts",
+        "sha256": "3df3f49ac249ca0277f9bb4be754629f06106711b3db37379850ddeda4eea79c"
+      },
+      {
+        "path": "packages/cli/src/run-log.ts",
+        "sha256": "dd518e881a16ee8a1303a642817f54e560de4a3605a8a26b40db18349c0e7d52"
+      },
+      {
+        "path": "packages/cli/src/spreadsheet-csv.test.ts",
+        "sha256": "26d159d012e85c5aea239bc046595cd8245dc721aa9028e476f7ab033295f6b7"
+      },
+      {
+        "path": "packages/cli/src/spreadsheet-csv.ts",
+        "sha256": "8021768bbcd8a0959b9c14f8d2b53eda5b96e2f136cff6e16f507f16d31fee99"
+      },
+      {
+        "path": "packages/cli/src/x.test.ts",
+        "sha256": "be6159c86f5aae2005df1a9688b2186223c283e27756c2d314ac55bca18f8411"
+      },
+      {
+        "path": "packages/cli/src/x.ts",
+        "sha256": "d00dee7a5aa25d0ae5a5e1b2e6208cebeb1486724060f0f2fd4474840e3f37da"
+      },
+      {
+        "path": "packages/cli/tsconfig.json",
+        "sha256": "cd866d04d2b5a49d73074cbeae4532b8144ba271f09b829fa76e90768594dd2d"
+      },
+      {
+        "path": "packages/cli/tsdown.config.ts",
+        "sha256": "bb363d0c74c5790005aa33889940f48d443e1390c3dfe1145b09b79a0b65f8d5"
+      },
+      {
+        "path": "packages/cli/vitest.config.ts",
+        "sha256": "4f49d01f0120eff8b5bac0c9abc9bf6263c8da9834d288ff884c1e397436209f"
+      },
+      {
+        "path": "packages/connector-lifecycle/examples/guarded-mutation-receipt.test.ts",
+        "sha256": "5c666dd1420b10cba2c2fe01eaa205bcc6f8c3a1601de67d109de534b7b9ce22"
+      },
+      {
+        "path": "packages/connector-lifecycle/examples/guarded-mutation-receipt.ts",
+        "sha256": "76ecc6943a83d8e8c54c8cd0fc5e99b4fd2dc8ca3d61f7e4e05c16dbe1734821"
+      },
+      {
+        "path": "packages/connector-lifecycle/package.json",
+        "sha256": "d683fdc903a9bae24035e6bc165e32b7bc9509122f309646a709034707ba4ff2"
+      },
+      {
+        "path": "packages/connector-lifecycle/README.md",
+        "sha256": "8c697edb41d111cf03156739dfcc8edbbb38e2bfab63dc6a5da14ca068b32127"
+      },
+      {
+        "path": "packages/connector-lifecycle/src/connector-safety.test.ts",
+        "sha256": "a6b334780874d7a73440af75e162caa6f90f2d45b5112d2025542e7949d512fa"
+      },
+      {
+        "path": "packages/connector-lifecycle/src/index.test.ts",
+        "sha256": "5f323fd2ba4b15a734b4975e0048f2c7339087c0d72688ca6715909da02c9f06"
+      },
+      {
+        "path": "packages/connector-lifecycle/src/index.ts",
+        "sha256": "98cda48a79a98a4b29d2fe7816e0dc9e8944c8955c5350961b3e546ca433857e"
+      },
+      {
+        "path": "packages/connector-lifecycle/src/internal/mutation-plan-mismatch-error.ts",
+        "sha256": "56268db9affb8d32bfd7588b024d41f9580f018b1ca6431a0f016579ea654c71"
+      },
+      {
+        "path": "packages/connector-lifecycle/src/internal/mutation-receipt-conformance-error.ts",
+        "sha256": "8593d2053e62f0c6c41fff9a6cdff125aaad4fddf89a7253f54b2d8ca4af611f"
+      },
+      {
+        "path": "packages/connector-lifecycle/tsconfig.json",
+        "sha256": "cd866d04d2b5a49d73074cbeae4532b8144ba271f09b829fa76e90768594dd2d"
+      },
+      {
+        "path": "packages/connector-lifecycle/tsdown.config.ts",
+        "sha256": "9b75a2838bbee86a3ee7596887a023fa06174119a21f45810c0cff2436ead12b"
+      },
+      {
+        "path": "packages/google-ads/CONTEXT.md",
+        "sha256": "cc22b912e00ef95cd9d1fb3e4832d2d8bd6e73d0166243b689b33b8550bf02ed"
+      },
+      {
+        "path": "packages/google-ads/examples/campaign-brief-template.md",
+        "sha256": "34c5d4013d0da4f9a2ddaaf7c4f2aa04e0adfa1b04c33e687b5e9617eb6c9c87"
+      },
+      {
+        "path": "packages/google-ads/examples/flue-search-term-review.test.ts",
+        "sha256": "e89dee3c4bec7efc9bd6afb5c7c2d374f7b85939b0ce3feb59b2a59d617e6a89"
+      },
+      {
+        "path": "packages/google-ads/examples/flue-search-term-review.ts",
+        "sha256": "e059a043d1e43a43624c2380c1463c8e1208d6f5367daa0f015886ff5bb206a4"
+      },
+      {
+        "path": "packages/google-ads/examples/hello-world-campaign-snapshot.test.ts",
+        "sha256": "a69a88f02004ca7c44bee1b28c9af1fc40f40a01812ac10c8aa7dcf44166aac2"
+      },
+      {
+        "path": "packages/google-ads/examples/hello-world-campaign-snapshot.ts",
+        "sha256": "d20f1920ef42a69306a5bbc99582118b9bfd7fd461fa340a4d415831a37a00e2"
+      },
+      {
+        "path": "packages/google-ads/examples/mutation-fixtures.example.json",
+        "sha256": "d13a77bbed36579d06035de91c4077e5c864a6ca25c4f65c7b8871dda910d5de"
+      },
+      {
+        "path": "packages/google-ads/examples/README.md",
+        "sha256": "7e7f96b3578bb02d8cc810562a295361dfc0265e26525b80fd61045b9b3b8a63"
+      },
+      {
+        "path": "packages/google-ads/package.json",
+        "sha256": "111c55f5e0b978826ba8a7f4a6e4d8047d96f45ee3fbe8bd4046456f4ba413d4"
+      },
+      {
+        "path": "packages/google-ads/product.json",
+        "sha256": "679cc2fd4bed56176b951be1fbc6f3b3b575e2e447a94533ef68fff0a23ebed8"
+      },
+      {
+        "path": "packages/google-ads/README.md",
+        "sha256": "803cb4aa089d441fd6806dd181cc6221916263f6bdd89bc1e49d8ab3649e569b"
+      },
+      {
+        "path": "packages/google-ads/scripts/live-smoke-options.mjs",
+        "sha256": "32eed51cb82eb0c7da249bf9b032ef8fdebc84ea3116967badbbe18a9fe6008c"
+      },
+      {
+        "path": "packages/google-ads/scripts/live-smoke-options.test.mjs",
+        "sha256": "a9bbee59221c84f882c9d4cd4cf2c77421d60f8d8c91a2a89be734b5dfbd7d3e"
+      },
+      {
+        "path": "packages/google-ads/scripts/live-smoke.mjs",
+        "sha256": "64039986bfb2a015dd3755610bf9a82fb57a197ea8568b6db779b8d48ca115fd"
+      },
+      {
+        "path": "packages/google-ads/src/canary/index.test.ts",
+        "sha256": "44a70c5b18b15aeab12595f2a3d8bb4c0192d8bb5753374155743c05a924e8a8"
+      },
+      {
+        "path": "packages/google-ads/src/canary/index.ts",
+        "sha256": "cb0f2026ebfa94ed8773dcadfae9309a75aa253466de4f7ffab19c995eedc0db"
+      },
+      {
+        "path": "packages/google-ads/src/canary/mutation.test.ts",
+        "sha256": "37ca799c1feba58a09390d6a92c468454de99e5ae35c695b277b309b442d644c"
+      },
+      {
+        "path": "packages/google-ads/src/canary/mutation.ts",
+        "sha256": "acba6ceb84b196b3db4ed9a07f8981a924d977447c2a3f5947526b2a9291a9b0"
+      },
+      {
+        "path": "packages/google-ads/src/cloudflare/index.ts",
+        "sha256": "7430eb23206ab1595ee53a091a8ac9ff4f58ec42dce2012cc498d9edc9aebba6"
+      },
+      {
+        "path": "packages/google-ads/src/compliance/compliance.test.ts",
+        "sha256": "170a48e887b8c89cb19d771a0f6e8dbb38bf9aac558a08618f5eb6e7567c9e6d"
+      },
+      {
+        "path": "packages/google-ads/src/compliance/index.ts",
+        "sha256": "ae0bf471453989ebd790c8ffa8b6e74f48f163bc17449afc32c598649b353500"
+      },
+      {
+        "path": "packages/google-ads/src/connector-safety.test.ts",
+        "sha256": "d2987512cf7a4cff815e00d3affc694b77b050ddab36a120dc068eefe03bbae9"
+      },
+      {
+        "path": "packages/google-ads/src/core/index.ts",
+        "sha256": "416c53d88eae62f40a544acce485bfd36e515abda2d80309c760e01c44e03c87"
+      },
+      {
+        "path": "packages/google-ads/src/deploy/parse-brief.ts",
+        "sha256": "fe883c27cb221fddd9ba3c9091812dd6cf78791297b06f143520a743218dbe3f"
+      },
+      {
+        "path": "packages/google-ads/src/deploy/types.ts",
+        "sha256": "8b14a69a0fb89e684136f2762daae8a10aa3829a28955a0aef7f0da2a47fa4cf"
+      },
+      {
+        "path": "packages/google-ads/src/deploy/validate-brief.ts",
+        "sha256": "d8216df3947c6968ba286b02ae5137a1eff227e1ec46b2c1c6519f71044ead64"
+      },
+      {
+        "path": "packages/google-ads/src/gaql-where-select.contract.test.ts",
+        "sha256": "643803c8d629c4dcf08a1dd8bb6a4fb52dd6b145f033e53fde2bf5221ac50583"
+      },
+      {
+        "path": "packages/google-ads/src/import-boundary.test.ts",
+        "sha256": "6275b455223eafbfcc5298a127a5380bd4d68b7f927414129451c49e88749431"
+      },
+      {
+        "path": "packages/google-ads/src/index.ts",
+        "sha256": "75e6c8fe626f8aaba8627056c42452664d99d88c06ba0a073f24697dc102635b"
+      },
+      {
+        "path": "packages/google-ads/src/mutation-canary.ts",
+        "sha256": "34989a14ca04fd819bd4ce0ce62230afee71cdbd523e6c0ca433c40aa7dc7dd3"
+      },
+      {
+        "path": "packages/google-ads/src/oauth.test.ts",
+        "sha256": "9237d324335e8fca54a2471b4fabb3a6c3b9dee5d64372b44545d72339527ccf"
+      },
+      {
+        "path": "packages/google-ads/src/oauth.ts",
+        "sha256": "b84e877b73fa0fd71da10040773c7acf60310aa9e1ea2303469ad1db8671a65b"
+      },
+      {
+        "path": "packages/google-ads/src/partial-failure.test.ts",
+        "sha256": "a72032b317701b99eee99b1b81b77aac89ba29f76d9d344628ffc109b5526911"
+      },
+      {
+        "path": "packages/google-ads/src/partial-failure.ts",
+        "sha256": "01c1b72c1a017abbab886033b2a0b1bcf73fe84a8ddada31d140f599f8833da5"
+      },
+      {
+        "path": "packages/google-ads/src/reports/index.ts",
+        "sha256": "79a1194dc2c6e30563dd01a6d0e3a4bccdba573f1a12b8db702c364d0a66e213"
+      },
+      {
+        "path": "packages/google-ads/src/reports/reports-normalization.test.ts",
+        "sha256": "02cf2e0b343d22fd67d58101eda51ab33e8a4cb622c2696fe39e8f8d10bce7d8"
+      },
+      {
+        "path": "packages/google-ads/src/research/index.ts",
+        "sha256": "55e557f2cc3cf926935617658f38072b78678e3e4bd9a5b3ac3276bd8e18ee38"
+      },
+      {
+        "path": "packages/google-ads/src/research/research.test.ts",
+        "sha256": "ec99e97bf9eded970a684d82b421a6ce7e0d1ca9eb0129d6d4231bf6b6010c2a"
+      },
+      {
+        "path": "packages/google-ads/src/resolvers/index.ts",
+        "sha256": "d35646221019d68c51e8688c20317bf44e7c84be619ecf5f1a9df6bb2aed393b"
+      },
+      {
+        "path": "packages/google-ads/src/resolvers/resolvers.test.ts",
+        "sha256": "d3e5d2d0eb3235823b33771bea7d463a25f311c25e48990ecb85500453062a00"
+      },
+      {
+        "path": "packages/google-ads/src/rest/google-ads-contract-error.ts",
+        "sha256": "5b59cf217e32dedd9a8679fcf8e0ef58ceb4613e89a06de7546551d6675a04bc"
+      },
+      {
+        "path": "packages/google-ads/src/rest/index.ts",
+        "sha256": "88acd3053d4686cefa59fdd7d99db8aa683674898f6de79aae21a4aab78725cc"
+      },
+      {
+        "path": "packages/google-ads/src/rest/rest-goldens.test.ts",
+        "sha256": "c9b246ef0da4fd50c79b76724c4a20a526d3dbaab60703c59ccf846173a3bd55"
+      },
+      {
+        "path": "packages/google-ads/src/workflow-exports.contract.test.ts",
+        "sha256": "782d69e2c8bb2cc70bff66514935a782c518e2e943eafa5464ae455bc8161dab"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/add-ad-groups.test.ts",
+        "sha256": "e23d196b89430b039a811e832fa11021f0d2ec2393d2f91d8ce23025c7758b0d"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/add-ad-groups.ts",
+        "sha256": "c10e19297f38f38faf2f54e25a3dd2afd09a641bc5a3c891ca38af876ef99b40"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/add-keywords.test.ts",
+        "sha256": "58578ea0010d93ffde55013109499e29ec2056190dbbafaf86bc34a1e2c60356"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/add-keywords.ts",
+        "sha256": "f406938b9fda41d99c2253b55e9451cf2ba92f01d54d5a8845a38bc6e0cd6033"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/asset-set-linkage.test.ts",
+        "sha256": "bda8d43d09eebf184e8dc1fce58d2f36713a15f0b375df70c18bfdad9a8b8569"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/asset-set-linkage.ts",
+        "sha256": "7b4a7b8b4bc51e982e11078cb0b8952d8cf0eba712e2367d2be0e11badb6ab2e"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/audience-segments.test.ts",
+        "sha256": "20ea729bffb99c05dc1eb9711f607383f4814e634ad2fd148d596e9f1842fbf9"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/audience-segments.ts",
+        "sha256": "b4e8c481d56cfaf6a1fbdf1e8e94f739cf803494bc389c655cccefa1cae164cc"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/bidding-adjustments.test.ts",
+        "sha256": "c15418c1588004a0d8a021e9fb8538362abaec41f4242c97db55ce2bd70781f7"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/bidding-adjustments.ts",
+        "sha256": "4ea3e7418289d505cb52e1636ad22d1661d096c242a7442dfba243ad05f76f96"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/bidding-strategies.test.ts",
+        "sha256": "a627fb3fd936b9e4db173c387640acf3118b43b655b71b61068a6e0af20a1d24"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/bidding-strategies.ts",
+        "sha256": "7f4a0dc36e9d72d2d4b0011a8b8b4f24b5a692d62ce291fd75f77b287a97ce09"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/campaign-assets.test.ts",
+        "sha256": "870080b8f9423a8395f2197a731926e808c7fdc616724803f96f4cb5f896677d"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/campaign-assets.ts",
+        "sha256": "2189245fe2f7d58904a3625e341045a6e7c87dc3c35a77b6a2c71c50609e3f68"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/campaign-criteria.test.ts",
+        "sha256": "4add2be2bca22a28ebcb0f07488c77813a9b777d7d15b49cfa8f83a8e1ab9303"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/campaign-criteria.ts",
+        "sha256": "80f3bef23afcee3aa2a30a60e98441719db00107a6a077d64a925b821a50d90e"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/conversion-goals.test.ts",
+        "sha256": "2c864752325d36c58245b1f4e02c07fe5c72731116426ec3baa8b36947339f8e"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/conversion-goals.ts",
+        "sha256": "b05d5d539830376abd69d892962296d6cd5ae33066257dff0bb832446fa566f2"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/create-campaign-experiment.test.ts",
+        "sha256": "6eefff5836d7d00c68d5854b94e9992c763c9d45fcfceee3b272eb10115e14af"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/create-campaign-experiment.ts",
+        "sha256": "2dfef5fe8583defe901d87145ee04b371690a0edd8a1579ad33d3ae16e42aed5"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/deploy-campaign.test.ts",
+        "sha256": "b6ba72b18c32de33b7bc5110a0b9c86e8449c66952e6d0b3944ce4ac2a62d786"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/deploy-campaign.ts",
+        "sha256": "043be73c599d1e4bdc0768e95e7283776a473bfa5e72a41470571a580b5904c5"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/negative-keywords.test.ts",
+        "sha256": "9ec951b2619a0e778786a7261ba6e13d876c20c0d8b7c8d3759914fee705d60c"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/negative-keywords.ts",
+        "sha256": "8ecdb66c84766070565d1ddf567b67185b82631071a62e64862332fbbc20e63f"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/pause-ad-groups.test.ts",
+        "sha256": "38998c3f783ed1a5dd81c2213d759ce38776348a52a432f57624814ae793b937"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/pause-ad-groups.ts",
+        "sha256": "21f3bb2fedd3f5cdf90ed90bcbf8b2a7075ba960f28f18183631b233248b52f7"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/performance-max-asset-groups.test.ts",
+        "sha256": "b38cabdb1fc49384071857fdda25ca6d306c0187a498bcb1261c8bc20e0bd60e"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/performance-max-asset-groups.ts",
+        "sha256": "609aee292094a5d3f575884ada40f63d48c623c1d7a533f6415796f04e842498"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/performance-max-listing-groups.test.ts",
+        "sha256": "e6b5d136dd13d884828eb2abf80c9ae4ce70f62bc19aa83c11f440e9c444b376"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/performance-max-listing-groups.ts",
+        "sha256": "ddcea97db03003d780c4f64c085e4d0e7cdb99b39cbf526216913698dec03211"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/recommendations.test.ts",
+        "sha256": "3e9d299cea5e022786ee529c69849e4e39cd7e2f9cecf96713d34336745f2a9f"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/recommendations.ts",
+        "sha256": "92d9c12174b8da15f9c599b64ab11fa59abff4ed92faeaef3ce29cfadf6b8243"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/remove-keywords.test.ts",
+        "sha256": "2039b34fcfcb69bd96eafbfe58da0ab606277718741af539bd96c45971829321"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/remove-keywords.ts",
+        "sha256": "8f041da1beedf19e8060ae6167c373f76f8de6f3db12d035bc846a1a97122377"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/set-campaign-frequency-cap.test.ts",
+        "sha256": "380bb4c1121bd271b0b94f59eeb26703c0f29212fbcf95279f3b5463734e1bc0"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/set-campaign-frequency-cap.ts",
+        "sha256": "a41edf2442cf477d5a809f31f15d788fbbe87e5f32f91dd741a5dfc21920aecd"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/set-campaign-max-cpc.test.ts",
+        "sha256": "399e0b09e44e7245434e6b95929aee53b5daf1cf3cf9ff27a34fbb84b0178ade"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/set-campaign-max-cpc.ts",
+        "sha256": "f682a6b56fe43cf9ba615d8b779d3efcec526a3ffae96ec346efd3d5d8ddd758"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/shared-set-negative-keywords.test.ts",
+        "sha256": "8816208b1f790bb21b4bbb045805a1e6d893acffd13365cf268e193ae71f3dbf"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/shared-set-negative-keywords.ts",
+        "sha256": "c11d495e6baa3f3ed595e99f571cbf466e6fd1b9dc4ff7dd96499bc2492b4307"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/shared.ts",
+        "sha256": "a548447a846102113bc4c56cc8068c8998c7a0b5a5b39e0293b145317653196a"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-ad-final-urls.test.ts",
+        "sha256": "1bd60260d9701eb45de402469b5473960548b99a2afeb25faf1e4560bc3a1b7a"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-ad-final-urls.ts",
+        "sha256": "bfd634f3c4f81e47fad47106a983dfd8d6dafc1bbda97b2d12a1e608e8aeb6c7"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-ad-group-demographics.test.ts",
+        "sha256": "896918c4de975f1d5d7f9e050f8f539dddf27873666c5cc37a685f618f2f3912"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-ad-group-demographics.ts",
+        "sha256": "3e4eeebc07b37615382b4d5845e05a9fbb3dc02265466f2935fedc8cab68a0d8"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-bidding.test.ts",
+        "sha256": "01e4b24eb88e993b43a3eac70ff2c077bd65c63fddd55879cdc15c34fbbf017e"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-bidding.ts",
+        "sha256": "e801f59ec4edff7b644a200a6052771dcf5095cfcee3891b43bc9daceb0538a6"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-budget.test.ts",
+        "sha256": "2a28eea5db0b44bc46b599c73d7a49652a7d119c0015b80ad243af437be6cd7d"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-budget.ts",
+        "sha256": "fbeaaa7ddf9d262bf7c632025842b930910d031094b59b460fd329a4a5565b61"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-locations.test.ts",
+        "sha256": "241409790e92cc07bed76820509cb00998b8b0236fb2d9ef5afacb55238b7394"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-campaign-locations.ts",
+        "sha256": "a8a25c71b8bd4999e8a2694c059b0c68c8beb32527e8caff93bd8f06599b2892"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-responsive-search-ads.test.ts",
+        "sha256": "e31b214e764a1f43de681edadbfd4d3f6b962b62367bebda8c248bc39f7976ab"
+      },
+      {
+        "path": "packages/google-ads/src/workflows/update-responsive-search-ads.ts",
+        "sha256": "97b265e7d75b6bd222f882bf2556ad6060dc046fdeaf1dd99b1b6acf57b32b69"
+      },
+      {
+        "path": "packages/google-ads/tsconfig.json",
+        "sha256": "b7b787acd4b3842bfe410316b5a84df703cf7f00cb710201f4e54150a833e2f3"
+      },
+      {
+        "path": "packages/google-ads/tsdown.config.ts",
+        "sha256": "995f9245d4fd43407ca05f6cdd6c8bd1fa78514088d8087e6a9a50f5ae363433"
+      },
+      {
+        "path": "packages/google-ads/vitest.config.ts",
+        "sha256": "413c23ffdade4e3ceb006e789e591fec76ac991c2706fc46bda7b9dde6cb4c84"
+      },
+      {
+        "path": "packages/linkedin-ads/examples/preview-boost-plan.test.ts",
+        "sha256": "676bcaf49d6c1b9d99b99410f6c8df3f88d6bea90e23b06e61e961f35391099f"
+      },
+      {
+        "path": "packages/linkedin-ads/examples/preview-boost-plan.ts",
+        "sha256": "f6c18b08260ff87034104324cc05f8a37ac4df4deb2c6b9d37734fb66f1d35ec"
+      },
+      {
+        "path": "packages/linkedin-ads/package.json",
+        "sha256": "a726b1f25b40cebcc90274ab2e9cd4073558d7a1f0aabdd62be905aa894985c4"
+      },
+      {
+        "path": "packages/linkedin-ads/product.json",
+        "sha256": "edff9d380c2bff4c88626b3cef09b654484ca875c0c9e2c3842fb5efdcdd9f20"
+      },
+      {
+        "path": "packages/linkedin-ads/README.md",
+        "sha256": "531b37bf0534e520041366446a63d9332fcc33963c516c074b88c6b11592ae7c"
+      },
+      {
+        "path": "packages/linkedin-ads/scripts/live-smoke.mjs",
+        "sha256": "f6ab8a7a20e3ee5d1b1e362eb229731cc34c23febd8db8b8126a0a552d4fb564"
+      },
+      {
+        "path": "packages/linkedin-ads/src/accounts.test.ts",
+        "sha256": "201f0eeaeceaf5f3a4267391e416d4616a24376c0648efd6797a5fd175917a71"
+      },
+      {
+        "path": "packages/linkedin-ads/src/accounts.ts",
+        "sha256": "65a8a4b1885458d5e62da69170c06dc27f1c83007faeb95d0a275ca5f6ebf0bd"
+      },
+      {
+        "path": "packages/linkedin-ads/src/campaigns.test.ts",
+        "sha256": "df8ab05cdf220db34471c2469f5d765f1b74b5d7cb2d1295c92fc9cfbab83c75"
+      },
+      {
+        "path": "packages/linkedin-ads/src/campaigns.ts",
+        "sha256": "ff67f359bfbe21d1bb842714aaae87c8f1f502a1007d37a4ee7fecd9b6d9c6d3"
+      },
+      {
+        "path": "packages/linkedin-ads/src/connector-safety.test.ts",
+        "sha256": "cb92c8ac10616379fd08c1e934162d03e487ef74cd4bb8841e3565fd959c0071"
+      },
+      {
+        "path": "packages/linkedin-ads/src/conversions.test.ts",
+        "sha256": "4e9816df12fde8a89dfb51b46543f3dd8e21c7f068ec62802f219c1be943f283"
+      },
+      {
+        "path": "packages/linkedin-ads/src/conversions.ts",
+        "sha256": "68ddce005ea9df6f241f2c75186e3034cc4f88cf73035ad45511a024791092f0"
+      },
+      {
+        "path": "packages/linkedin-ads/src/creatives.test.ts",
+        "sha256": "25760309bac2473212c2c7315ba5295de5e5c08b5f0f8f9e518c66ba63c862fc"
+      },
+      {
+        "path": "packages/linkedin-ads/src/creatives.ts",
+        "sha256": "51d8d3b5a49cc84810aa116d1f01d9529c5c0ca7591ada430512eddf5f795d17"
+      },
+      {
+        "path": "packages/linkedin-ads/src/deployment.test.ts",
+        "sha256": "4a673ced1de415aee395b3939661150471c2e81d7982033168dfa17d60baa697"
+      },
+      {
+        "path": "packages/linkedin-ads/src/deployment.ts",
+        "sha256": "dc377898c6daecf2b3613f6a2953f0565626df4443cd97a88b02952f12f8017f"
+      },
+      {
+        "path": "packages/linkedin-ads/src/import-boundary.test.ts",
+        "sha256": "4be0a312293b8cddbd4a6cf93a9eb3fb61369f4a53487b500dab72d2a98201b0"
+      },
+      {
+        "path": "packages/linkedin-ads/src/index.ts",
+        "sha256": "90e227365b84f150a626c3181af93712811a08d8486e1a2a938dbb73282953d1"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/brief-deployment.ts",
+        "sha256": "d4fbd5776dd67042f64888c618540d3274305b77d982263832757d497eacc3fc"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/linkedin-ads-api-error.ts",
+        "sha256": "ea14ec4c972a9d591b7e6cb3aaa016ceb53c7da700149b097a12d97a49788cdc"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/linkedin-ads-client.ts",
+        "sha256": "2e5f938852c4c7dbcf1cf37d9c04e9938525892e1b4c88610d77cdcdfa596d2d"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/linkedin-allocation-guardrail-error.ts",
+        "sha256": "26889fd4975143f289503bf8255c463fbb89ba7e61ab4246c3b24bb4a9088a4f"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/optimization.ts",
+        "sha256": "de8a98f2ae223987e22809b5399871085e6444c8634c252135fa75f9b8b87405"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/read-canary.ts",
+        "sha256": "c825cd9b37774fd888f09ccdceff02ece460404afc0ace37f514f0f481629163"
+      },
+      {
+        "path": "packages/linkedin-ads/src/internal/types.ts",
+        "sha256": "a90dccadfcb89cfe2b8f6c112832db4537527d50aaeaecdeb6a6f55f2b52d1ca"
+      },
+      {
+        "path": "packages/linkedin-ads/src/linkedin-ads-client.test.ts",
+        "sha256": "0d9dabb9243305fe896035998a8473daad606166166e61a0878c75da4f7e2205"
+      },
+      {
+        "path": "packages/linkedin-ads/src/optimization.test.ts",
+        "sha256": "899e7602974d53f039c9786f222c72f7502e5f37d3f57fb0564b1fe732b7155c"
+      },
+      {
+        "path": "packages/linkedin-ads/src/read-canary.test.ts",
+        "sha256": "4a5edc23d82fcab511b57d336da83c8c783a83a79a81ab399f2a7606482c98d5"
+      },
+      {
+        "path": "packages/linkedin-ads/src/reporting.test.ts",
+        "sha256": "470271fd6e00070ef012cf3e5d6784de8bc05cc3799a2f7bb67744435202c339"
+      },
+      {
+        "path": "packages/linkedin-ads/src/reporting.ts",
+        "sha256": "b7f42d094d06bdb27ee2f7cc18924a4663d8deaf320514dad71bd2cddaf6b05e"
+      },
+      {
+        "path": "packages/linkedin-ads/src/targeting.test.ts",
+        "sha256": "46dd46d15b3355b79944c08bf392f0ec83402286e1177a38c2e53d5d4b21af5a"
+      },
+      {
+        "path": "packages/linkedin-ads/src/targeting.ts",
+        "sha256": "4213fba5f0b5da3c1dd77054cbc6b19c082276832d28e083093e46c27b60d362"
+      },
+      {
+        "path": "packages/linkedin-ads/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/linkedin-ads/tsdown.config.ts",
+        "sha256": "5ae04421260e26f62727b57ca55823b86ad0444bfee5d93c60e87afdacf15a4e"
+      },
+      {
+        "path": "packages/linkedin-ads/vitest.config.ts",
+        "sha256": "4f49d01f0120eff8b5bac0c9abc9bf6263c8da9834d288ff884c1e397436209f"
+      },
+      {
+        "path": "packages/meta-ads/examples/preview-boost-plan.test.ts",
+        "sha256": "2ab8acad3a0a1f7a347f09990fe24bda862cf51d8baa3b332715c6d15be32c3b"
+      },
+      {
+        "path": "packages/meta-ads/examples/preview-boost-plan.ts",
+        "sha256": "bce618d33af4ae1771536be38d734e25e371a437eff2eae348e2383b51261aee"
+      },
+      {
+        "path": "packages/meta-ads/package.json",
+        "sha256": "b6a1d2f7f8caeb7cd5f54400c4bd4f7dbdf37c8d6a035cf105bf5f4876d0b8cc"
+      },
+      {
+        "path": "packages/meta-ads/product.json",
+        "sha256": "489f48d0f2ad917520a5e4ff4ab935367b4f1cbad471b2859f35d21224744a87"
+      },
+      {
+        "path": "packages/meta-ads/README.md",
+        "sha256": "4cacd9de7f78fdca16dcdf563db8cc304f0cc34f4283a3a3ba84f8467b867bd7"
+      },
+      {
+        "path": "packages/meta-ads/scripts/live-smoke-options.mjs",
+        "sha256": "22b128c54d0095db27d6d6bb384985dfcd11e0d62655fbe7d104cd95f17e6d6c"
+      },
+      {
+        "path": "packages/meta-ads/scripts/live-smoke-options.test.mjs",
+        "sha256": "7777cabd171ab97cd9070e06805a94d1906b7c9dac6fe93a5b84969a1ae1f6f0"
+      },
+      {
+        "path": "packages/meta-ads/scripts/live-smoke.mjs",
+        "sha256": "d40bbe6c21b95cce38de8f01684ebd14f1b0c10b1a7984d1a423bb365deb3d1e"
+      },
+      {
+        "path": "packages/meta-ads/src/boost-deployment.test.ts",
+        "sha256": "8825b70b523387cc8b9d534d081da419b2854b96a50adebe5bf159ac7f1e38f4"
+      },
+      {
+        "path": "packages/meta-ads/src/campaign-deployment.test.ts",
+        "sha256": "1f4fc5d63814aa3b67590524a39816a9912a8f341504d9b930fc2700f4d0c11f"
+      },
+      {
+        "path": "packages/meta-ads/src/connector-safety.test.ts",
+        "sha256": "4a32795609954e29f3ea1ca273fb7718548260cb604720bb301418927379b9a2"
+      },
+      {
+        "path": "packages/meta-ads/src/deployment.ts",
+        "sha256": "a4667c572ab4eb6862109497eb4e4dc98ac3af2b69ed1f8b5144bf7792ab796d"
+      },
+      {
+        "path": "packages/meta-ads/src/import-boundary.test.ts",
+        "sha256": "9e88fc1ee52d9e35390da859062b894423d109827cb0c00edf9d05c83e4255a2"
+      },
+      {
+        "path": "packages/meta-ads/src/index.ts",
+        "sha256": "b20f3161c0fb8651f6bd2efe6db169d20ccbaebaed4631ec804775d6bc5bcb29"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/boost-deployment.ts",
+        "sha256": "1118323dfe0562603e03ec3b5a83d4dd097c721b434302ab87b6ebdc61437520"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/campaign-deployment.ts",
+        "sha256": "d0d718f7d80b87729c7531b3e3652c5b1de884f4e931d4f83b24e5a738baba09"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/meta-ads-ambiguous-write-error.ts",
+        "sha256": "4c89d6c8c68c33fd6af6871142397200edb268e6f1cc9a21f958c8d8d1548c86"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/meta-ads-api-error.ts",
+        "sha256": "8b0afd1eeb55911ef901c39270235be905bf737b433be9f79f52b676c3caf528"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/meta-ads-client.ts",
+        "sha256": "fac88dec8ebba8c66e0341980ced89e73316d2d6add6a894e973eeb4bdad2ce7"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/meta-ads-contract-drift-error.ts",
+        "sha256": "09d1932d0c9c96a9b067eeff6f34c0702f4c3301a036540348789e999bdf7c40"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/mutation-canary.ts",
+        "sha256": "fb2e391ad0f2b8e0704dfe7292cc76bcd98b47c584025eb5033130dfd08df3c2"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/provider-version.ts",
+        "sha256": "b33fbfc18e42f4eb0fb71055aa0df6d0e8ad1253d9c1dbf4b2c9dcb0491b4647"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/read-canary.ts",
+        "sha256": "63b2a368c1de64f3f8113db89c02af223a7e288627c3c612e5b9d8288e298b33"
+      },
+      {
+        "path": "packages/meta-ads/src/internal/types.ts",
+        "sha256": "01a98c635a728caafde410a092310520f5ddcb6a1db66fb26860b24da69ff1c1"
+      },
+      {
+        "path": "packages/meta-ads/src/meta-ads-client.test.ts",
+        "sha256": "9238096f003a062d954b4fd4554425da084c4cba917c2efaca1b531f9a7e24f2"
+      },
+      {
+        "path": "packages/meta-ads/src/mutation-canary.test.ts",
+        "sha256": "614d636e758d20a112e5304a96e481614114ab63f0213e7415e904a461c06533"
+      },
+      {
+        "path": "packages/meta-ads/src/mutation-canary.ts",
+        "sha256": "aef2c6f40adc6818eb9c96857b83c1853d2b40fda35731d04f0843a87c4500a4"
+      },
+      {
+        "path": "packages/meta-ads/src/read-canary.test.ts",
+        "sha256": "d9b6652188880f3966cba31a538d8700a71d934e725abcf6254719103dee62cc"
+      },
+      {
+        "path": "packages/meta-ads/src/response-validation.test.ts",
+        "sha256": "9939e1586430d190456f8b76d57e47ab9f8118b104971cae3704716c6d79daa0"
+      },
+      {
+        "path": "packages/meta-ads/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/meta-ads/tsdown.config.ts",
+        "sha256": "6544584b5cdc056b985c354b7b3a5f7da018321004e58b6d42aa5ad56a149a36"
+      },
+      {
+        "path": "packages/meta-ads/vitest.config.ts",
+        "sha256": "413c23ffdade4e3ceb006e789e591fec76ac991c2706fc46bda7b9dde6cb4c84"
+      },
+      {
+        "path": "packages/meta-social/package.json",
+        "sha256": "170dfc57f9448b44bb1c822e5459e91d6162582e953a8c608bdfaff37b4f2920"
+      },
+      {
+        "path": "packages/meta-social/product.json",
+        "sha256": "83f339e8deae7accd330f7f85ca482d2e85bb2efce8646bb8abbdff8ae4a3c24"
+      },
+      {
+        "path": "packages/meta-social/README.md",
+        "sha256": "5cd215172a520460b7558a6f9c01fecb66d9949edf219c29ceba55f9970d3dab"
+      },
+      {
+        "path": "packages/meta-social/src/connector-safety.test.ts",
+        "sha256": "a13215f566ad9526f31f426c06222775a6d66c132c3ff7fec075833663d7fdae"
+      },
+      {
+        "path": "packages/meta-social/src/import-boundary.test.ts",
+        "sha256": "746a675c41aa5d7e92f0b799a05ce68b0b6ba3bb63896b7819676073dc566570"
+      },
+      {
+        "path": "packages/meta-social/src/index.ts",
+        "sha256": "da56adee113b0c8c865f0c9ea94f067e7ba0a899d43b23faefc41a68a5567ab9"
+      },
+      {
+        "path": "packages/meta-social/src/meta-social-api-error.ts",
+        "sha256": "0ad5663afc1ebdd7c793f8881cec9c8933c0f4514d58f6dea4df72496e9b23b3"
+      },
+      {
+        "path": "packages/meta-social/src/meta-social-client.test.ts",
+        "sha256": "aa6bb12a19419036876d57e5d69c694403b2b0bc95a9666961d39cf39171745d"
+      },
+      {
+        "path": "packages/meta-social/src/meta-social-client.ts",
+        "sha256": "1a7e83adedc57d915ddd4e06948b29df7f68130dd0f5ea54a3c2f00a2f06aaa1"
+      },
+      {
+        "path": "packages/meta-social/src/types.ts",
+        "sha256": "e010faba080caa52f85579066038e0a3779107e0ed10468cf869eeba44007c05"
+      },
+      {
+        "path": "packages/meta-social/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/meta-social/tsdown.config.ts",
+        "sha256": "7046d273029f3755fd71241866234eb3bc072138db714fed09ec73039c037fa0"
+      },
+      {
+        "path": "packages/meta-social/vitest.config.ts",
+        "sha256": "4f49d01f0120eff8b5bac0c9abc9bf6263c8da9834d288ff884c1e397436209f"
+      },
+      {
+        "path": "packages/reddit-ads/AGENTS.md",
+        "sha256": "0f67b85248fc3b6624d9b5acd2527af05945ea1e13c98437efc634442dbc9527"
+      },
+      {
+        "path": "packages/reddit-ads/package.json",
+        "sha256": "d7d159bde85463d7fb0fc6633a079d30a4347143663bb9daaca7aa6da94f318f"
+      },
+      {
+        "path": "packages/reddit-ads/product.json",
+        "sha256": "9f20eb2dda8ffc4fd0c624a9f18de8bcf34c7ebc2a1ed44b8602bbfb1d9d318d"
+      },
+      {
+        "path": "packages/reddit-ads/README.md",
+        "sha256": "0b14bbd4452f52321033d4021a698d9c2505f8368cc4a13cdb3b349742d5fd71"
+      },
+      {
+        "path": "packages/reddit-ads/scripts/live-smoke.mjs",
+        "sha256": "bc74f65a7366661ecdff099d02a60717922e2a8cc7b01b898a561fdd45994fb1"
+      },
+      {
+        "path": "packages/reddit-ads/src/connector-safety.test.ts",
+        "sha256": "1b587e419224471fed8de2f67f17c5eb5f96a7d8b43a9c078e71be13cf72576e"
+      },
+      {
+        "path": "packages/reddit-ads/src/import-boundary.test.ts",
+        "sha256": "bd19dc4c0e2434ce11194371e76b02ffe8cc37e4ddeebb59e7b8880501dd0730"
+      },
+      {
+        "path": "packages/reddit-ads/src/index.ts",
+        "sha256": "55347f99b3658e3234d0fc4bba300a9cf490e1fcb22b390cd694f05a1a7f85c9"
+      },
+      {
+        "path": "packages/reddit-ads/src/internal/read-canary.ts",
+        "sha256": "b738b4879516f9afa6a3270e088f74cf59f6c50ce203d3cefbf6dcbed8f95c09"
+      },
+      {
+        "path": "packages/reddit-ads/src/internal/reddit-ads-api-error.ts",
+        "sha256": "ff44310d524e0f6b8f15574d0c611c097338b5817469508ad0a584e724c1cce8"
+      },
+      {
+        "path": "packages/reddit-ads/src/internal/reddit-ads-client.ts",
+        "sha256": "5293a0a9f8d8e412b183bc876af863af866f2fde46e37f5418a9c63f73d2f013"
+      },
+      {
+        "path": "packages/reddit-ads/src/internal/types.ts",
+        "sha256": "ce537b26031545a72fbf9db35f02fd0baaa218148dcc019a9c4c07ed9fa97cbd"
+      },
+      {
+        "path": "packages/reddit-ads/src/read-canary.test.ts",
+        "sha256": "0b8a255860068b23e7dafdb9c39b9209492c6a0e5c129c7ab14efb23d7cc3481"
+      },
+      {
+        "path": "packages/reddit-ads/src/reddit-ads-client.test.ts",
+        "sha256": "ef0dc13749beae3e9b2e28db51bc8a0f676b4347c9f6ac74de49ae17e672a703"
+      },
+      {
+        "path": "packages/reddit-ads/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/reddit-ads/tsdown.config.ts",
+        "sha256": "7046d273029f3755fd71241866234eb3bc072138db714fed09ec73039c037fa0"
+      },
+      {
+        "path": "packages/tiktok-ads/AGENTS.md",
+        "sha256": "78041f1336d9197d746f24c1d2f0d02fb92f30ed511a461d311645bfd8cec9dd"
+      },
+      {
+        "path": "packages/tiktok-ads/package.json",
+        "sha256": "07dccc82d40c6c178580e254353091276c0d1b5c1ded77922e2354cea8ee9689"
+      },
+      {
+        "path": "packages/tiktok-ads/README.md",
+        "sha256": "a37ead63fcb3ab5295f92cb04743b1a8fec52dc2fb830b5d9a8f713832d77256"
+      },
+      {
+        "path": "packages/tiktok-ads/src/connector-safety.test.ts",
+        "sha256": "ce1b8fc815f7df0845c99fcb3f8e97b0a7232b13675d3d60f08cb563411865ac"
+      },
+      {
+        "path": "packages/tiktok-ads/src/import-boundary.test.ts",
+        "sha256": "dc0e08bdfb4f18b247b631b7da4552439a0668037a57b3168be0e490b7843014"
+      },
+      {
+        "path": "packages/tiktok-ads/src/index.ts",
+        "sha256": "9c8fcdac3130d61069ba37932a96de9a7e001d898bbf2ebc403814594db2d5c9"
+      },
+      {
+        "path": "packages/tiktok-ads/src/internal/tiktok-ads-ambiguous-write-error.ts",
+        "sha256": "bac80377f20ca5355ed0f5967bd133c7518301b778cb8e3d33a828047b820ca9"
+      },
+      {
+        "path": "packages/tiktok-ads/src/internal/tiktok-ads-api-error.ts",
+        "sha256": "35feb2036d92cdd9e233d6e569a4a6c7b4898a38b3d8e46497dce6009033ef66"
+      },
+      {
+        "path": "packages/tiktok-ads/src/internal/tiktok-ads-client.ts",
+        "sha256": "8e574fa61fde4d6a8d85582dded3441372850d6605226e28fb835b2ce594eb62"
+      },
+      {
+        "path": "packages/tiktok-ads/src/internal/types.ts",
+        "sha256": "883c3a0edb3c4e76f2021f1daecadc5ec1a1b706a66044af65dd93d2bd477940"
+      },
+      {
+        "path": "packages/tiktok-ads/src/tiktok-ads-client.test.ts",
+        "sha256": "248d3e5f590ff32553d2d79753e561e53afdbd9b434bcbb1775ebe32204b4f17"
+      },
+      {
+        "path": "packages/tiktok-ads/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/tiktok-ads/tsdown.config.ts",
+        "sha256": "7046d273029f3755fd71241866234eb3bc072138db714fed09ec73039c037fa0"
+      },
+      {
+        "path": "packages/tiktok-ads/vitest.config.ts",
+        "sha256": "4f49d01f0120eff8b5bac0c9abc9bf6263c8da9834d288ff884c1e397436209f"
+      },
+      {
+        "path": "packages/x-posts/examples/recent-post-intake.test.ts",
+        "sha256": "7f09073c8833b9042f50ba544c563ed2d703746a9bd1ba8ffb74cfa45d19626a"
+      },
+      {
+        "path": "packages/x-posts/examples/recent-post-intake.ts",
+        "sha256": "677b7ae25ed3586f4812b9017c95c07d758f71ee90551eccea8568f32267f93a"
+      },
+      {
+        "path": "packages/x-posts/package.json",
+        "sha256": "3a174119a90be4cf88b8036b4057b21fd0092c2c7c1f3d8ee28f95a866d0665a"
+      },
+      {
+        "path": "packages/x-posts/product.json",
+        "sha256": "7745d0eb651ed67a0288c55759a5645a79d0397438f16093d103b08203b1d886"
+      },
+      {
+        "path": "packages/x-posts/README.md",
+        "sha256": "de9c1359f5459cf536c4acf627ea75eb1ef6060878a2f5ad0a1ace63269ce8a0"
+      },
+      {
+        "path": "packages/x-posts/src/compare-providers.test.ts",
+        "sha256": "67632b55e4fb250833c4c3e4ca20c7c0ad783f5f8514250c0611fc44619645ec"
+      },
+      {
+        "path": "packages/x-posts/src/compare-providers.ts",
+        "sha256": "90be1b1bdcac23b30b967c2e74d83e36873cfe4907023dbeabcfa851c5eb5456"
+      },
+      {
+        "path": "packages/x-posts/src/connector-safety.test.ts",
+        "sha256": "e1c55b073de0391b33ad2cd8100af1e0aa1b35327c7e2e8313853d648d87ef36"
+      },
+      {
+        "path": "packages/x-posts/src/import-boundary.test.ts",
+        "sha256": "ef09916e9731008ebe412ab118dc6b203bab2856a9d9e54e9497e21a3576fa82"
+      },
+      {
+        "path": "packages/x-posts/src/index.ts",
+        "sha256": "81a842918e3b74150d608a14274e84f91ffc01242488665c754460126bbc562d"
+      },
+      {
+        "path": "packages/x-posts/src/list-recent-posts.test.ts",
+        "sha256": "db21100d666fb512697812a6d3d1e9d324b058ba18ca6b74c7d0b0670bd4d191"
+      },
+      {
+        "path": "packages/x-posts/src/list-recent-posts.ts",
+        "sha256": "d22ccc7ad7e5135084b0b3b62b328b826f1861246de64613d7064b7448cad51a"
+      },
+      {
+        "path": "packages/x-posts/src/providers/provider.ts",
+        "sha256": "be9325f52db1546844c7ab9117f0a3564b118e393fcd25cda73d59c5d14da0bf"
+      },
+      {
+        "path": "packages/x-posts/src/providers/x-api-timeline-provider.test.ts",
+        "sha256": "f8cfd7c31193dc1378c4736a752ca19511bd8eba74e9db2b67dde2403ba0c18a"
+      },
+      {
+        "path": "packages/x-posts/src/providers/x-api-timeline-provider.ts",
+        "sha256": "eec7d0eff7f286098d205dda048eab8f10312d8810cd57156e18889eba24a0c4"
+      },
+      {
+        "path": "packages/x-posts/src/providers/xai-grok-search-provider.test.ts",
+        "sha256": "92e0ff66034904dfbdb05eb8770f42de2ecc6899702e1e9e970cef84042428c1"
+      },
+      {
+        "path": "packages/x-posts/src/providers/xai-grok-search-provider.ts",
+        "sha256": "7518ffa4090d3a7a34f4fad0b0d21d1441dfc00b8eaaabb721777c93b7bf24b2"
+      },
+      {
+        "path": "packages/x-posts/src/types.ts",
+        "sha256": "42f4c3eb135cf202dc87f173ebb79c725334739a426496fbcc031431372ba5bd"
+      },
+      {
+        "path": "packages/x-posts/tsconfig.json",
+        "sha256": "56ec9634a090db8cc20ca8577af5532a2a314c1f357567e8d34aeb680df20541"
+      },
+      {
+        "path": "packages/x-posts/tsdown.config.ts",
+        "sha256": "7046d273029f3755fd71241866234eb3bc072138db714fed09ec73039c037fa0"
+      },
+      {
+        "path": "packages/x-posts/vitest.config.ts",
+        "sha256": "4f49d01f0120eff8b5bac0c9abc9bf6263c8da9834d288ff884c1e397436209f"
+      },
+      {
+        "path": "pnpm-workspace.yaml",
+        "sha256": "556a1d872174bff006294a6020884d38b7a708f7f6ff9bb26f421c74a9fe5c56"
+      },
+      {
+        "path": "public-release-manifest.json",
+        "sha256": "70f7491b3eb952600d0ad94af8a54107fab75cc86f19a3a521c17ffabc3d2aa3"
+      },
+      {
+        "path": "README.md",
+        "sha256": "064b93740a3e2d71741c9773a789cb966d81fb3b54add2b723cabe30aac3349a"
+      },
+      {
+        "path": "tsconfig.base.json",
+        "sha256": "da044d00ebd5163e7554d30cb366c956b043e426919c02628e0a138f66b9fbf7"
+      }
+    ],
+    "sha256": "54e3d6ae306c51c7d1186e88fd7a113126d556593db8e9cccf694eafab98d61e"
+  },
+  "schemaVersion": 1,
+  "source": {
+    "commit": "011e0a754af36909487984052565815923fa6db8"
+  }
+}

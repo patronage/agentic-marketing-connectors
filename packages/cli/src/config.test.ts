@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { resolveCliConfig } from "./config.js";
 
-describe("resolveCliConfig", () => {
+describe(resolveCliConfig, () => {
   it("uses tmp/patronage by default", () => {
     const cwd = mkdtempSync(path.join(os.tmpdir(), "patronage-cli-"));
     try {

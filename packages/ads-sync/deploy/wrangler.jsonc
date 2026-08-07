@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "patronage-ads-sync-reference-deploy",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-06-18",
+}

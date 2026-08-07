@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import type { GoogleAdsClient } from "../rest/index.js";
 import { addKeywords, buildAddKeywordsOperations } from "./add-keywords.js";
 
 describe("add keywords workflow", () => {
@@ -13,7 +14,7 @@ describe("add keywords workflow", () => {
           { matchType: "EXACT", text: "example community fund endorsements" },
         ],
       })
-    ).toEqual([
+    ).toStrictEqual([
       {
         adGroupCriterionOperation: {
           create: {
@@ -80,12 +81,12 @@ describe("add keywords workflow", () => {
 
   it("defaults typed writes to validation mode and requires explicit execution", async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({
+      mutate: vi.fn<GoogleAdsClient["mutate"]>().mockResolvedValue({
         mutateOperationResponses: [],
         requestId: "req",
       }),
-      search: vi.fn(),
-      searchStream: vi.fn(),
+      search: vi.fn<GoogleAdsClient["search"]>(),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
     };
 
     await addKeywords(client, {

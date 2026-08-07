@@ -164,16 +164,17 @@ function createHeaders(token: string): Record<string, string> {
 
 function extractSharedUrls(tweet: XApiTweet): string[] {
   const fromEntities =
-    tweet.entities?.urls
-      ?.map((entry) => entry.expanded_url ?? entry.url)
-      .filter(isNonEmptyString) ?? [];
+    tweet.entities?.urls?.flatMap((entry) => {
+      const url = entry.expanded_url ?? entry.url;
+      return isNonEmptyString(url) ? [url] : [];
+    }) ?? [];
 
   if (fromEntities.length > 0) {
     return fromEntities;
   }
 
   return Array.from(
-    tweet.text.matchAll(/https?:\/\/\S+/g),
+    tweet.text.matchAll(/https?:\/\/\S+/gu),
     (match) => match[0]
   );
 }
@@ -186,30 +187,28 @@ function normalizeTimelinePosts(
     (response.includes?.media ?? []).map((media) => [media.media_key, media])
   );
 
-  return (response.data ?? [])
-    .filter((tweet) => {
-      const referenceTypes = new Set(
-        tweet.referenced_tweets?.map((reference) => reference.type)
-      );
-      return (
-        !referenceTypes.has("replied_to") && !referenceTypes.has("retweeted")
-      );
-    })
-    .map((tweet) => {
-      const tweetMedia = (tweet.attachments?.media_keys ?? [])
-        .map((key) => mediaMap.get(key))
-        .filter(isXApiMedia);
-      const mediaTypes = tweetMedia
-        .map((media) => media.type)
-        .filter(isNonEmptyString);
-      const referenceTypes = new Set(
-        tweet.referenced_tweets?.map((reference) => reference.type)
-      );
-      const viewCounts = tweetMedia
-        .map((media) => media.public_metrics?.view_count)
-        .filter((value): value is number => typeof value === "number");
+  return (response.data ?? []).flatMap((tweet) => {
+    const referenceTypes = new Set(
+      tweet.referenced_tweets?.map((reference) => reference.type)
+    );
+    if (referenceTypes.has("replied_to") || referenceTypes.has("retweeted")) {
+      return [];
+    }
 
-      return {
+    const tweetMedia = (tweet.attachments?.media_keys ?? []).flatMap((key) => {
+      const media = mediaMap.get(key);
+      return isXApiMedia(media) ? [media] : [];
+    });
+    const mediaTypes = tweetMedia.flatMap((media) =>
+      isNonEmptyString(media.type) ? [media.type] : []
+    );
+    const viewCounts = tweetMedia.flatMap((media) => {
+      const value = media.public_metrics?.view_count;
+      return typeof value === "number" ? [value] : [];
+    });
+
+    return [
+      {
         handle,
         hasVideo: mediaTypes.some(
           (type) => type === "video" || type === "animated_gif"
@@ -238,8 +237,9 @@ function normalizeTimelinePosts(
         text: tweet.text,
         url: `https://x.com/${handle}/status/${tweet.id}`,
         warnings: [],
-      };
-    });
+      },
+    ];
+  });
 }
 
 function isNonEmptyString(value: string | undefined): value is string {

@@ -214,13 +214,13 @@ function campaignCriterionResourceName(
 }
 
 function assertNumericId(value: string, fieldName: string): void {
-  if (!/^\d+$/.test(value)) {
+  if (!/^\d+$/u.test(value)) {
     throw new Error(`${fieldName} must contain only digits.`);
   }
 }
 
 function assertZip(value: string): void {
-  if (!/^\d{5}$/.test(value)) {
+  if (!/^\d{5}$/u.test(value)) {
     throw new Error(`zip must be a 5-digit US ZIP code: ${value}`);
   }
 }

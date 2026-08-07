@@ -1,4 +1,10 @@
+export type BriefBiddingStrategy =
+  | "manual-cpc"
+  | "maximize-clicks"
+  | "maximize-conversions";
+
 export interface BriefFrontmatter {
+  bidding: BriefBiddingStrategy;
   budget_daily: number;
   campaign_name: string;
   campaign_type: "SEARCH";
@@ -6,6 +12,13 @@ export interface BriefFrontmatter {
   end_date: string;
   geographic_targets: string[];
   language: string;
+  /**
+   * CPC ceiling in whole-cent dollars (0.01–1000), emitted as
+   * targetSpend.cpcBidCeilingMicros. Requires bidding: maximize-clicks —
+   * validate-brief rejects it under any other strategy. Ad Grants briefs
+   * on Maximize Clicks set 2.
+   */
+  max_cpc?: number;
   start_date: string;
 }
 

@@ -1,0 +1,32 @@
+{
+  "boundaries": [
+    "Callers provide access tokens and own authorization, approvals, secret resolution, and audit logs.",
+    "The package uses a narrow direct REST surface rather than importing CLI or environment assumptions."
+  ],
+  "capabilities": [
+    {
+      "description": "Check tokens, list campaigns, and retrieve ad analytics through an explicit fetch-based client.",
+      "id": "reporting",
+      "title": "Campaign reporting"
+    },
+    {
+      "description": "Build deterministic plans for campaign creation, status changes, and boosted-post creative operations.",
+      "id": "campaign-operations",
+      "title": "Campaign operations"
+    },
+    {
+      "description": "Work with Lead Gen forms and lead downloads without coupling provider access to local execution state.",
+      "id": "lead-generation",
+      "title": "Lead generation"
+    }
+  ],
+  "description": "Worker-safe LinkedIn Ads reporting and explicit write contracts for campaigns, boosted posts, and lead generation.",
+  "id": "linkedin-ads",
+  "name": "LinkedIn Ads",
+  "nonGoals": [],
+  "packageName": "@patronage/linkedin-ads",
+  "packageSurfaces": ["root", "deployment", "product"],
+  "roadmap": [],
+  "status": "preview",
+  "tagline": "LinkedIn campaign evidence and operations without CLI coupling."
+}

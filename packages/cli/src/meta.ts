@@ -1,19 +1,17 @@
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-import {
-  createMetaSocialClient,
-  type InstagramMedia,
-  type MetaSocialClient,
-  type PageInfo,
-  type PagePost,
+import { createMetaSocialClient } from "@patronage/meta-social";
+import type {
+  InstagramMedia,
+  MetaSocialClient,
+  PageInfo,
+  PagePost,
 } from "@patronage/meta-social";
 import { Command } from "commander";
 
 import { loadLocalDotenv } from "./local-env.js";
+import { toSecretSafeManagedPage } from "./managed-page-output.js";
 import { createMetaAdsCommand } from "./meta-ads.js";
 
-const cliSourceDirectory = dirname(fileURLToPath(import.meta.url));
+const cliSourceDirectory = import.meta.dirname;
 
 export interface CreateMetaCommandDependencies {
   createMetaSocialClient?: typeof createMetaSocialClient;
@@ -41,6 +39,7 @@ function createMetaSocialCommand(deps: CreateMetaCommandDependencies): Command {
     .command("list")
     .description("List managed Meta Pages")
     .option("--access-token <token>", "Meta user access token")
+    .option("--show-tokens", "Include full page access tokens", false)
     .option("--format <format>", "Output format: json or table", "table")
     .action((options: MetaPagesListOptions) => listPages(options, deps));
   social.addCommand(pages);
@@ -81,6 +80,7 @@ function createMetaSocialCommand(deps: CreateMetaCommandDependencies): Command {
 interface MetaPagesListOptions {
   accessToken?: string;
   format: string;
+  showTokens?: boolean;
 }
 
 interface MetaPostsListOptions {
@@ -108,7 +108,10 @@ async function listPages(
     tokenKind: "user",
   });
   const pages = await client.listManagedPages();
-  writeOutput(deps, renderPages(pages, options.format));
+  writeOutput(
+    deps,
+    renderPages(pages, options.format, options.showTokens === true)
+  );
 }
 
 async function listPosts(
@@ -188,15 +191,25 @@ function resolvePageAccessToken(env: NodeJS.ProcessEnv): string | undefined {
   return readOptionalEnv(env, "META_PAGE_ACCESS_TOKEN");
 }
 
-function renderPages(pages: PageInfo[], format: string): string {
+function renderPages(
+  pages: PageInfo[],
+  format: string,
+  showTokens: boolean
+): string {
   if (format === "json") {
-    return `${JSON.stringify(pages, null, 2)}\n`;
+    return `${JSON.stringify(
+      showTokens ? pages : pages.map(toSecretSafeManagedPage),
+      null,
+      2
+    )}\n`;
   }
 
   const lines = [`Managed Meta Pages (${pages.length})`, ""];
   for (const page of pages) {
+    const token =
+      showTokens && page.access_token ? ` | ${page.access_token}` : "";
     lines.push(
-      `- ${page.name} (${page.id}) - ${page.category ?? "uncategorized"}`
+      `- ${page.name} (${page.id}) - ${page.category ?? "uncategorized"}${token}`
     );
   }
   return `${lines.join("\n")}\n`;
@@ -210,7 +223,7 @@ function renderPosts(posts: PagePost[], format: string): string {
   const lines = [`Meta Page Posts (${posts.length})`, ""];
   for (const post of posts) {
     const permalink = post.permalink_url ?? post.id;
-    const message = (post.message ?? "").replaceAll(/\s+/g, " ").trim();
+    const message = (post.message ?? "").replaceAll(/\s+/gu, " ").trim();
     lines.push(`- ${post.created_time} | ${permalink}`);
     if (message) {
       lines.push(`  ${message}`);
@@ -230,7 +243,7 @@ function renderInstagramMedia(media: InstagramMedia[], format: string): string {
       `- ${item.timestamp ?? "unknown"} | ${item.media_type ?? "unknown"} | ${item.permalink}`
     );
     if (item.caption) {
-      lines.push(`  ${item.caption.replaceAll(/\s+/g, " ").trim()}`);
+      lines.push(`  ${item.caption.replaceAll(/\s+/gu, " ").trim()}`);
     }
   }
   return `${lines.join("\n")}\n`;

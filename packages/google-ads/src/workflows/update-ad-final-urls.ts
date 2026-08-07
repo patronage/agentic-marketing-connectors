@@ -47,7 +47,7 @@ export function buildUpdateAdFinalUrlOperations(
       if (trimmed.length === 0) {
         throw new Error(`Ad ${entry.adId} has an empty finalUrl.`);
       }
-      if (!/^https?:\/\//i.test(trimmed)) {
+      if (!/^https?:\/\//iu.test(trimmed)) {
         throw new Error(
           `Ad ${entry.adId} finalUrl must start with http:// or https:// — got "${trimmed}".`
         );
@@ -79,7 +79,7 @@ export async function updateAdFinalUrls(
 }
 
 function assertNumericId(value: string, fieldName: string): void {
-  if (!/^\d+$/.test(value)) {
+  if (!/^\d+$/u.test(value)) {
     throw new Error(`${fieldName} must contain only digits.`);
   }
 }

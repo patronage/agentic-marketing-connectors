@@ -13,8 +13,166 @@ function jsonResponse(body: unknown, requestId = "req-123") {
 }
 
 describe("Google Ads REST client", () => {
+  it.each([
+    "../../customers/999/experiments/1",
+    "",
+    " ",
+    "customers/abc/experiments/1",
+    "experiments/1",
+  ])(
+    "rejects hostile experiment resource names before fetch: %s",
+    async (resourceName) => {
+      const fetchMock = vi.fn<typeof fetch>();
+      const client = createGoogleAdsClient({
+        auth: { getAccessToken: async () => "token" },
+        developerToken: "token",
+        fetch: fetchMock,
+      });
+      await expect(
+        client.endExperiment({
+          experimentResourceName: resourceName,
+          validateOnly: true,
+        })
+      ).rejects.toThrow("Experiment resource names");
+      await expect(
+        client.graduateExperiment({
+          campaignBudgetMappings: [
+            {
+              campaignBudget: "customers/1/campaignBudgets/1",
+              experimentCampaign: "customers/1/campaigns/1",
+            },
+          ],
+          experiment: resourceName,
+          validateOnly: true,
+        })
+      ).rejects.toThrow("Experiment resource names");
+      await expect(
+        client.promoteExperiment({ resourceName, validateOnly: true })
+      ).rejects.toThrow("Experiment resource names");
+      await expect(
+        client.scheduleExperiment({ resourceName, validateOnly: true })
+      ).rejects.toThrow("Experiment resource names");
+      expect(fetchMock).not.toHaveBeenCalled();
+    }
+  );
+  it("preserves request evidence on provider errors", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response("rejected", {
+        headers: { "request-id": "failed-request" },
+        status: 400,
+      })
+    );
+    const client = createGoogleAdsClient({
+      auth: { getAccessToken: async () => "access-token" },
+      developerToken: "developer-token",
+      fetch: fetchMock,
+    });
+
+    await expect(
+      client.search({ customerId: "123", query: "SELECT campaign.id" })
+    ).rejects.toMatchObject({
+      requestId: "failed-request",
+      status: 400,
+    });
+  });
+
+  it.each([
+    ["search", { results: { edges: [] } }],
+    ["search", null],
+    ["search", "unexpected"],
+    ["search", [{ results: [{ campaign: { id: "1" } }] }]],
+    ["searchStream", { results: [] }],
+    ["searchStream", [{ results: { edges: [] } }]],
+    ["searchStream", [null]],
+  ])("rejects malformed successful %s envelopes", async (operation, body) => {
+    const client = createGoogleAdsClient({
+      auth: { getAccessToken: async () => "access-token" },
+      developerToken: "developer-token",
+      fetch: vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(jsonResponse(body, "drift-1")),
+    });
+
+    await expect(
+      operation === "search"
+        ? client.search({ customerId: "123", query: "SELECT campaign.id" })
+        : client.searchStream({
+            customerId: "123",
+            query: "SELECT campaign.id",
+          })
+    ).rejects.toMatchObject({
+      apiVersion: "v24",
+      name: "GoogleAdsContractError",
+      operation,
+      requestId: "drift-1",
+    });
+  });
+
+  it("reads a zero-row search response, which omits the results array entirely", async () => {
+    const client = createGoogleAdsClient({
+      auth: { getAccessToken: async () => "access-token" },
+      developerToken: "developer-token",
+      fetch: vi.fn<typeof fetch>().mockResolvedValue(
+        jsonResponse(
+          {
+            fieldMask:
+              "segments.conversionActionName,segments.date,metrics.allConversions",
+            requestId: "empty-1",
+          },
+          "empty-1"
+        )
+      ),
+    });
+
+    const result = await client.search({
+      customerId: "1234567890",
+      query:
+        "SELECT segments.conversion_action_name, segments.date, metrics.all_conversions FROM customer WHERE segments.date DURING LAST_7_DAYS",
+    });
+
+    expect(result).toStrictEqual({
+      nextPageToken: undefined,
+      requestId: "empty-1",
+      rows: [],
+      summaryRow: undefined,
+    });
+  });
+
+  it("reads a zero-row searchStream batch, which omits the results array", async () => {
+    const client = createGoogleAdsClient({
+      auth: { getAccessToken: async () => "access-token" },
+      developerToken: "developer-token",
+      fetch: vi.fn<typeof fetch>().mockResolvedValue(
+        jsonResponse(
+          [
+            {
+              fieldMask:
+                "segments.conversionActionName,segments.date,metrics.allConversions",
+              queryResourceConsumption: "856",
+              requestId: "RLreC28297fHqBw7SkqU1A",
+            },
+          ],
+          "RLreC28297fHqBw7SkqU1A"
+        )
+      ),
+    });
+
+    await expect(
+      client.searchStream({
+        customerId: "1234567890",
+        query:
+          "SELECT segments.conversion_action_name, segments.date, metrics.all_conversions FROM customer WHERE segments.date DURING LAST_7_DAYS",
+      })
+    ).resolves.toStrictEqual({
+      requestId: "RLreC28297fHqBw7SkqU1A",
+      rows: [],
+    });
+  });
+
   it("defaults to the current Google Ads API version", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ results: [] }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ results: [] }));
     const client = createGoogleAdsClient({
       auth: { getAccessToken: async () => "access-token" },
       developerToken: "developer-token",
@@ -33,7 +191,7 @@ describe("Google Ads REST client", () => {
   });
 
   it("constructs a search request with normalized customer ID and Google Ads headers", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       jsonResponse({
         nextPageToken: "next-token",
         results: [{ campaign: { id: "123", name: "Issue Search" } }],
@@ -68,7 +226,7 @@ describe("Google Ads REST client", () => {
         method: "POST",
       }
     );
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       nextPageToken: "next-token",
       requestId: "req-123",
       rows: [{ campaign: { id: "123", name: "Issue Search" } }],
@@ -77,7 +235,9 @@ describe("Google Ads REST client", () => {
   });
 
   it("omits unsupported pageSize even if a JavaScript caller passes one", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ results: [] }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ results: [] }));
     const client = createGoogleAdsClient({
       apiVersion: "v99",
       auth: { getAccessToken: async () => "access-token" },
@@ -100,7 +260,9 @@ describe("Google Ads REST client", () => {
   });
 
   it("forwards abort signals to search requests", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ results: [] }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ results: [] }));
     const { signal } = new AbortController();
     const client = createGoogleAdsClient({
       apiVersion: "v99",
@@ -123,7 +285,7 @@ describe("Google Ads REST client", () => {
 
   it("flattens searchStream JSON batches returned by the REST API", async () => {
     const fetchMock = vi
-      .fn()
+      .fn<typeof fetch>()
       .mockResolvedValue(
         jsonResponse([
           { results: [{ campaign: { id: "1" } }] },
@@ -148,7 +310,7 @@ describe("Google Ads REST client", () => {
         body: JSON.stringify({ query: "SELECT campaign.id FROM campaign" }),
       })
     );
-    expect(result.rows).toEqual([
+    expect(result.rows).toStrictEqual([
       { campaign: { id: "1" } },
       { campaign: { id: "2" } },
     ]);
@@ -156,7 +318,7 @@ describe("Google Ads REST client", () => {
   });
 
   it("requires validateOnly to be explicit for mutate requests and returns request metadata", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       jsonResponse({
         mutateOperationResponses: [
           {
@@ -206,7 +368,7 @@ describe("Google Ads REST client", () => {
         method: "POST",
       }
     );
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       mutateOperationResponses: [
         {
           campaignCriterionResult: {
@@ -221,7 +383,7 @@ describe("Google Ads REST client", () => {
 
   it("calls experiment service REST endpoints with validate-only requests", async () => {
     const fetchMock = vi
-      .fn()
+      .fn<typeof fetch>()
       .mockResolvedValueOnce(
         jsonResponse({
           results: [{ resourceName: "customers/1234567890/experiments/222" }],
@@ -318,13 +480,13 @@ describe("Google Ads REST client", () => {
         body: JSON.stringify({ validateOnly: true }),
       })
     );
-    expect(experimentResult.results).toEqual([
+    expect(experimentResult.results).toStrictEqual([
       { resourceName: "customers/1234567890/experiments/222" },
     ]);
-    expect(armsResult.results).toEqual([
+    expect(armsResult.results).toStrictEqual([
       { resourceName: "customers/1234567890/experimentArms/333" },
     ]);
-    expect(scheduleResult).toEqual({
+    expect(scheduleResult).toStrictEqual({
       done: false,
       error: undefined,
       metadata: undefined,
@@ -332,12 +494,185 @@ describe("Google Ads REST client", () => {
       requestId: "req-123",
       response: undefined,
     });
-    expect(endResult).toEqual({
+    expect(endResult).toStrictEqual({
       experiment: {
         resourceName: "customers/1234567890/experiments/222",
         status: "ENDED",
       },
       requestId: "req-123",
+    });
+  });
+
+  it("calls the experiment promotion REST action in validate mode", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      jsonResponse({
+        done: false,
+        metadata: { action: "PROMOTE" },
+        name: "customers/1234567890/operations/promote-abc",
+      })
+    );
+    const client = createGoogleAdsClient({
+      apiVersion: "v99",
+      auth: { getAccessToken: async () => "token" },
+      developerToken: "developer-token",
+      fetch: fetchMock,
+    });
+
+    await expect(
+      client.promoteExperiment({
+        resourceName: "customers/1234567890/experiments/222",
+        validateOnly: undefined as never,
+      })
+    ).rejects.toThrow("validateOnly");
+
+    await expect(
+      client.promoteExperiment({
+        resourceName: "customers/1234567890/experiments/222",
+        validateOnly: true,
+      })
+    ).resolves.toStrictEqual({
+      done: false,
+      error: undefined,
+      metadata: { action: "PROMOTE" },
+      name: "customers/1234567890/operations/promote-abc",
+      requestId: "req-123",
+      response: undefined,
+    });
+
+    expect(fetchMock).toHaveBeenCalledExactlyOnceWith(
+      "https://googleads.googleapis.com/v99/customers/1234567890/experiments/222:promoteExperiment",
+      expect.objectContaining({
+        body: JSON.stringify({ validateOnly: true }),
+        method: "POST",
+      })
+    );
+  });
+
+  it("calls the experiment graduation REST action in validate mode", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({}));
+    const client = createGoogleAdsClient({
+      apiVersion: "v99",
+      auth: { getAccessToken: async () => "token" },
+      developerToken: "developer-token",
+      fetch: fetchMock,
+    });
+    const campaignBudgetMappings = [
+      {
+        campaignBudget: "customers/1234567890/campaignBudgets/444",
+        experimentCampaign: "customers/1234567890/campaigns/333",
+      },
+    ];
+
+    await expect(
+      client.graduateExperiment({
+        campaignBudgetMappings,
+        experiment: "customers/1234567890/experiments/222",
+        validateOnly: undefined as never,
+      })
+    ).rejects.toThrow("validateOnly");
+    await expect(
+      client.graduateExperiment({
+        campaignBudgetMappings: [],
+        experiment: "customers/1234567890/experiments/222",
+        validateOnly: true,
+      })
+    ).rejects.toThrow("exactly one campaign budget mapping");
+
+    await expect(
+      client.graduateExperiment({
+        campaignBudgetMappings,
+        experiment: "customers/1234567890/experiments/222",
+        validateOnly: true,
+      })
+    ).resolves.toStrictEqual({ requestId: "req-123" });
+
+    expect(fetchMock).toHaveBeenCalledExactlyOnceWith(
+      "https://googleads.googleapis.com/v99/customers/1234567890/experiments/222:graduateExperiment",
+      expect.objectContaining({
+        body: JSON.stringify({
+          campaignBudgetMappings,
+          validateOnly: true,
+        }),
+        method: "POST",
+      })
+    );
+  });
+
+  it("calls recommendation apply and dismiss REST endpoints", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          results: [
+            {
+              resourceName: "customers/1234567890/recommendations/abc",
+            },
+          ],
+        })
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          partialFailureError: { message: "dismiss warning" },
+          results: [
+            {
+              resourceName: "customers/1234567890/recommendations/def",
+            },
+          ],
+        })
+      );
+    const client = createGoogleAdsClient({
+      apiVersion: "v99",
+      auth: { getAccessToken: async () => "token" },
+      developerToken: "developer-token",
+      fetch: fetchMock,
+    });
+
+    const applyResult = await client.applyRecommendations({
+      customerId: "123-456-7890",
+      operations: [
+        { resourceName: "customers/1234567890/recommendations/abc" },
+      ],
+      partialFailure: true,
+    });
+    const dismissResult = await client.dismissRecommendations({
+      customerId: "123-456-7890",
+      operations: [
+        { resourceName: "customers/1234567890/recommendations/def" },
+      ],
+    });
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "https://googleads.googleapis.com/v99/customers/1234567890/recommendations:apply",
+      expect.objectContaining({
+        body: JSON.stringify({
+          operations: [
+            { resourceName: "customers/1234567890/recommendations/abc" },
+          ],
+          partialFailure: true,
+        }),
+      })
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "https://googleads.googleapis.com/v99/customers/1234567890/recommendations:dismiss",
+      expect.objectContaining({
+        body: JSON.stringify({
+          operations: [
+            { resourceName: "customers/1234567890/recommendations/def" },
+          ],
+        }),
+      })
+    );
+    expect(applyResult).toStrictEqual({
+      partialFailureError: undefined,
+      requestId: "req-123",
+      results: [{ resourceName: "customers/1234567890/recommendations/abc" }],
+    });
+    expect(dismissResult).toStrictEqual({
+      partialFailureError: { message: "dismiss warning" },
+      requestId: "req-123",
+      results: [{ resourceName: "customers/1234567890/recommendations/def" }],
     });
   });
 });

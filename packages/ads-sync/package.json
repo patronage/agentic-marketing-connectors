@@ -1,0 +1,40 @@
+{
+  "dependencies": {
+    "zod": "4.4.3"
+  },
+  "description": "Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines.",
+  "devDependencies": {
+    "tsdown": "0.22.4",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.mjs"
+    },
+    "./instance": {
+      "types": "./src/instance.ts",
+      "default": "./dist/instance.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/test-fixtures",
+    "README.md"
+  ],
+  "license": "MIT",
+  "name": "@patronage/ads-sync",
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "version": "0.1.0"
+}

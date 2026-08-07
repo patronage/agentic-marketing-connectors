@@ -80,3 +80,52 @@ export interface InstagramMedia {
   thumbnail_url?: string;
   timestamp?: string;
 }
+
+export type InstagramPublishMediaType =
+  | "IMAGE"
+  | "REELS"
+  | "STORIES"
+  | (string & Record<never, never>);
+
+export type InstagramVideoPublishMediaType = "REELS" | "STORIES";
+
+export type InstagramMediaContainerStatusCode =
+  | "ERROR"
+  | "EXPIRED"
+  | "FINISHED"
+  | "IN_PROGRESS"
+  | "PUBLISHED"
+  | (string & Record<never, never>);
+
+export interface InstagramMediaPublishResult {
+  creationId: string;
+  id: string;
+}
+
+export interface InstagramMediaContainerStatus {
+  error_message?: string;
+  id: string;
+  status?: string;
+  status_code?: InstagramMediaContainerStatusCode;
+}
+
+export interface MetaComment {
+  can_hide?: boolean;
+  can_like?: boolean;
+  can_remove?: boolean;
+  created_time?: string;
+  from?: {
+    id?: string;
+    name?: string;
+    username?: string;
+  };
+  id: string;
+  is_hidden?: boolean;
+  like_count?: number;
+  message?: string;
+  parent?: {
+    id?: string;
+  };
+  permalink_url?: string;
+  user_likes?: boolean;
+}

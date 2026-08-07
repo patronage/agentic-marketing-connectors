@@ -1,0 +1,42 @@
+{
+  "description": "Provider-neutral guarded mutation lifecycle contracts",
+  "devDependencies": {
+    "tsdown": "0.22.4",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "README.md"
+  ],
+  "license": "MIT",
+  "name": "@patronage/connector-lifecycle",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/connector-lifecycle",
+    "type": "git",
+    "url": "https://github.com/patronage/agentic-marketing-connectors.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "version": "0.1.0"
+}

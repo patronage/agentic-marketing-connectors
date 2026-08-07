@@ -26,7 +26,7 @@ Use the current fetch implementation until a later spike proves an SDK improves 
 const client = createMetaSocialClient({ accessToken: pageAccessToken });
 
 const posts = await client.getPagePosts({
-  pageId: "416707608450706",
+  pageId: "123456789012345",
   since: "2026-03-31",
   until: "2026-03-31",
 });
