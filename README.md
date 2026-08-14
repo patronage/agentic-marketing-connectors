@@ -17,9 +17,9 @@ Public release monorepo for Patronage's agentic marketing connector packages.
 | `@patronage/tiktok-ads` | 0.1.0 | `packages/tiktok-ads` | Worker-safe TikTok Ads primitives for Patronage Core |
 | `@patronage/x-posts` | 0.0.0 | `packages/x-posts` | Worker-safe X authored post ingestion primitives for Patronage Core |
 
-## First npm registry set
+## npm
 
-The first npm publication is the current 0.1.0 packages only:
+These packages are on npm as 0.1.0 `latest`:
 
 - `@patronage/ads-sync` 0.1.0
 - `@patronage/connector-lifecycle` 0.1.0
@@ -29,27 +29,23 @@ The first npm publication is the current 0.1.0 packages only:
 - `@patronage/reddit-ads` 0.1.0
 - `@patronage/tiktok-ads` 0.1.0
 
-These packages ship in this repository but stay off that first registry set:
+Install from the public registry:
 
-- `@patronage/cli` 0.0.0
-- `@patronage/meta-social` 0.0.0
-- `@patronage/x-posts` 0.0.0
+```sh
+pnpm add @patronage/google-ads@0.1.0
+pnpm add @patronage/ads-sync@0.1.0
+```
 
-Leave the 0.0.0 packages off npm until a later release decision. The public CLI tree is incomplete because a private canonical dependency is dropped during generation.
+These packages ship in this repository and stay off npm:
 
-Package versions are independent. Ads Sync is not lockstepped to google-ads. Treat these versions as unpublished until a maintainer uploads them.
+- `@patronage/cli` 0.0.0. The public CLI tree is incomplete because a private canonical dependency is dropped during generation.
+- `@patronage/meta-social` 0.0.0. Not pack-safe: no `publishConfig`, and packed `exports` keep `default` on `./src`.
+- `@patronage/x-posts` 0.0.0. Not pack-safe: no `publishConfig`, and packed `exports` keep `default` on `./src`.
+
+Package versions are independent. Ads Sync is not lockstepped to google-ads.
 
 ## Packing
 
 Dest `@patronage/*` inter-package dependencies stay on the pnpm workspace protocol (`workspace:*`). Pack from this workspace with `pnpm pack`. `prepack` builds `dist/` first. pnpm rewrites workspace protocol to exact versions at pack time and applies `publishConfig.exports`, which strips the local `development` export condition.
 
 `npm pack` leaves workspace protocol in the tarball and does not apply `publishConfig.exports`. Pack with pnpm from this workspace.
-
-## Examples
-
-Runnable example workspaces copied from the canonical repository:
-
-- `examples/claude-managed-agents`
-- `examples/hello-world-connector`
-- `examples/cloudflare-think-search-term-review`
-

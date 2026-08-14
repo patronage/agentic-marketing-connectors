@@ -8,7 +8,7 @@ Ads Sync is published from `packages/ads-sync` in the `github.com/patronage/agen
 
 The nested `deploy/` workspace provides operator reference content but is not part of the npm package tarball. It consumes only the public `@patronage/ads-sync` entry point.
 
-Do not publish to npm or make additional release visibility changes without explicit approval of package versioning, npm org/access, dependency policy, and release notes.
+`@patronage/ads-sync` 0.1.0 is on npm as `latest`. Install with `pnpm add @patronage/ads-sync@0.1.0`.
 
 ## Runnable Source Tutorials
 

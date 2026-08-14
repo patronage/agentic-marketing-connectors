@@ -1,18 +1,5 @@
 {
-  "examples": [
-    {
-      "name": "@patronage/example-claude-managed-agents",
-      "publicPath": "examples/claude-managed-agents"
-    },
-    {
-      "name": "@patronage/example-hello-world-connector",
-      "publicPath": "examples/hello-world-connector"
-    },
-    {
-      "name": "cloudflare-think-search-term-review",
-      "publicPath": "examples/cloudflare-think-search-term-review"
-    }
-  ],
+  "examples": [],
   "gatedSurfaces": [],
   "layout": {
     "examplesDir": "examples",
