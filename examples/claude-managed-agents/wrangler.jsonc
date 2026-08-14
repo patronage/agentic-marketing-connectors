@@ -1,0 +1,24 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "patronage-example-claude-managed-agents",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "IsolateRunner",
+        "name": "IsolateRunner",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["IsolateRunner"],
+      "tag": "v1",
+    },
+  ],
+}

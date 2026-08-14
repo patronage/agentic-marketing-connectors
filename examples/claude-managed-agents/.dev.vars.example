@@ -1,0 +1,6 @@
+ENVIRONMENT_ID=<your-anthropic-environment-id>
+ANTHROPIC_ENVIRONMENT_KEY=<your-anthropic-environment-key>
+WEBHOOK_SECRET=<your-anthropic-webhook-signing-secret>
+
+# Optional. Leave unset for the public Claude Platform API.
+# ANTHROPIC_BASE_URL=https://api.anthropic.com

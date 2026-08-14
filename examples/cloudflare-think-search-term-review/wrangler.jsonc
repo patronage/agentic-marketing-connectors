@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "patronage-think-search-term-review-example",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-06-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "ai": {
+    "binding": "AI",
+    "remote": true,
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "SearchTermReviewAgent",
+        "name": "SearchTermReviewAgent",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["SearchTermReviewAgent"],
+      "tag": "v1",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+}
