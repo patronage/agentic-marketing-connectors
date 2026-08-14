@@ -49,3 +49,12 @@ Package versions are independent. Ads Sync is not lockstepped to google-ads.
 Dest `@patronage/*` inter-package dependencies stay on the pnpm workspace protocol (`workspace:*`). Pack from this workspace with `pnpm pack`. `prepack` builds `dist/` first. pnpm rewrites workspace protocol to exact versions at pack time and applies `publishConfig.exports`, which strips the local `development` export condition.
 
 `npm pack` leaves workspace protocol in the tarball and does not apply `publishConfig.exports`. Pack with pnpm from this workspace.
+
+## Examples
+
+Runnable example workspaces copied from the canonical repository:
+
+- `examples/claude-managed-agents`
+- `examples/hello-world-connector`
+- `examples/cloudflare-think-search-term-review`
+
