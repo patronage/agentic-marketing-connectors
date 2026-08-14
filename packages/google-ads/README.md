@@ -100,7 +100,7 @@ For reports, prefer package report helpers such as `getCampaignPerformance()`, `
 
 ## Public Interfaces
 
-The package exposes deliberate interfaces for `core`, `rest`, `reports`, `research`, `resolvers`, `compliance`, `cloudflare`, `partial-failure`, campaign brief parsing, and individual guarded workflows. The package export map is the canonical list; release verification fails when an exported interface is not built or cannot load in a Worker runtime.
+The package exposes deliberate interfaces for `core`, `rest`, `reports`, `research`, `resolvers`, `compliance`, `cloudflare`, `partial-failure`, `planning`, campaign brief parsing, and individual guarded workflows. The package export map is the canonical list; release verification fails when an exported interface is not built or cannot load in a Worker runtime.
 
 ## Writes
 

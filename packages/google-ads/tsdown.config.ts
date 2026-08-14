@@ -14,6 +14,7 @@ export default defineConfig({
     "src/resolvers/index.ts",
     "src/compliance/index.ts",
     "src/partial-failure.ts",
+    "src/planning.ts",
     "src/cloudflare/index.ts",
     "src/workflows/negative-keywords.ts",
     "src/workflows/pause-ad-groups.ts",

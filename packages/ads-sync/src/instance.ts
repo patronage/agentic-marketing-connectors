@@ -15,6 +15,12 @@ const planetScaleBranchIdSchema = z
   .min(1)
   .max(64)
   .regex(/^[a-z0-9]+$/u);
+const cloudflareNamespaceIdSchema = z.string().regex(/^[a-f0-9]{32}$/u);
+const adsSyncContainerNamespaceIdsSchema = z.strictObject({
+  AIRBYTE_GOOGLE_ADS_SOURCE: cloudflareNamespaceIdSchema,
+  AIRBYTE_META_ADS_SOURCE: cloudflareNamespaceIdSchema,
+  AIRBYTE_POSTGRES_DESTINATION: cloudflareNamespaceIdSchema,
+});
 const postgresHostSchema = z
   .string()
   .min(1)
@@ -73,6 +79,7 @@ const adsSyncPlacementSchema = z.union([
 const adsSyncInstanceIdentityShape = {
   clientKey: slugSchema,
   connections: z.array(adsSyncConnectionProfileSchema).min(1),
+  containerNamespaceIds: adsSyncContainerNamespaceIdsSchema,
   containerNameSuffix: slugSchema.optional(),
   hyperdriveId: z.string().regex(/^[a-f0-9]{32}$/u),
   instanceKey: slugSchema,
@@ -243,6 +250,7 @@ export const resolveAdsSyncInstanceDeployment = (
   const common = {
     clientKey: spec.clientKey,
     connectionProfiles: spec.connections,
+    containerNamespaceIds: spec.containerNamespaceIds,
     ...(spec.containerNameSuffix
       ? { containerNameSuffix: spec.containerNameSuffix }
       : {}),

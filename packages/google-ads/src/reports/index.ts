@@ -412,6 +412,7 @@ export type ReportDateRangeInput =
   | { days?: never; since: string; until: string };
 
 export interface GoogleAdsReportRequestOptions {
+  rowLimit?: number;
   signal?: AbortSignal;
 }
 
@@ -423,6 +424,7 @@ export async function getCampaignPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: campaignPerformanceQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -437,6 +439,7 @@ export async function getAdGroupPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: adGroupPerformanceQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
   return rows.map(normalizeAdGroupPerformanceRow);
@@ -454,6 +457,7 @@ export async function getDevicePerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: devicePerformanceQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
   return rows.map(normalizeDevicePerformanceRow);
@@ -467,6 +471,7 @@ export async function getKeywordPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: keywordPerformanceQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -481,6 +486,7 @@ export async function getSearchTerms(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: searchTermsQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -495,6 +501,7 @@ export async function getCampaignSearchTerms(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: campaignSearchTermsQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -514,6 +521,7 @@ export async function getClickDetails(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: clickDetailsQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -528,6 +536,7 @@ export async function getVideoPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: videoPerformanceQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -542,6 +551,7 @@ export async function getAgeRangePerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: audienceSegmentPerformanceQuery(input, "age_range_view"),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -556,6 +566,7 @@ export async function getGenderPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: audienceSegmentPerformanceQuery(input, "gender_view"),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -570,6 +581,7 @@ export async function getIncomeRangePerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: audienceSegmentPerformanceQuery(input, "income_range_view"),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -584,6 +596,7 @@ export async function getGeographicPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: geographicPerformanceQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -600,6 +613,7 @@ export async function getCampaignLocationCriteria(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: campaignLocationCriteriaQuery(input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -614,6 +628,7 @@ export async function getLocationCriterionPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: locationCriterionPerformanceQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -628,6 +643,7 @@ export async function getReachFrequencyPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: reachFrequencyPerformanceQuery(input, input.campaignId),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -646,6 +662,7 @@ export async function getAssetPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: assetPerformanceQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -664,6 +681,7 @@ export async function getAssetGroupProductGroupPerformance(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: assetGroupProductGroupPerformanceQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -682,6 +700,7 @@ export async function getAssetTopCombinations(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: assetTopCombinationQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -737,6 +756,7 @@ export async function getAdPolicyDiagnostics(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: adPolicyDiagnosticsQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -754,6 +774,7 @@ export async function getAssetPolicyDiagnostics(
   const rows = await searchAllRows(client, {
     customerId: input.customerId,
     query: assetPolicyDiagnosticsQuery(input),
+    rowLimit: input.rowLimit,
     signal: input.signal,
   });
 
@@ -2994,8 +3015,17 @@ function changeStatusChangedResourceName(
 
 async function searchAllRows(
   client: GoogleAdsClient,
-  input: { customerId: string; query: string; signal?: AbortSignal }
+  input: {
+    customerId: string;
+    query: string;
+    rowLimit?: number;
+    signal?: AbortSignal;
+  }
 ) {
+  const rowLimit = normalizeReportRowLimit(input.rowLimit);
+  const query = rowLimit
+    ? `${input.query.trimEnd()}\nLIMIT ${rowLimit}`
+    : input.query;
   const rows: GoogleAdsRow[] = [];
   let pageToken: string | undefined;
 
@@ -3004,15 +3034,30 @@ async function searchAllRows(
     const response = await client.search({
       customerId: input.customerId,
       ...(pageToken ? { pageToken } : {}),
-      query: input.query,
+      query,
       ...(input.signal ? { signal: input.signal } : {}),
     });
 
     rows.push(...response.rows);
+    if (rowLimit && rows.length >= rowLimit) {
+      return rows.slice(0, rowLimit);
+    }
     pageToken = response.nextPageToken;
   } while (pageToken);
 
   return rows;
+}
+
+function normalizeReportRowLimit(
+  limit: number | undefined
+): number | undefined {
+  if (limit === undefined) {
+    return undefined;
+  }
+  if (!(Number.isSafeInteger(limit) && limit > 0)) {
+    throw new Error("rowLimit must be a positive integer");
+  }
+  return limit;
 }
 
 function asRecord(value: unknown): Record<string, unknown> {

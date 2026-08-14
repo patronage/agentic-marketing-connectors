@@ -271,6 +271,37 @@ describe("campaign report normalization", () => {
     ]);
   });
 
+  it("stops pagination after satisfying a provider-level row limit", async () => {
+    const client = {
+      mutate: vi.fn<GoogleAdsClient["mutate"]>(),
+      search: vi.fn<GoogleAdsClient["search"]>().mockResolvedValue({
+        nextPageToken: "page-2",
+        requestId: "req-1",
+        rows: [
+          {
+            campaign: { id: "1", name: "First" },
+            metrics: { clicks: "1" },
+          },
+        ],
+      }),
+      searchStream: vi.fn<GoogleAdsClient["searchStream"]>(),
+    };
+
+    const rows = await getCampaignPerformance(client, {
+      customerId: "1234567890",
+      days: 30,
+      rowLimit: 1,
+    });
+
+    expect(client.search).toHaveBeenCalledExactlyOnceWith({
+      customerId: "1234567890",
+      query: expect.stringMatching(/FROM campaign[\s\S]*LIMIT 1$/u),
+    });
+    expect(rows).toStrictEqual([
+      expect.objectContaining({ clicks: 1, id: "1" }),
+    ]);
+  });
+
   it("rejects unsupported date ranges instead of coercing them", async () => {
     const client = {
       mutate: vi.fn<GoogleAdsClient["mutate"]>(),

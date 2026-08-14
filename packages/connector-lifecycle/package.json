@@ -24,7 +24,13 @@
   "license": "MIT",
   "name": "@patronage/connector-lifecycle",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
   },
   "repository": {
     "directory": "packages/connector-lifecycle",
@@ -33,6 +39,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

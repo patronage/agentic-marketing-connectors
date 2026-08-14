@@ -58,6 +58,11 @@
       "development": "./src/partial-failure.ts",
       "default": "./dist/partial-failure.js"
     },
+    "./planning": {
+      "types": "./src/planning.ts",
+      "development": "./src/planning.ts",
+      "default": "./dist/planning.js"
+    },
     "./product": {
       "default": "./product.json"
     },
@@ -224,7 +229,172 @@
   "license": "MIT",
   "name": "@patronage/google-ads",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./cloudflare": {
+        "types": "./dist/cloudflare/index.d.ts",
+        "default": "./dist/cloudflare/index.js"
+      },
+      "./compliance": {
+        "types": "./dist/compliance/index.d.ts",
+        "default": "./dist/compliance/index.js"
+      },
+      "./core": {
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
+      },
+      "./deploy/parse-brief": {
+        "types": "./dist/deploy/parse-brief.d.ts",
+        "default": "./dist/deploy/parse-brief.js"
+      },
+      "./deploy/types": {
+        "types": "./dist/deploy/types.d.ts",
+        "default": "./dist/deploy/types.js"
+      },
+      "./mutation-canary": {
+        "types": "./dist/mutation-canary.d.ts",
+        "default": "./dist/mutation-canary.js"
+      },
+      "./oauth": {
+        "types": "./dist/oauth.d.ts",
+        "default": "./dist/oauth.js"
+      },
+      "./partial-failure": {
+        "types": "./dist/partial-failure.d.ts",
+        "default": "./dist/partial-failure.js"
+      },
+      "./planning": {
+        "types": "./dist/planning.d.ts",
+        "default": "./dist/planning.js"
+      },
+      "./product": {
+        "default": "./product.json"
+      },
+      "./reports": {
+        "types": "./dist/reports/index.d.ts",
+        "default": "./dist/reports/index.js"
+      },
+      "./research": {
+        "types": "./dist/research/index.d.ts",
+        "default": "./dist/research/index.js"
+      },
+      "./resolvers": {
+        "types": "./dist/resolvers/index.d.ts",
+        "default": "./dist/resolvers/index.js"
+      },
+      "./rest": {
+        "types": "./dist/rest/index.d.ts",
+        "default": "./dist/rest/index.js"
+      },
+      "./workflows/add-ad-groups": {
+        "types": "./dist/workflows/add-ad-groups.d.ts",
+        "default": "./dist/workflows/add-ad-groups.js"
+      },
+      "./workflows/add-keywords": {
+        "types": "./dist/workflows/add-keywords.d.ts",
+        "default": "./dist/workflows/add-keywords.js"
+      },
+      "./workflows/asset-set-linkage": {
+        "types": "./dist/workflows/asset-set-linkage.d.ts",
+        "default": "./dist/workflows/asset-set-linkage.js"
+      },
+      "./workflows/audience-segments": {
+        "types": "./dist/workflows/audience-segments.d.ts",
+        "default": "./dist/workflows/audience-segments.js"
+      },
+      "./workflows/bidding-adjustments": {
+        "types": "./dist/workflows/bidding-adjustments.d.ts",
+        "default": "./dist/workflows/bidding-adjustments.js"
+      },
+      "./workflows/bidding-strategies": {
+        "types": "./dist/workflows/bidding-strategies.d.ts",
+        "default": "./dist/workflows/bidding-strategies.js"
+      },
+      "./workflows/campaign-assets": {
+        "types": "./dist/workflows/campaign-assets.d.ts",
+        "default": "./dist/workflows/campaign-assets.js"
+      },
+      "./workflows/campaign-criteria": {
+        "types": "./dist/workflows/campaign-criteria.d.ts",
+        "default": "./dist/workflows/campaign-criteria.js"
+      },
+      "./workflows/conversion-goals": {
+        "types": "./dist/workflows/conversion-goals.d.ts",
+        "default": "./dist/workflows/conversion-goals.js"
+      },
+      "./workflows/create-campaign-experiment": {
+        "types": "./dist/workflows/create-campaign-experiment.d.ts",
+        "default": "./dist/workflows/create-campaign-experiment.js"
+      },
+      "./workflows/deploy-campaign": {
+        "types": "./dist/workflows/deploy-campaign.d.ts",
+        "default": "./dist/workflows/deploy-campaign.js"
+      },
+      "./workflows/negative-keywords": {
+        "types": "./dist/workflows/negative-keywords.d.ts",
+        "default": "./dist/workflows/negative-keywords.js"
+      },
+      "./workflows/pause-ad-groups": {
+        "types": "./dist/workflows/pause-ad-groups.d.ts",
+        "default": "./dist/workflows/pause-ad-groups.js"
+      },
+      "./workflows/performance-max-asset-groups": {
+        "types": "./dist/workflows/performance-max-asset-groups.d.ts",
+        "default": "./dist/workflows/performance-max-asset-groups.js"
+      },
+      "./workflows/performance-max-listing-groups": {
+        "types": "./dist/workflows/performance-max-listing-groups.d.ts",
+        "default": "./dist/workflows/performance-max-listing-groups.js"
+      },
+      "./workflows/recommendations": {
+        "types": "./dist/workflows/recommendations.d.ts",
+        "default": "./dist/workflows/recommendations.js"
+      },
+      "./workflows/remove-keywords": {
+        "types": "./dist/workflows/remove-keywords.d.ts",
+        "default": "./dist/workflows/remove-keywords.js"
+      },
+      "./workflows/set-campaign-frequency-cap": {
+        "types": "./dist/workflows/set-campaign-frequency-cap.d.ts",
+        "default": "./dist/workflows/set-campaign-frequency-cap.js"
+      },
+      "./workflows/set-campaign-max-cpc": {
+        "types": "./dist/workflows/set-campaign-max-cpc.d.ts",
+        "default": "./dist/workflows/set-campaign-max-cpc.js"
+      },
+      "./workflows/shared-set-negative-keywords": {
+        "types": "./dist/workflows/shared-set-negative-keywords.d.ts",
+        "default": "./dist/workflows/shared-set-negative-keywords.js"
+      },
+      "./workflows/update-ad-final-urls": {
+        "types": "./dist/workflows/update-ad-final-urls.d.ts",
+        "default": "./dist/workflows/update-ad-final-urls.js"
+      },
+      "./workflows/update-ad-group-demographics": {
+        "types": "./dist/workflows/update-ad-group-demographics.d.ts",
+        "default": "./dist/workflows/update-ad-group-demographics.js"
+      },
+      "./workflows/update-campaign-bidding": {
+        "types": "./dist/workflows/update-campaign-bidding.d.ts",
+        "default": "./dist/workflows/update-campaign-bidding.js"
+      },
+      "./workflows/update-campaign-budget": {
+        "types": "./dist/workflows/update-campaign-budget.d.ts",
+        "default": "./dist/workflows/update-campaign-budget.js"
+      },
+      "./workflows/update-campaign-locations": {
+        "types": "./dist/workflows/update-campaign-locations.d.ts",
+        "default": "./dist/workflows/update-campaign-locations.js"
+      },
+      "./workflows/update-responsive-search-ads": {
+        "types": "./dist/workflows/update-responsive-search-ads.d.ts",
+        "default": "./dist/workflows/update-responsive-search-ads.js"
+      }
+    }
   },
   "repository": {
     "directory": "packages/google-ads",
@@ -233,6 +403,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "smoke:live": "pnpm build && node scripts/live-smoke.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

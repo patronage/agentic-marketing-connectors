@@ -55,7 +55,7 @@
       },
       {
         "path": "packages/ads-sync/package.json",
-        "sha256": "666ecaecbfe2de97af9576afba8633572134a262752ce5880cfbdfd8ed6ce87d"
+        "sha256": "5c3cd159c1fa4be4d0a928e2c7ee7e367decb99cfe3dfcf04f2d6abcde52556d"
       },
       {
         "path": "packages/ads-sync/README.md",
@@ -95,11 +95,11 @@
       },
       {
         "path": "packages/ads-sync/src/instance.test.ts",
-        "sha256": "f236c04acfc0990828494028816d166a1342944df5d26bc8ffb3e886b4fca077"
+        "sha256": "2b80639d04037bee0990f6b9ce92be9e3c8f6c59ee5c768e511394730e01db47"
       },
       {
         "path": "packages/ads-sync/src/instance.ts",
-        "sha256": "c795c58666a0c5c131b931f74ad74f0175eb200021e54ae1a2fc07891904e02d"
+        "sha256": "b7590133fd3ae22845768afed541c65da35298f824446b5d06f676c32100ac65"
       },
       {
         "path": "packages/ads-sync/src/test-fixtures/meta-catalog.example.json",
@@ -195,7 +195,7 @@
       },
       {
         "path": "packages/cli/src/local-env.ts",
-        "sha256": "c2d1ed39443353cdd44c4b2de1b76e981d21a6c3ae94f8ec54f0aa114d9d1f42"
+        "sha256": "e934a2f3d8110f5069f9cac1aeaf0ce71bda3a231b4ba966166aabda4189f00f"
       },
       {
         "path": "packages/cli/src/managed-page-output.ts",
@@ -271,7 +271,7 @@
       },
       {
         "path": "packages/connector-lifecycle/package.json",
-        "sha256": "d683fdc903a9bae24035e6bc165e32b7bc9509122f309646a709034707ba4ff2"
+        "sha256": "9d4d086710a7498fb670f5baa26405223348464c8659e5fe4cbafdb52decb491"
       },
       {
         "path": "packages/connector-lifecycle/README.md",
@@ -339,7 +339,7 @@
       },
       {
         "path": "packages/google-ads/package.json",
-        "sha256": "111c55f5e0b978826ba8a7f4a6e4d8047d96f45ee3fbe8bd4046456f4ba413d4"
+        "sha256": "88c9f897e8373355bc7db3fb2b68ee9db174c2d2f3e837b6d6589dfae5f54915"
       },
       {
         "path": "packages/google-ads/product.json",
@@ -347,7 +347,7 @@
       },
       {
         "path": "packages/google-ads/README.md",
-        "sha256": "803cb4aa089d441fd6806dd181cc6221916263f6bdd89bc1e49d8ab3649e569b"
+        "sha256": "953eddc0c1a2c8062dddec1498bc028b335c5ead647be947e2ab44ec73812b0b"
       },
       {
         "path": "packages/google-ads/scripts/live-smoke-options.mjs",
@@ -442,12 +442,16 @@
         "sha256": "01c1b72c1a017abbab886033b2a0b1bcf73fe84a8ddada31d140f599f8833da5"
       },
       {
+        "path": "packages/google-ads/src/planning.ts",
+        "sha256": "3f8d530e248840397d2cebeb83107ac845f05b0c7923383088c1820fa8390983"
+      },
+      {
         "path": "packages/google-ads/src/reports/index.ts",
-        "sha256": "79a1194dc2c6e30563dd01a6d0e3a4bccdba573f1a12b8db702c364d0a66e213"
+        "sha256": "468ca9bd11dd591494d3973c0dd5f9d4aeda90d7369468e4561a4d2dbc064466"
       },
       {
         "path": "packages/google-ads/src/reports/reports-normalization.test.ts",
-        "sha256": "02cf2e0b343d22fd67d58101eda51ab33e8a4cb622c2696fe39e8f8d10bce7d8"
+        "sha256": "40c5034d6a3e799f13f5be0cd988c11079a96641438698f3742e21d2c33de4b6"
       },
       {
         "path": "packages/google-ads/src/research/index.ts",
@@ -579,11 +583,11 @@
       },
       {
         "path": "packages/google-ads/src/workflows/pause-ad-groups.test.ts",
-        "sha256": "38998c3f783ed1a5dd81c2213d759ce38776348a52a432f57624814ae793b937"
+        "sha256": "96eea08b3d948afb9251923b1476212a787b10f989cec7b04990b0933329321e"
       },
       {
         "path": "packages/google-ads/src/workflows/pause-ad-groups.ts",
-        "sha256": "21f3bb2fedd3f5cdf90ed90bcbf8b2a7075ba960f28f18183631b233248b52f7"
+        "sha256": "dfc4c4e80d7ea3471d870ff0692440b0b8ca35c496da03392ad41d1ead679c1b"
       },
       {
         "path": "packages/google-ads/src/workflows/performance-max-asset-groups.test.ts",
@@ -699,7 +703,7 @@
       },
       {
         "path": "packages/google-ads/tsdown.config.ts",
-        "sha256": "995f9245d4fd43407ca05f6cdd6c8bd1fa78514088d8087e6a9a50f5ae363433"
+        "sha256": "ef3b60ac190c6ace5360cbd5b5e89a433c550971897d85ab775979a70d1dc0a7"
       },
       {
         "path": "packages/google-ads/vitest.config.ts",
@@ -715,7 +719,7 @@
       },
       {
         "path": "packages/linkedin-ads/package.json",
-        "sha256": "a726b1f25b40cebcc90274ab2e9cd4073558d7a1f0aabdd62be905aa894985c4"
+        "sha256": "b44ee355d628b5fb9f1e695ffd33441dbe114e70246b8b7b75e7b515ba4c888c"
       },
       {
         "path": "packages/linkedin-ads/product.json",
@@ -859,7 +863,7 @@
       },
       {
         "path": "packages/meta-ads/package.json",
-        "sha256": "b6a1d2f7f8caeb7cd5f54400c4bd4f7dbdf37c8d6a035cf105bf5f4876d0b8cc"
+        "sha256": "b083174815126c63f7fc18740e61c94c9b17a29507a9aff9f92dffd9ba745db2"
       },
       {
         "path": "packages/meta-ads/product.json",
@@ -1035,7 +1039,7 @@
       },
       {
         "path": "packages/reddit-ads/package.json",
-        "sha256": "d7d159bde85463d7fb0fc6633a079d30a4347143663bb9daaca7aa6da94f318f"
+        "sha256": "afb88df2786ee89636314ce609d8374b8e5e77de1fcb5ee44c3850bfa1c0a47f"
       },
       {
         "path": "packages/reddit-ads/product.json",
@@ -1099,7 +1103,7 @@
       },
       {
         "path": "packages/tiktok-ads/package.json",
-        "sha256": "07dccc82d40c6c178580e254353091276c0d1b5c1ded77922e2354cea8ee9689"
+        "sha256": "cf87c543929d9f684ab1b7806822578c68cf5ec4fcf0b668b12713a40934cc7f"
       },
       {
         "path": "packages/tiktok-ads/README.md",
@@ -1243,17 +1247,17 @@
       },
       {
         "path": "README.md",
-        "sha256": "064b93740a3e2d71741c9773a789cb966d81fb3b54add2b723cabe30aac3349a"
+        "sha256": "38d0b0185fa9db1ddbf290a324266a5f96cc835a3c4df5b0dd2fb0649b53338b"
       },
       {
         "path": "tsconfig.base.json",
         "sha256": "da044d00ebd5163e7554d30cb366c956b043e426919c02628e0a138f66b9fbf7"
       }
     ],
-    "sha256": "54e3d6ae306c51c7d1186e88fd7a113126d556593db8e9cccf694eafab98d61e"
+    "sha256": "bb8b6d10eedd3774258ec67f0b9bc01282b3d9014305f13482189a75379a4f6e"
   },
   "schemaVersion": 1,
   "source": {
-    "commit": "011e0a754af36909487984052565815923fa6db8"
+    "commit": "b93345908c289547fa9e87d7e2113b70b6e7e717"
   }
 }

@@ -67,7 +67,44 @@
   "license": "MIT",
   "name": "@patronage/linkedin-ads",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./accounts": {
+        "types": "./dist/accounts.d.ts",
+        "default": "./dist/accounts.js"
+      },
+      "./campaigns": {
+        "types": "./dist/campaigns.d.ts",
+        "default": "./dist/campaigns.js"
+      },
+      "./conversions": {
+        "types": "./dist/conversions.d.ts",
+        "default": "./dist/conversions.js"
+      },
+      "./creatives": {
+        "types": "./dist/creatives.d.ts",
+        "default": "./dist/creatives.js"
+      },
+      "./deployment": {
+        "types": "./dist/deployment.d.ts",
+        "default": "./dist/deployment.js"
+      },
+      "./product": {
+        "default": "./product.json"
+      },
+      "./reporting": {
+        "types": "./dist/reporting.d.ts",
+        "default": "./dist/reporting.js"
+      },
+      "./targeting": {
+        "types": "./dist/targeting.d.ts",
+        "default": "./dist/targeting.js"
+      }
+    }
   },
   "repository": {
     "directory": "packages/linkedin-ads",
@@ -76,6 +113,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "smoke:live": "pnpm build && node scripts/live-smoke.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

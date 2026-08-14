@@ -29,7 +29,16 @@
   "license": "MIT",
   "name": "@patronage/reddit-ads",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./product": {
+        "default": "./product.json"
+      }
+    }
   },
   "repository": {
     "directory": "packages/reddit-ads",
@@ -38,6 +47,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "smoke:live": "pnpm build && node scripts/live-smoke.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

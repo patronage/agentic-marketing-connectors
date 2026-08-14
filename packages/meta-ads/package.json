@@ -43,7 +43,24 @@
   "license": "MIT",
   "name": "@patronage/meta-ads",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./deployment": {
+        "types": "./dist/deployment.d.ts",
+        "default": "./dist/deployment.js"
+      },
+      "./mutation-canary": {
+        "types": "./dist/mutation-canary.d.ts",
+        "default": "./dist/mutation-canary.js"
+      },
+      "./product": {
+        "default": "./product.json"
+      }
+    }
   },
   "repository": {
     "directory": "packages/meta-ads",
@@ -52,6 +69,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "smoke:live": "pnpm --filter @patronage/connector-lifecycle build && pnpm build && node scripts/live-smoke.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

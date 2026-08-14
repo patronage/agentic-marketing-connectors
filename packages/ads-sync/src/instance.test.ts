@@ -6,9 +6,16 @@ import {
   resolveAdsSyncInstanceDeployment,
 } from "./instance.js";
 
+const containerNamespaceIds = {
+  AIRBYTE_GOOGLE_ADS_SOURCE: "b".repeat(32),
+  AIRBYTE_META_ADS_SOURCE: "c".repeat(32),
+  AIRBYTE_POSTGRES_DESTINATION: "d".repeat(32),
+};
+
 const instance = {
   clientKey: "example",
   connections: ["google_ads_default"] as "google_ads_default"[],
+  containerNamespaceIds,
   hyperdriveId: "a".repeat(32),
   instanceKey: "example",
   mode: "disabled" as const,
@@ -30,6 +37,7 @@ const instance = {
 const identityOnlyInstance = {
   clientKey: instance.clientKey,
   connections: instance.connections,
+  containerNamespaceIds: instance.containerNamespaceIds,
   hyperdriveId: instance.hyperdriveId,
   instanceKey: instance.instanceKey,
   placement: instance.placement,
@@ -213,6 +221,15 @@ describe("Ads Sync instance contract", () => {
     expect(() =>
       defineAdsSyncInstance({ ...instance, secret: "must-not-be-accepted" })
     ).toThrow(/Unrecognized key/u);
+    expect(() =>
+      defineAdsSyncInstance({
+        ...instance,
+        containerNamespaceIds: {
+          ...instance.containerNamespaceIds,
+          AIRBYTE_GOOGLE_ADS_SOURCE: "not-a-namespace-id",
+        },
+      })
+    ).toThrow(/Invalid string/u);
     expect(() =>
       defineAdsSyncInstance({
         ...instance,

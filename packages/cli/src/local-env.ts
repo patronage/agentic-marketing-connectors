@@ -52,7 +52,7 @@ export function requireEnv(name: string): string {
 
   if (value.trim().startsWith("op://")) {
     throw new Error(
-      `${name} still contains a 1Password reference. Run \`pnpm setup:env\` to inject secrets.`
+      `${name} still contains an unresolved 1Password reference. Run this connector through its attended op-fast or with-secrets flow.`
     );
   }
 

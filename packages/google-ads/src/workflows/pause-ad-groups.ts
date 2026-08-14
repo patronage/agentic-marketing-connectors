@@ -1,3 +1,9 @@
+import {
+  createPlannedMutationReceipt,
+  fingerprintMutationPlan,
+  recordProviderValidationOutcome,
+} from "@patronage/connector-lifecycle";
+
 import { normalizeCustomerId } from "../core/index.js";
 import type { GoogleAdsClient } from "../rest/index.js";
 
@@ -5,6 +11,16 @@ export interface PauseAdGroupInput {
   adGroupIds: string[];
   customerId: string;
   mode?: "execute" | "validate";
+}
+
+export interface PauseAdGroupsPlan {
+  adGroupIds: string[];
+  customerId: string;
+  operation: "google_ads.pause_ad_groups";
+}
+
+export interface PlanPauseAdGroupsInput extends PauseAdGroupInput {
+  operationId: string;
 }
 
 export function buildPauseAdGroupOperations(
@@ -50,6 +66,59 @@ export async function pauseAdGroups(
     operations: buildPauseAdGroupOperations(input),
     validateOnly: input.mode !== "execute",
   });
+}
+
+/**
+ * Build and provider-validate the exact pause intent without changing account
+ * state. The caller persists the returned fingerprint and receipt before
+ * requesting approval.
+ */
+export async function planPauseAdGroups(
+  client: GoogleAdsClient,
+  input: PlanPauseAdGroupsInput
+) {
+  const customerId = normalizeCustomerId(input.customerId);
+  const operations = buildPauseAdGroupOperations({
+    adGroupIds: input.adGroupIds,
+    customerId,
+  });
+  const plan: PauseAdGroupsPlan = {
+    adGroupIds: [...input.adGroupIds],
+    customerId,
+    operation: "google_ads.pause_ad_groups",
+  };
+  const planFingerprint = await fingerprintMutationPlan({
+    ...plan,
+    operations,
+  });
+  const planned = createPlannedMutationReceipt({
+    operationId: input.operationId,
+    operationKind: plan.operation,
+    planFingerprint,
+    provider: "google-ads",
+  });
+  const validation = await client.mutate({
+    customerId,
+    operations,
+    validateOnly: true,
+  });
+  const failed = validation.partialFailureError !== undefined;
+  const hasRequestEvidence = Boolean(validation.requestId);
+  let validationStatus: "ambiguous" | "failed" | "succeeded" = "ambiguous";
+  if (failed) {
+    validationStatus = "failed";
+  } else if (hasRequestEvidence) {
+    validationStatus = "succeeded";
+  }
+  const receipt = recordProviderValidationOutcome(planned, {
+    ...(failed
+      ? { failureDetail: "Google Ads rejected part of the mutation plan." }
+      : {}),
+    providerRequestId: validation.requestId ?? undefined,
+    status: validationStatus,
+  });
+
+  return { plan, receipt };
 }
 
 function assertNumericId(value: string, fieldName: string): void {

@@ -26,7 +26,13 @@
   "license": "MIT",
   "name": "@patronage/tiktok-ads",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
   },
   "repository": {
     "directory": "packages/tiktok-ads",
@@ -35,6 +41,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepack": "pnpm build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
