@@ -1,5 +1,5 @@
-import { isAdsSyncProvider } from "./core.js";
-import type { AdsSyncProvider } from "./core.js";
+import type { AdsSyncProvider } from "./provider-contract.js";
+import { isAdsSyncProvider } from "./providers.js";
 
 const MAX_CANARY_WINDOW_MS = 24 * 60 * 60 * 1000;
 const CANARY_KEYS = [

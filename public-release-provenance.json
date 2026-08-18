@@ -11,7 +11,7 @@
       },
       {
         "path": "CHANGELOG.md",
-        "sha256": "a099b3110efc5f85b477c0c6958d9b133fd4da5bc3fa7f6c1b81fc7f1d9ad6f8"
+        "sha256": "6bebd47c5853efe97a150de779410cd0a3bbd7d139797159cbdfda466a3cae6f"
       },
       {
         "path": "examples/claude-managed-agents/.dev.vars.example",
@@ -159,7 +159,7 @@
       },
       {
         "path": "packages/ads-sync/deploy/src/index.test.ts",
-        "sha256": "48b53502707c1e8af731476069f856bb6d6a0cb1052f5ffccc556587e1fb8aa3"
+        "sha256": "c1a3416078ffc41fd1096f07a8b1b459eec58fdae25396dd083fecdca07ecd92"
       },
       {
         "path": "packages/ads-sync/deploy/src/index.ts",
@@ -183,11 +183,11 @@
       },
       {
         "path": "packages/ads-sync/package.json",
-        "sha256": "5c3cd159c1fa4be4d0a928e2c7ee7e367decb99cfe3dfcf04f2d6abcde52556d"
+        "sha256": "be92a2c7ed775aed61bfbb38a695c1a793d6da9b6021337b124584874a308042"
       },
       {
         "path": "packages/ads-sync/README.md",
-        "sha256": "394790faeea94b55228a4d1a8d44af695a8c0e4710254a6cde74a998285fb244"
+        "sha256": "6d3ffd59189326a4beab006754a03494bb3da9497b6ca68b60413fe7a940c8a5"
       },
       {
         "path": "packages/ads-sync/src/canary.test.ts",
@@ -195,7 +195,7 @@
       },
       {
         "path": "packages/ads-sync/src/canary.ts",
-        "sha256": "a3938b2e86a48847beefe88a0f8d13921f6fcfca7ffa051f59c354c9c957b171"
+        "sha256": "ebedf8f60293a8269b616e20f05dca9d2f4e7b1c27bf8871a14ff9d10325d919"
       },
       {
         "path": "packages/ads-sync/src/comparison.test.ts",
@@ -203,23 +203,35 @@
       },
       {
         "path": "packages/ads-sync/src/comparison.ts",
-        "sha256": "a9af802640b19100b8ff439b555fb6d4eb97b45a46b287a752c4af6f6c899b0f"
+        "sha256": "951d1e6af5ab40535aec5f439bfb6b80db757320e239ca7df9e401170461c46b"
       },
       {
         "path": "packages/ads-sync/src/config.ts",
-        "sha256": "904871a089c3a4afa514510eda059ce6f2affb25b407f3707dbfae6234cade50"
+        "sha256": "c51ccc10a76006f2a56a7e73c2c4977e77445796a81fea840d91c0f2b1fde585"
       },
       {
         "path": "packages/ads-sync/src/core.test.ts",
-        "sha256": "4056a22e974057b2ba1a7e6483c9267bdec5fe73992f0ed1b6ccdb798db49dff"
+        "sha256": "6ed992f501b51b70f371f0dcb61b5465f58077a3131ff88bd05d1d484579c827"
       },
       {
         "path": "packages/ads-sync/src/core.ts",
-        "sha256": "56e9b52b941bdf891c0ded852bc9adec78b3d7fa5998c46fbc3e8c1c66eadede"
+        "sha256": "d5fb1d4d2179856f00cadba725047b1ecade53f81d1363ce02395c5f40d6057c"
+      },
+      {
+        "path": "packages/ads-sync/src/google-ads.ts",
+        "sha256": "6c7aa3e10f0e46d62bbcc4cfaac81019ce9837f827b3f1d96df36de9ebda9140"
+      },
+      {
+        "path": "packages/ads-sync/src/google-search-console.test.ts",
+        "sha256": "5eedc820d40f1b0e717bf906ad3d30053ca49501013d74e9bf512257be2d1972"
+      },
+      {
+        "path": "packages/ads-sync/src/google-search-console.ts",
+        "sha256": "6501752bb638c8e4c71da8c91f014d6278dc62573a41aff466cf743c81c97b04"
       },
       {
         "path": "packages/ads-sync/src/index.ts",
-        "sha256": "66fd95ce6fa86675b49a59404ed124d5a41f19414773afa7df2d677c2f424d74"
+        "sha256": "094775df27319064374e0d7ed43349d281c4fb96fd108cc4683736cd15fc9fa5"
       },
       {
         "path": "packages/ads-sync/src/instance.test.ts",
@@ -227,7 +239,31 @@
       },
       {
         "path": "packages/ads-sync/src/instance.ts",
-        "sha256": "b7590133fd3ae22845768afed541c65da35298f824446b5d06f676c32100ac65"
+        "sha256": "21979b57ed0637e05aea0d40ef6dc5bdf77425eef7bfda0c7d47fb5bff2bc630"
+      },
+      {
+        "path": "packages/ads-sync/src/meta-ads.ts",
+        "sha256": "7be565627ad815838b4c130a4c4c2ebc2e55544b940942b266254ccf90c53b90"
+      },
+      {
+        "path": "packages/ads-sync/src/package-scripts.test.ts",
+        "sha256": "d2cb9613be50a455fa3735ff56b151578ba252d304f8bf2ed05cce483ae0fbb6"
+      },
+      {
+        "path": "packages/ads-sync/src/provider-contract.ts",
+        "sha256": "44406e57f8f4f2b815d6986064319343a94132da056d0df365b9836106e474f0"
+      },
+      {
+        "path": "packages/ads-sync/src/providers.test.ts",
+        "sha256": "7414af90719012b75ff6e2076820495e686614d1e6cb5e37131431c5420370f1"
+      },
+      {
+        "path": "packages/ads-sync/src/providers.ts",
+        "sha256": "90444940455b5217e9307598c51b2a3f1b39668bb60fb7f7472f7f79a2562997"
+      },
+      {
+        "path": "packages/ads-sync/src/sql.ts",
+        "sha256": "4ca2f6f37835e33f0628ccacbe006e22653aec1a37c100a336afd53a9e8b5075"
       },
       {
         "path": "packages/ads-sync/src/test-fixtures/meta-catalog.example.json",
@@ -235,7 +271,7 @@
       },
       {
         "path": "packages/ads-sync/src/tutorials/configure-connections.ts",
-        "sha256": "b31204afb17ea26feeb928c604ff29cfbb172dd816649dc1c45be9bc1dc3fea4"
+        "sha256": "4fd8d49c50bc1219fd02caddc95d05e5d32761084ff3a939fcfcdbdc10f18ad4"
       },
       {
         "path": "packages/ads-sync/src/tutorials/prepare-bounded-run.ts",
@@ -255,7 +291,7 @@
       },
       {
         "path": "packages/ads-sync/tsdown.config.ts",
-        "sha256": "e7ee6a55237f17a71ca911d0011a87a051dcbda178f4e0b714dbf673deaa7645"
+        "sha256": "c1d843a3cdd445396dcc2be0f1fb5c3ec4bc491242f8691e225f552fcbf9b7cc"
       },
       {
         "path": "packages/cli/package.json",
@@ -1371,21 +1407,21 @@
       },
       {
         "path": "public-release-manifest.json",
-        "sha256": "0b3892f26feb5517c57ea91f3585136342cca01efdc8874f4d8ddb33759e6b1e"
+        "sha256": "ba022923471b8a28c4b9001d2e1741c7e8a3bf1faf2c77270a3f482a212be654"
       },
       {
         "path": "README.md",
-        "sha256": "8b4724d746bab1dabb678a26a914f8b1f580b0cc4def65bb288d21e5bafba1e7"
+        "sha256": "a64801b179946b5f6eb72254259b842b31ff32db02e4a7ca8792b8b861514728"
       },
       {
         "path": "tsconfig.base.json",
         "sha256": "da044d00ebd5163e7554d30cb366c956b043e426919c02628e0a138f66b9fbf7"
       }
     ],
-    "sha256": "6cd9854946fa0b089ced6a54e29d7f7625a5ae160018f02a192ec852ed87ff38"
+    "sha256": "68f6ab4a8721c695a17c98742139407db914505e66d69b580f36cf9f06415e77"
   },
   "schemaVersion": 1,
   "source": {
-    "commit": "d839019674f3e2eb911fa8e0882d8fe933bd1686"
+    "commit": "0a691e553819878bb188c72aea2c36174efaeea9"
   }
 }

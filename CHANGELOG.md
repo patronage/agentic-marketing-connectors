@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2026-08-18
+
+`@patronage/ads-sync` 0.2.0. Provider interface, Google Search Console source, and named entry points for `providers`, `google-ads`, `google-search-console`, `meta-ads`, and `sql`.
+
+Other npm packages stay on 0.1.0 `latest`.
+
 ## 0.1.0 - 2026-08-13
 
 First public npm cut from this generated repository.

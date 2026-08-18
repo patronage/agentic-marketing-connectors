@@ -1,4 +1,4 @@
-import type { AdsSyncProvider } from "./core.js";
+import type { AdsSyncProvider } from "./provider-contract.js";
 
 export type HistoricalComparisonMetric =
   | "clicks"
@@ -7,7 +7,7 @@ export type HistoricalComparisonMetric =
   | "impressions"
   | "spend";
 
-export type HistoricalComparisonEntity = "campaign";
+export type HistoricalComparisonEntity = "campaign" | "query_page";
 
 export interface HistoricalComparisonWindow {
   endDate: string;
@@ -147,6 +147,10 @@ export const historicalComparisonStabilityPolicies = {
     minStableDays: 30,
     name: "google_ads_conversion_lag",
   },
+  google_search_console: {
+    minStableDays: 7,
+    name: "google_search_console_data_finalization",
+  },
   meta_ads: {
     minStableDays: 28,
     name: "meta_ads_attribution_restatement",
@@ -164,6 +168,14 @@ export const historicalProviderApiReadSpecs = {
       "Read campaign/day metrics from Google Ads over stable historical windows matching ads_sync_reporting.ads_campaign_daily.",
     stableWindowGuidance:
       "Choose windows old enough for conversion lag to settle; document any accepted conversion restatement deltas.",
+  },
+  google_search_console: {
+    entity: "query_page",
+    metrics: ["impressions", "clicks"],
+    notes:
+      "Read query+page Search Analytics rows from the live GSC API over stable historical windows matching ads_sync_reporting.gsc_query_page_daily. Organic rows have no spend or conversion metrics.",
+    stableWindowGuidance:
+      "Choose windows at least 7 days old so Google's 2-3 day Search Analytics finalization lag has settled.",
   },
   meta_ads: {
     entity: "campaign",

@@ -20,6 +20,6 @@ describe("reference deployment provider contract", () => {
   it("exposes launch provider summaries", () => {
     expect(
       referenceDeploymentProviders.map(({ provider }) => provider)
-    ).toStrictEqual(["google_ads", "meta_ads"]);
+    ).toStrictEqual(["google_ads", "google_search_console", "meta_ads"]);
   });
 });

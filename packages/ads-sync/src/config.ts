@@ -4,11 +4,22 @@ import {
   defaultConnectionId,
   defaultSyncConnectionDefinition,
   configuredCatalogForSelectedStreams,
-  providerDefinitions,
 } from "./core.js";
-import type { AdsSyncProvider, SyncConnectionDefinition } from "./core.js";
+import type { SyncConnectionDefinition } from "./core.js";
+import { googleAdsProvider } from "./google-ads.js";
+import { googleSearchConsoleProvider } from "./google-search-console.js";
+import { metaAdsProvider } from "./meta-ads.js";
+import type {
+  AdsSyncProvider,
+  AdsSyncProviderModule,
+} from "./provider-contract.js";
+import { providerDefinitions } from "./providers.js";
 
-const providerIdSchema = z.enum(["google_ads", "meta_ads"]);
+const providerIdSchema = z.enum([
+  "google_ads",
+  "google_search_console",
+  "meta_ads",
+]);
 
 export const adsSyncConnectionConfigSchema = z.object({
   catalog: z.unknown(),
@@ -119,46 +130,33 @@ export function defineProvider<TDefinition extends SupportedProviderDefinition>(
   return definition;
 }
 
+function supportedProviderDefinition(
+  module: AdsSyncProviderModule
+): SupportedProviderDefinition {
+  return {
+    backfillPolicy: module.backfillPolicy,
+    defaultAirbyteSchema: module.defaultAirbyteSchema,
+    displayName: module.displayName,
+    id: module.id,
+    rateLimitPolicy: module.rateLimitPolicy,
+    reportingViews: module.reportingViews,
+    sourceImage: module.sourceImage,
+  };
+}
+
 export const supportedProviderDefinitions = {
-  google_ads: defineProvider({
-    backfillPolicy: {
-      maxWindowsPerRun: 8,
-      windowStepDays: 7,
-    },
-    defaultAirbyteSchema: providerDefinitions.google_ads.defaultAirbyteSchema,
-    displayName: providerDefinitions.google_ads.displayName,
-    id: "google_ads",
-    rateLimitPolicy: {},
-    reportingViews: ["ads_sync_reporting.ads_campaign_daily"],
-    sourceImage:
-      "airbyte/source-google-ads:6.1.0@sha256:dea39deedba0a095f60159d808dfb47fa778e304846396d2ab2f04c951b480ed",
-  }),
-  meta_ads: defineProvider({
-    backfillPolicy: {
-      maxWindowsPerRun: 4,
-      windowStepDays: 3,
-    },
-    defaultAirbyteSchema: providerDefinitions.meta_ads.defaultAirbyteSchema,
-    displayName: providerDefinitions.meta_ads.displayName,
-    id: "meta_ads",
-    rateLimitPolicy: {
-      cooldownSeconds: 60 * 60,
-      stopOnCode: 17,
-    },
-    reportingViews: [
-      "ads_sync_reporting.ads_campaign_daily",
-      "ads_sync_reporting.ads_group_daily",
-      "ads_sync_reporting.ads_ad_daily",
-      "ads_sync_reporting.meta_ad_creative_context",
-    ],
-    sourceImage:
-      "airbyte/source-facebook-marketing:5.2.11@sha256:4d6c916b29862ded4b5b94feea0b8ef75899f34c364e4884312e50414b6d447c",
-  }),
+  google_ads: defineProvider(supportedProviderDefinition(googleAdsProvider)),
+  google_search_console: defineProvider(
+    supportedProviderDefinition(googleSearchConsoleProvider)
+  ),
+  meta_ads: defineProvider(supportedProviderDefinition(metaAdsProvider)),
 } as const satisfies Record<AdsSyncProvider, SupportedProviderDefinition>;
 
 export const supportedImageVersions = {
   destination:
     "airbyte/destination-postgres:3.0.13@sha256:0b310bd46ba0e006757ea3dc1d3b8ef8e3bcf51c3a96f5460a836653b5ac4f4c",
   google_ads: supportedProviderDefinitions.google_ads.sourceImage,
+  google_search_console:
+    supportedProviderDefinitions.google_search_console.sourceImage,
   meta_ads: supportedProviderDefinitions.meta_ads.sourceImage,
 } as const;

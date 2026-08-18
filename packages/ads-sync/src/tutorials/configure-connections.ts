@@ -71,6 +71,9 @@ const tutorialSourceConfigs = {
     customer_id: "0000000000",
     login_customer_id: "1111111111",
   },
+  google_search_console: {
+    site_urls: ["https://example.org/"],
+  },
   meta_ads: {
     account_ids: ["act_0000000000"],
   },

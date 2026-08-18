@@ -23,7 +23,7 @@
       "description": "Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines.",
       "name": "@patronage/ads-sync",
       "publicPath": "packages/ads-sync",
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     {
       "description": "Minimal local CLI harness for Patronage Open Source Core",

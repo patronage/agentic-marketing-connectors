@@ -16,9 +16,29 @@
       "types": "./src/index.ts",
       "default": "./dist/index.mjs"
     },
+    "./google-ads": {
+      "types": "./src/google-ads.ts",
+      "default": "./dist/google-ads.mjs"
+    },
+    "./google-search-console": {
+      "types": "./src/google-search-console.ts",
+      "default": "./dist/google-search-console.mjs"
+    },
     "./instance": {
       "types": "./src/instance.ts",
       "default": "./dist/instance.mjs"
+    },
+    "./meta-ads": {
+      "types": "./src/meta-ads.ts",
+      "default": "./dist/meta-ads.mjs"
+    },
+    "./providers": {
+      "types": "./src/providers.ts",
+      "default": "./dist/providers.mjs"
+    },
+    "./sql": {
+      "types": "./src/sql.ts",
+      "default": "./dist/sql.mjs"
     }
   },
   "files": [
@@ -37,9 +57,29 @@
         "types": "./dist/index.d.mts",
         "default": "./dist/index.mjs"
       },
+      "./google-ads": {
+        "types": "./dist/google-ads.d.mts",
+        "default": "./dist/google-ads.mjs"
+      },
+      "./google-search-console": {
+        "types": "./dist/google-search-console.d.mts",
+        "default": "./dist/google-search-console.mjs"
+      },
       "./instance": {
         "types": "./dist/instance.d.mts",
         "default": "./dist/instance.mjs"
+      },
+      "./meta-ads": {
+        "types": "./dist/meta-ads.d.mts",
+        "default": "./dist/meta-ads.mjs"
+      },
+      "./providers": {
+        "types": "./dist/providers.d.mts",
+        "default": "./dist/providers.mjs"
+      },
+      "./sql": {
+        "types": "./dist/sql.d.mts",
+        "default": "./dist/sql.mjs"
       }
     }
   },
@@ -50,10 +90,11 @@
   },
   "scripts": {
     "build": "tsdown",
+    "check": "pnpm build && pnpm typecheck && pnpm test",
     "prepack": "pnpm build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "type": "module",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

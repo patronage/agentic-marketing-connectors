@@ -18,6 +18,9 @@ const planetScaleBranchIdSchema = z
 const cloudflareNamespaceIdSchema = z.string().regex(/^[a-f0-9]{32}$/u);
 const adsSyncContainerNamespaceIdsSchema = z.strictObject({
   AIRBYTE_GOOGLE_ADS_SOURCE: cloudflareNamespaceIdSchema,
+  // Optional until an attended lifecycle operation deploys the GSC
+  // container and records its live Durable Object namespace id.
+  AIRBYTE_GOOGLE_SEARCH_CONSOLE_SOURCE: cloudflareNamespaceIdSchema.optional(),
   AIRBYTE_META_ADS_SOURCE: cloudflareNamespaceIdSchema,
   AIRBYTE_POSTGRES_DESTINATION: cloudflareNamespaceIdSchema,
 });
@@ -57,6 +60,7 @@ export const adsSyncInstanceModeSchema = z.enum([
 
 export const adsSyncConnectionProfileSchema = z.enum([
   "google_ads_default",
+  "google_search_console_default",
   "meta_ads_performance",
   "meta_ads_metadata",
 ]);
@@ -217,6 +221,7 @@ export type AdsSyncInstanceSpecInput = z.input<
 
 const profileProvider = {
   google_ads_default: "google_ads",
+  google_search_console_default: "google_search_console",
   meta_ads_metadata: "meta_ads",
   meta_ads_performance: "meta_ads",
 } as const;
@@ -225,6 +230,10 @@ const providerSecrets = {
   google_ads: {
     required: ["GOOGLE_ADS_SOURCE_CONFIG_JSON"],
     optional: ["GOOGLE_ADS_SOURCE_STATE_JSON"],
+  },
+  google_search_console: {
+    required: ["GOOGLE_SEARCH_CONSOLE_SOURCE_CONFIG_JSON"],
+    optional: ["GOOGLE_SEARCH_CONSOLE_SOURCE_STATE_JSON"],
   },
   meta_ads: {
     required: ["META_ADS_SOURCE_CONFIG_JSON"],

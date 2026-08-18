@@ -37,8 +37,16 @@ import metaCatalog from "./test-fixtures/meta-catalog.example.json" with { type:
 
 describe(requestedProviders, () => {
   it("defaults to all providers", () => {
-    expect(requestedProviders()).toStrictEqual(["google_ads", "meta_ads"]);
-    expect(requestedProviders("all")).toStrictEqual(["google_ads", "meta_ads"]);
+    expect(requestedProviders()).toStrictEqual([
+      "google_ads",
+      "google_search_console",
+      "meta_ads",
+    ]);
+    expect(requestedProviders("all")).toStrictEqual([
+      "google_ads",
+      "google_search_console",
+      "meta_ads",
+    ]);
   });
 
   it("accepts one provider or a deduped provider list", () => {
@@ -610,6 +618,8 @@ describe("supported providers", () => {
         "airbyte/destination-postgres:3.0.13@sha256:0b310bd46ba0e006757ea3dc1d3b8ef8e3bcf51c3a96f5460a836653b5ac4f4c",
       google_ads:
         "airbyte/source-google-ads:6.1.0@sha256:dea39deedba0a095f60159d808dfb47fa778e304846396d2ab2f04c951b480ed",
+      google_search_console:
+        "airbyte/source-google-search-console:2.1.9@sha256:3ee78d227a25ec01a31b9f131b1b8d80afd6e3aaf0c0c2f1b09c7973190465b3",
       meta_ads:
         "airbyte/source-facebook-marketing:5.2.11@sha256:4d6c916b29862ded4b5b94feea0b8ef75899f34c364e4884312e50414b6d447c",
     });
