@@ -1,0 +1,15 @@
+# Meta Ads source image for Ads Sync.
+# Build: see build-images.sh (one command builds and optionally pushes all images).
+FROM airbyte/source-facebook-marketing:5.2.11@sha256:4d6c916b29862ded4b5b94feea0b8ef75899f34c364e4884312e50414b6d447c
+
+USER root
+WORKDIR /airbyte/integration_code
+
+COPY airbyte-source-server.py /app/airbyte-source-server.py
+
+ENV AIRBYTE_CONNECTOR_COMMAND="/entrypoint.sh"
+ENV AIRBYTE_CONNECTOR_IMAGE="airbyte/source-facebook-marketing:5.2.11@sha256:4d6c916b29862ded4b5b94feea0b8ef75899f34c364e4884312e50414b6d447c"
+ENV AIRBYTE_CONNECTOR_SERVICE="airbyte-facebook-marketing-source"
+
+EXPOSE 8080
+ENTRYPOINT ["python3", "/app/airbyte-source-server.py"]

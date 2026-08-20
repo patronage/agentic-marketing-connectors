@@ -3,4 +3,105 @@
   "name": "patronage-ads-sync-reference-deploy",
   "main": "src/worker.ts",
   "compatibility_date": "2026-06-18",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+  },
+  // One Cron trigger, one Sync Connection. The tick reads from the committed
+  // watermark to the provider's Final-Data Horizon and records
+  // `no_new_final_data` when the horizon has not moved. Cloudflare Cron
+  // schedules are UTC.
+  "triggers": {
+    "crons": ["0 6 * * *"],
+  },
+  "vars": {
+    // Provisional reads are an explicit, audited mode; "true" enables them.
+    "SCHEDULE_PROVISIONAL_READS": "false",
+    // Optional overrides. Empty keeps the provider defaults.
+    "SCHEDULE_FINAL_DATA_LAG_DAYS": "",
+    "SCHEDULE_INITIAL_LOOKBACK_DAYS": "",
+  },
+  // Replace the placeholder ids with the resources you created for this
+  // deployment. Secrets (ADS_SYNC_RUNNER_TOKEN, POSTGRES_DESTINATION_CONFIG_JSON,
+  // provider source-config and state secrets) are Worker secrets, or local
+  // Wrangler dev vars, never vars in this file.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "00000000000000000000000000000000",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ADS_SYNC_RAW_BUCKET",
+      "bucket_name": "ads-sync-raw",
+    },
+  ],
+  "containers": [
+    {
+      "class_name": "AirbyteGoogleAdsSourceContainer",
+      "image": "./images/Dockerfile",
+      "instance_type": "standard-1",
+      "max_instances": 2,
+    },
+    {
+      "class_name": "AirbyteGoogleSearchConsoleSourceContainer",
+      "image": "./images/Dockerfile.gsc",
+      "instance_type": "standard-1",
+      "max_instances": 2,
+    },
+    {
+      "class_name": "AirbyteMetaAdsSourceContainer",
+      "image": "./images/Dockerfile.meta",
+      "instance_type": "standard-1",
+      "max_instances": 2,
+    },
+    {
+      "class_name": "AirbytePostgresDestinationContainer",
+      "image": "./images/Dockerfile.postgres",
+      "instance_type": "standard-1",
+      "max_instances": 2,
+    },
+  ],
+  // `RUN_DISPATCHER` executes queued runs (Cron and `POST /runs`) from a
+  // Durable Object alarm, so no run depends on the invocation that planned it.
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RUN_DISPATCHER",
+        "class_name": "RunDispatcher",
+      },
+      {
+        "name": "AIRBYTE_GOOGLE_ADS_SOURCE",
+        "class_name": "AirbyteGoogleAdsSourceContainer",
+      },
+      {
+        "name": "AIRBYTE_GOOGLE_SEARCH_CONSOLE_SOURCE",
+        "class_name": "AirbyteGoogleSearchConsoleSourceContainer",
+      },
+      {
+        "name": "AIRBYTE_META_ADS_SOURCE",
+        "class_name": "AirbyteMetaAdsSourceContainer",
+      },
+      {
+        "name": "AIRBYTE_POSTGRES_DESTINATION",
+        "class_name": "AirbytePostgresDestinationContainer",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "AirbyteGoogleAdsSourceContainer",
+        "AirbyteGoogleSearchConsoleSourceContainer",
+        "AirbyteMetaAdsSourceContainer",
+        "AirbytePostgresDestinationContainer",
+      ],
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["RunDispatcher"],
+    },
+  ],
 }

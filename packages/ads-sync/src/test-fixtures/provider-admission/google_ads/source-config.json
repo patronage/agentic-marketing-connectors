@@ -1,0 +1,21 @@
+{
+  "conversion_window_days": 14,
+  "credentials": {
+    "auth_type": "Client",
+    "client_id": "<oauth-client-id>",
+    "client_secret": "<oauth-client-secret>",
+    "developer_token": "<google-ads-developer-token>",
+    "refresh_token": "<oauth-refresh-token>"
+  },
+  "custom_queries_array": [
+    {
+      "query": "SELECT segments.date, customer.id, campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value FROM campaign WHERE segments.date DURING LAST_7_DAYS",
+      "table_name": "campaign_daily_performance"
+    }
+  ],
+  "customer_id": "1234567890",
+  "customer_status_filter": ["ENABLED"],
+  "login_customer_id": "1234567890",
+  "num_workers": 2,
+  "start_date": "2026-05-01"
+}

@@ -348,6 +348,64 @@ export function enforceTextArtifactLimits(
   }
 }
 
+/**
+ * Bounds a text artifact that must persist even when it is oversized, such as
+ * connector stderr. Keeps the leading text inside `maxSourceStdoutBytes` and
+ * `maxLines` and ends a truncated artifact with a marker line that names the
+ * dropped byte count. Text inside both bounds is returned unchanged.
+ */
+export function truncateTextArtifact(
+  text: string,
+  limits: Pick<ArtifactLimitConfig, "maxLines" | "maxSourceStdoutBytes">
+) {
+  const byteCount = utf8ByteLength(text);
+  const lineCount = countNonEmptyLines(text);
+  if (
+    byteCount <= limits.maxSourceStdoutBytes &&
+    lineCount <= limits.maxLines
+  ) {
+    return text;
+  }
+  // The marker is one more non-empty line, so keep one line of budget for it.
+  let kept = text;
+  const lineBudget = Math.max(0, limits.maxLines - 1);
+  if (lineCount > lineBudget) {
+    let remaining = lineBudget;
+    let end = 0;
+    for (const line of text.split("\n")) {
+      if (line.trim().length > 0) {
+        if (remaining === 0) {
+          break;
+        }
+        remaining -= 1;
+      }
+      end += line.length + 1;
+    }
+    kept = text.slice(0, Math.min(end, text.length));
+  }
+  const keptBytes = utf8ByteLength(kept);
+  const budget =
+    limits.maxSourceStdoutBytes - utf8ByteLength(truncationMarker(byteCount));
+  if (keptBytes > budget) {
+    kept = truncateUtf8(kept, Math.max(0, budget));
+  }
+  return `${kept}${truncationMarker(byteCount - utf8ByteLength(kept))}`;
+}
+
+function truncationMarker(droppedBytes: number) {
+  return `\n… [truncated ${droppedBytes} bytes at artifact limits]\n`;
+}
+
+function truncateUtf8(text: string, maxBytes: number) {
+  const bytes = new TextEncoder().encode(text);
+  if (bytes.length <= maxBytes) {
+    return text;
+  }
+  return new TextDecoder("utf-8", { fatal: false, ignoreBOM: false })
+    .decode(bytes.subarray(0, maxBytes))
+    .replace(/�+$/u, "");
+}
+
 export function stampConfiguredCatalog(
   catalog: unknown,
   generationId = Date.now()

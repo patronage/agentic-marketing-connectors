@@ -31,6 +31,7 @@ import {
   supportedImageVersions,
   supportedProviderDefinitions,
   syncConnectionDefinitionFromConfig,
+  truncateTextArtifact,
   validateCatalogForReporting,
 } from "./index.js";
 import metaCatalog from "./test-fixtures/meta-catalog.example.json" with { type: "json" };
@@ -297,6 +298,28 @@ describe("artifact manifests", () => {
         maxSourceStdoutBytes: 100,
       })
     ).toThrow(/above limit 1/u);
+  });
+});
+
+describe(truncateTextArtifact, () => {
+  const limits = { maxLines: 3, maxSourceStdoutBytes: 64 };
+
+  it("returns text inside both bounds unchanged", () => {
+    expect(truncateTextArtifact("a\nb\nc\n", limits)).toBe("a\nb\nc\n");
+  });
+
+  it("keeps the leading lines and ends with a marker inside the line bound", () => {
+    const bounded = truncateTextArtifact("a\nb\nc\nd\ne\n", limits);
+    expect(bounded.startsWith("a\nb\n")).toBeTruthy();
+    expect(bounded).not.toContain("c\n");
+    expect(bounded).toMatch(/\[truncated \d+ bytes at artifact limits\]/u);
+    expect(bounded.split("\n").filter((line) => line.trim())).toHaveLength(3);
+  });
+
+  it("keeps the byte count inside the byte bound", () => {
+    const bounded = truncateTextArtifact("é".repeat(200), limits);
+    expect(new TextEncoder().encode(bounded).length).toBeLessThanOrEqual(64);
+    expect(bounded).toContain("[truncated");
   });
 });
 

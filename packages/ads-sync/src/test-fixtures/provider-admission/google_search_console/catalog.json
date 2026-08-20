@@ -1,0 +1,39 @@
+{
+  "streams": [
+    {
+      "cursor_field": ["date"],
+      "destination_sync_mode": "append_dedup",
+      "generation_id": 0,
+      "minimum_generation_id": 0,
+      "primary_key": [
+        ["site_url"],
+        ["search_type"],
+        ["date"],
+        ["query"],
+        ["page"]
+      ],
+      "stream": {
+        "json_schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "additionalProperties": true,
+          "properties": {
+            "clicks": { "type": ["null", "integer"] },
+            "ctr": { "type": ["null", "number"] },
+            "date": { "format": "date", "type": ["null", "string"] },
+            "impressions": { "type": ["null", "integer"] },
+            "page": { "type": ["null", "string"] },
+            "position": { "type": ["null", "number"] },
+            "query": { "type": ["null", "string"] },
+            "search_type": { "type": ["null", "string"] },
+            "site_url": { "type": ["null", "string"] }
+          },
+          "type": "object"
+        },
+        "name": "search_analytics_query_page",
+        "supported_sync_modes": ["full_refresh", "incremental"]
+      },
+      "sync_id": 0,
+      "sync_mode": "incremental"
+    }
+  ]
+}

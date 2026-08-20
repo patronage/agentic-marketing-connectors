@@ -1,0 +1,7 @@
+# Wrangler local dev vars hold the provider source config and the Postgres
+# destination config. Never commit them.
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+# Wrangler local state can persist secrets.
+.wrangler/

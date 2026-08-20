@@ -3,6 +3,17 @@ import path from "node:path";
 
 const deployRoot = path.resolve(new URL("..", import.meta.url).pathname);
 const packageRoot = path.resolve(deployRoot, "..");
+const packageManifest = JSON.parse(
+  readFileSync(path.join(packageRoot, "package.json"), "utf-8")
+) as { exports: Record<string, unknown>; name: string };
+/** Public entry points: the package `exports` map, resolved to specifiers. */
+const publicEntryPoints = new Set(
+  Object.keys(packageManifest.exports).map((subpath) =>
+    subpath === "."
+      ? packageManifest.name
+      : `${packageManifest.name}/${subpath.slice(2)}`
+  )
+);
 const importPattern =
   /(?:import|export)\s+(?:type\s+)?(?:[^"']*?\s+from\s+)?["'](?<staticImport>[^"']+)["']|import\s*\(\s*["'](?<dynamicImport>[^"']+)["']\s*\)|require\s*\(\s*["'](?<requiredImport>[^"']+)["']\s*\)/gu;
 const violations: string[] = [];
@@ -51,11 +62,11 @@ function internalPackageImports(filePath: string, contents: string) {
       match.groups?.staticImport ??
       match.groups?.dynamicImport ??
       match.groups?.requiredImport;
-    if (!specifier || specifier === "@patronage/ads-sync") {
+    if (!specifier || publicEntryPoints.has(specifier)) {
       continue;
     }
 
-    if (specifier.startsWith("@patronage/ads-sync/")) {
+    if (specifier.startsWith(`${packageManifest.name}/`)) {
       specifiers.push(specifier);
       continue;
     }

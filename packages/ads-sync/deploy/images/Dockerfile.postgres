@@ -1,0 +1,40 @@
+# Postgres destination image for Ads Sync.
+# Build: see build-images.sh (one command builds and optionally pushes all images).
+FROM airbyte/destination-postgres:3.0.13@sha256:0b310bd46ba0e006757ea3dc1d3b8ef8e3bcf51c3a96f5460a836653b5ac4f4c
+
+# POSTGRES_SCHEMA_MODE selects who owns schema DDL:
+#   airbyte_owned (default) keeps the upstream CREATE SCHEMA IF NOT EXISTS.
+#     This is the single-tenant mode: the writer role has database CREATE.
+#   preprovisioned applies the exact-match jar patch that turns only the
+#     namespace statement into a no-op (friction #22). The operator must create
+#     the final and raw schemas first. The build fails when the pinned
+#     connector bytecode drifts.
+ARG POSTGRES_SCHEMA_MODE=airbyte_owned
+
+USER root
+WORKDIR /airbyte/integration_code
+
+COPY airbyte-source-server.py /app/airbyte-source-server.py
+COPY patch-postgres-preprovisioned-schema.py /app/patch-postgres-preprovisioned-schema.py
+COPY pin-postgres-java-cacerts.sh /app/pin-postgres-java-cacerts.sh
+
+RUN case "$POSTGRES_SCHEMA_MODE" in \
+      airbyte_owned) echo "POSTGRES_SCHEMA_MODE=airbyte_owned: upstream schema DDL kept" ;; \
+      preprovisioned) python3 /app/patch-postgres-preprovisioned-schema.py ;; \
+      *) echo "POSTGRES_SCHEMA_MODE must be airbyte_owned or preprovisioned" >&2; exit 1 ;; \
+    esac
+
+# Cloudflare Containers run this image with a java.home whose default cacerts
+# lookup does not resolve (friction #21). Pin a readable, non-symlinked copy so
+# verify-full stays fail-closed instead of downgrading TLS verification.
+RUN sh /app/pin-postgres-java-cacerts.sh /etc/pki/ca-trust/extracted/java/cacerts /app/java-cacerts
+ENV AIRBYTE_JAVA_TRUST_STORE="/app/java-cacerts"
+ENV DESTINATION_POSTGRES_OPTS="-Djavax.net.ssl.trustStore=/app/java-cacerts -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=JKS"
+
+ENV AIRBYTE_CONNECTOR_COMMAND="/airbyte/base.sh"
+ENV AIRBYTE_CONNECTOR_IMAGE="airbyte/destination-postgres:3.0.13@sha256:0b310bd46ba0e006757ea3dc1d3b8ef8e3bcf51c3a96f5460a836653b5ac4f4c"
+ENV AIRBYTE_CONNECTOR_SERVICE="airbyte-postgres-destination"
+ENV AIRBYTE_IMAGE_BUILD_OPTIONS="postgres_schema_mode=$POSTGRES_SCHEMA_MODE"
+
+EXPOSE 8080
+ENTRYPOINT ["python3", "/app/airbyte-source-server.py"]

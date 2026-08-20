@@ -8,11 +8,19 @@ import { googleSearchConsoleProvider } from "./google-search-console.js";
 import { metaAdsProvider } from "./meta-ads.js";
 import { catalogDriftIssues, isRecord } from "./provider-contract.js";
 import type {
+  AccessTokenSourceConfigInput,
   AdsSyncProvider,
   AdsSyncProviderModule,
   CampaignDailyRecord,
   CatalogDriftIssue,
+  ConfiguredCatalog,
   SourceReportingWindow,
+} from "./provider-contract.js";
+
+export type {
+  AccessTokenSourceConfigInput,
+  ConfiguredCatalog,
+  ConfiguredCatalogStream,
 } from "./provider-contract.js";
 
 export const providerModules = {
@@ -100,6 +108,47 @@ export function sourceConfigForReporting(
     catalog,
     options
   );
+}
+
+/** Returns the fully configured catalog the provider module ships. */
+export function configuredCatalogForProvider(
+  provider: AdsSyncProvider
+): ConfiguredCatalog {
+  return providerModules[provider].configuredCatalog;
+}
+
+/** Providers whose module ships an access-token-only source-config builder. */
+export type AccessTokenSourceConfigProvider = {
+  [P in AdsSyncProvider]: (typeof providerModules)[P] extends {
+    accessTokenSourceConfig: (
+      input: AccessTokenSourceConfigInput
+    ) => Record<string, unknown>;
+  }
+    ? P
+    : never;
+}[AdsSyncProvider];
+
+export const accessTokenSourceConfigProviders = supportedProviders.filter(
+  (provider): provider is AccessTokenSourceConfigProvider =>
+    typeof providerModule(provider).accessTokenSourceConfig === "function"
+);
+
+/**
+ * Builds the access-token-only source configuration for one provider.
+ * Throws for a provider whose pinned source image requires OAuth refresh-token
+ * credentials, so the caller never ships a config the image rejects.
+ */
+export function accessTokenSourceConfigForProvider(
+  provider: AccessTokenSourceConfigProvider,
+  input: AccessTokenSourceConfigInput
+): Record<string, unknown> {
+  const build = providerModule(provider).accessTokenSourceConfig;
+  if (!build) {
+    throw new Error(
+      `${provider} has no access-token-only source config; supported providers: ${accessTokenSourceConfigProviders.join(", ")}`
+    );
+  }
+  return build(input);
 }
 
 export function normalizeCampaignDailyRecord(

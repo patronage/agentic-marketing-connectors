@@ -10,6 +10,7 @@ export default defineConfig({
     "src/google-ads.ts",
     "src/google-search-console.ts",
     "src/meta-ads.ts",
+    "src/run.ts",
     "src/sql.ts",
   ],
   format: ["esm"],

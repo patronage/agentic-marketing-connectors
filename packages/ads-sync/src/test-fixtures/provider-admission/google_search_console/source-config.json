@@ -1,0 +1,17 @@
+{
+  "authorization": {
+    "auth_type": "Client",
+    "client_id": "<oauth-client-id>",
+    "client_secret": "<oauth-client-secret>",
+    "refresh_token": "<oauth-refresh-token-with-webmasters-readonly-scope>"
+  },
+  "custom_reports_array": [
+    {
+      "dimensions": ["query", "page"],
+      "name": "search_analytics_query_page"
+    }
+  ],
+  "data_state": "final",
+  "site_urls": ["https://example.org/"],
+  "start_date": "2026-01-01"
+}

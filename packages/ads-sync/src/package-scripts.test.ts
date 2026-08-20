@@ -17,7 +17,7 @@ describe("package check script", () => {
     );
   });
 
-  it("is the 0.2.0 release unit", () => {
-    expect(packageJson.version).toBe("0.2.0");
+  it("is the 0.3.0 release unit", () => {
+    expect(packageJson.version).toBe("0.3.0");
   });
 });

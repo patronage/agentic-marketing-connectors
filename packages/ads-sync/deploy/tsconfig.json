@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "noEmit": true,
     "types": [
-      "@cloudflare/workers-types"
+      "@cloudflare/workers-types",
+      "node"
     ]
   },
   "extends": "../../../tsconfig.base.json",
   "include": [
-    "src/**/*"
+    "ads-sync.config.ts",
+    "config/**/*.json",
+    "src/**/*",
+    "images/**/*.test.ts",
+    "scripts/**/*"
   ]
 }

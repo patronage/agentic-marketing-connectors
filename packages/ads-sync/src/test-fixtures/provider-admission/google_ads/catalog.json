@@ -1,0 +1,74 @@
+{
+  "streams": [
+    {
+      "cursor_field": [],
+      "destination_sync_mode": "append",
+      "primary_key": [],
+      "stream": {
+        "name": "campaign_daily_performance",
+        "json_schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "campaign.advertising_channel_type": {
+              "type": "string",
+              "enum": [
+                "DEMAND_GEN",
+                "DISPLAY",
+                "HOTEL",
+                "LOCAL",
+                "LOCAL_SERVICES",
+                "MULTI_CHANNEL",
+                "PERFORMANCE_MAX",
+                "SEARCH",
+                "SHOPPING",
+                "SMART",
+                "TRAVEL",
+                "UNKNOWN",
+                "UNSPECIFIED",
+                "VIDEO"
+              ]
+            },
+            "campaign.id": {
+              "type": ["integer", "null"]
+            },
+            "campaign.name": {
+              "type": ["string", "null"]
+            },
+            "campaign.status": {
+              "type": "string",
+              "enum": ["ENABLED", "PAUSED", "REMOVED", "UNKNOWN", "UNSPECIFIED"]
+            },
+            "customer.id": {
+              "type": ["integer", "null"]
+            },
+            "metrics.clicks": {
+              "type": ["integer", "null"]
+            },
+            "metrics.conversions": {
+              "type": ["number", "null"]
+            },
+            "metrics.conversions_value": {
+              "type": ["number", "null"]
+            },
+            "metrics.cost_micros": {
+              "type": ["integer", "null"]
+            },
+            "metrics.impressions": {
+              "type": ["integer", "null"]
+            },
+            "segments.date": {
+              "type": ["string", "null"],
+              "format": "date"
+            }
+          },
+          "additionalProperties": true
+        },
+        "supported_sync_modes": ["full_refresh"],
+        "is_resumable": false,
+        "is_file_based": false
+      },
+      "sync_mode": "full_refresh"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ Public release monorepo for Patronage's agentic marketing connector packages.
 
 | Package | Version | Path | Description |
 | --- | --- | --- | --- |
-| `@patronage/ads-sync` | 0.2.0 | `packages/ads-sync` | Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines. |
+| `@patronage/ads-sync` | 0.3.0 | `packages/ads-sync` | Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines. |
 | `@patronage/cli` | 0.0.0 | `packages/cli` | Minimal local CLI harness for Patronage Open Source Core |
 | `@patronage/connector-lifecycle` | 0.1.0 | `packages/connector-lifecycle` | Provider-neutral guarded mutation lifecycle contracts |
 | `@patronage/google-ads` | 0.1.0 | `packages/google-ads` | Worker-safe Google Ads primitives for Patronage Core |
@@ -21,7 +21,7 @@ Public release monorepo for Patronage's agentic marketing connector packages.
 
 These packages are on npm as `latest` at the versions in the table:
 
-- `@patronage/ads-sync` 0.2.0
+- `@patronage/ads-sync` 0.3.0
 - `@patronage/connector-lifecycle` 0.1.0
 - `@patronage/google-ads` 0.1.0
 - `@patronage/linkedin-ads` 0.1.0
@@ -32,7 +32,7 @@ These packages are on npm as `latest` at the versions in the table:
 Install from the public registry:
 
 ```sh
-pnpm add @patronage/ads-sync@0.2.0
+pnpm add @patronage/ads-sync@0.3.0
 pnpm add @patronage/connector-lifecycle@0.1.0
 pnpm add @patronage/google-ads@0.1.0
 pnpm add @patronage/linkedin-ads@0.1.0

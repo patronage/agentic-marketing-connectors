@@ -4,19 +4,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm --filter @patronage/ads-sync build && wrangler deploy --dry-run --config wrangler.jsonc",
+    "build": "pnpm --filter @patronage/ads-sync build && wrangler deploy --dry-run --containers-rollout none --config wrangler.jsonc",
     "check": "pnpm typecheck && pnpm test && pnpm check:public-imports",
     "check:public-imports": "node --experimental-strip-types ./scripts/check-public-imports.ts",
     "deploy": "pnpm --filter @patronage/ads-sync build && wrangler deploy --config wrangler.jsonc",
     "dev": "pnpm --filter @patronage/ads-sync build && wrangler dev --config wrangler.jsonc --ip 127.0.0.1 --port 8796",
+    "provider-admission": "pnpm --filter @patronage/ads-sync build && node --experimental-strip-types ./scripts/provider-admission.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:images": "bash ./images/build-images.sh"
   },
   "dependencies": {
-    "@patronage/ads-sync": "workspace:*"
+    "@cloudflare/containers": "0.3.7",
+    "@patronage/ads-sync": "workspace:*",
+    "postgres": "^3.4.9"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260710.1",
+    "@types/node": "24.13.3",
     "typescript": "7.0.2",
     "vitest": "4.1.10",
     "wrangler": "4.110.0"

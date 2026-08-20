@@ -4,6 +4,7 @@
   },
   "description": "Composable Ads Sync ingestion primitives for Cloudflare-hosted ad platform data pipelines.",
   "devDependencies": {
+    "postgres": "^3.4.9",
     "tsdown": "0.22.4",
     "typescript": "7.0.2",
     "vitest": "4.1.10"
@@ -36,6 +37,10 @@
       "types": "./src/providers.ts",
       "default": "./dist/providers.mjs"
     },
+    "./run": {
+      "types": "./src/run.ts",
+      "default": "./dist/run.mjs"
+    },
     "./sql": {
       "types": "./src/sql.ts",
       "default": "./dist/sql.mjs"
@@ -50,6 +55,9 @@
   ],
   "license": "MIT",
   "name": "@patronage/ads-sync",
+  "peerDependencies": {
+    "postgres": "^3.4.9"
+  },
   "publishConfig": {
     "access": "public",
     "exports": {
@@ -77,6 +85,10 @@
         "types": "./dist/providers.d.mts",
         "default": "./dist/providers.mjs"
       },
+      "./run": {
+        "types": "./dist/run.d.mts",
+        "default": "./dist/run.mjs"
+      },
       "./sql": {
         "types": "./dist/sql.d.mts",
         "default": "./dist/sql.mjs"
@@ -96,5 +108,5 @@
     "typecheck": "tsc --noEmit"
   },
   "type": "module",
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

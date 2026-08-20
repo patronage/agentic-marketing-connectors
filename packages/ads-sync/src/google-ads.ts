@@ -9,17 +9,89 @@ import {
 import type {
   AdsSyncProviderModule,
   CampaignDailyRecord,
+  ConfiguredCatalog,
   SourceIdentity,
   SourceReportingWindow,
 } from "./provider-contract.js";
 
+export type {
+  AccessTokenSourceConfigInput,
+  ConfiguredCatalog,
+  ConfiguredCatalogStream,
+} from "./provider-contract.js";
+
 const DEFAULT_SCHEDULE_EVERY_MINUTES = 6 * 60;
+
+/**
+ * Fully configured catalog for the `campaign_daily_performance` custom
+ * query. The source rewrites the query date predicate per run window, so
+ * the stream is a full refresh appended into the destination.
+ */
+export const googleAdsConfiguredCatalog = {
+  streams: [
+    {
+      cursor_field: [],
+      destination_sync_mode: "append",
+      generation_id: 0,
+      minimum_generation_id: 0,
+      primary_key: [],
+      stream: {
+        is_file_based: false,
+        is_resumable: false,
+        json_schema: {
+          $schema: "http://json-schema.org/draft-07/schema#",
+          additionalProperties: true,
+          properties: {
+            "campaign.advertising_channel_type": {
+              enum: [
+                "DEMAND_GEN",
+                "DISPLAY",
+                "HOTEL",
+                "LOCAL",
+                "LOCAL_SERVICES",
+                "MULTI_CHANNEL",
+                "PERFORMANCE_MAX",
+                "SEARCH",
+                "SHOPPING",
+                "SMART",
+                "TRAVEL",
+                "UNKNOWN",
+                "UNSPECIFIED",
+                "VIDEO",
+              ],
+              type: "string",
+            },
+            "campaign.id": { type: ["integer", "null"] },
+            "campaign.name": { type: ["string", "null"] },
+            "campaign.status": {
+              enum: ["ENABLED", "PAUSED", "REMOVED", "UNKNOWN", "UNSPECIFIED"],
+              type: "string",
+            },
+            "customer.id": { type: ["integer", "null"] },
+            "metrics.clicks": { type: ["integer", "null"] },
+            "metrics.conversions": { type: ["number", "null"] },
+            "metrics.conversions_value": { type: ["number", "null"] },
+            "metrics.cost_micros": { type: ["integer", "null"] },
+            "metrics.impressions": { type: ["integer", "null"] },
+            "segments.date": { format: "date", type: ["string", "null"] },
+          },
+          type: "object",
+        },
+        name: "campaign_daily_performance",
+        supported_sync_modes: ["full_refresh"],
+      },
+      sync_id: 0,
+      sync_mode: "full_refresh",
+    },
+  ],
+} as const satisfies ConfiguredCatalog;
 
 export const googleAdsProvider = {
   backfillPolicy: {
     maxWindowsPerRun: 8,
     windowStepDays: 7,
   },
+  configuredCatalog: googleAdsConfiguredCatalog,
   defaultAirbyteSchema: "airbyte_google_ads",
   defaultScheduleEveryMinutes: DEFAULT_SCHEDULE_EVERY_MINUTES,
   displayName: "Google Ads",

@@ -12,10 +12,18 @@ import {
   stringValue,
 } from "./provider-contract.js";
 import type {
+  AccessTokenSourceConfigInput,
   AdsSyncProviderModule,
   CampaignDailyRecord,
+  ConfiguredCatalog,
   SourceIdentity,
   SourceReportingWindow,
+} from "./provider-contract.js";
+
+export type {
+  AccessTokenSourceConfigInput,
+  ConfiguredCatalog,
+  ConfiguredCatalogStream,
 } from "./provider-contract.js";
 
 const DAILY_SCHEDULE_MINUTES = 24 * 60;
@@ -32,11 +40,84 @@ export const GOOGLE_SEARCH_CONSOLE_QUERY_PAGE_DIMENSIONS = [
   "page",
 ] as const;
 
+/**
+ * Fully configured catalog for the query+page custom report. Incremental
+ * sync on `date`, deduplicated on site, search type, date, query, and page.
+ */
+export const googleSearchConsoleConfiguredCatalog = {
+  streams: [
+    {
+      cursor_field: ["date"],
+      destination_sync_mode: "append_dedup",
+      generation_id: 0,
+      minimum_generation_id: 0,
+      primary_key: [
+        ["site_url"],
+        ["search_type"],
+        ["date"],
+        ["query"],
+        ["page"],
+      ],
+      stream: {
+        json_schema: {
+          $schema: "http://json-schema.org/draft-07/schema#",
+          additionalProperties: true,
+          properties: {
+            clicks: { type: ["null", "integer"] },
+            ctr: { type: ["null", "number"] },
+            date: { format: "date", type: ["null", "string"] },
+            impressions: { type: ["null", "integer"] },
+            page: { type: ["null", "string"] },
+            position: { type: ["null", "number"] },
+            query: { type: ["null", "string"] },
+            search_type: { type: ["null", "string"] },
+            site_url: { type: ["null", "string"] },
+          },
+          type: "object",
+        },
+        name: GOOGLE_SEARCH_CONSOLE_QUERY_PAGE_STREAM,
+        supported_sync_modes: ["full_refresh", "incremental"],
+      },
+      sync_id: 0,
+      sync_mode: "incremental",
+    },
+  ],
+} as const satisfies ConfiguredCatalog;
+
+/**
+ * Builds the access-token-only source configuration. The pinned upstream
+ * image reads refresh-token OAuth only; this configuration requires the
+ * derived image built with `GSC_AUTH_MODE=access_token`.
+ */
+export function googleSearchConsoleAccessTokenSourceConfig(
+  input: AccessTokenSourceConfigInput
+): Record<string, unknown> {
+  const endDate = requireInclusiveEndDate(input.endDate);
+  return {
+    authorization: {
+      access_token: input.accessToken,
+      auth_type: "Client",
+    },
+    custom_reports_array: [
+      {
+        dimensions: [...GOOGLE_SEARCH_CONSOLE_QUERY_PAGE_DIMENSIONS],
+        name: GOOGLE_SEARCH_CONSOLE_QUERY_PAGE_STREAM,
+      },
+    ],
+    data_state: "final",
+    ...(endDate ? { end_date: endDate } : {}),
+    site_urls: [...input.accountIds],
+    start_date: requireDateOnly(input.startDate),
+  };
+}
+
 export const googleSearchConsoleProvider = {
+  accessTokenSourceConfig: googleSearchConsoleAccessTokenSourceConfig,
   backfillPolicy: {
     maxWindowsPerRun: BACKFILL_MAX_WINDOWS_PER_RUN,
     windowStepDays: BACKFILL_WINDOW_STEP_DAYS,
   },
+  configuredCatalog: googleSearchConsoleConfiguredCatalog,
   defaultAirbyteSchema: "airbyte_google_search_console",
   defaultScheduleEveryMinutes: DAILY_SCHEDULE_MINUTES,
   displayName: "Google Search Console",
@@ -134,6 +215,25 @@ function dateOnly(value: null | string | undefined) {
     return;
   }
   return date.toISOString().slice(0, 10);
+}
+
+function requireInclusiveEndDate(value: string | undefined) {
+  if (value === undefined) {
+    return;
+  }
+  const endDate = inclusiveEndDate(value);
+  if (!endDate) {
+    throw new Error(`endDate must be an ISO date, received ${value}`);
+  }
+  return endDate;
+}
+
+function requireDateOnly(value: string) {
+  const date = dateOnly(value);
+  if (!date) {
+    throw new Error(`startDate must be an ISO date, received ${value}`);
+  }
+  return date;
 }
 
 function inclusiveEndDate(exclusiveEndDate: string | undefined) {

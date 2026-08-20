@@ -73,8 +73,53 @@ export interface SourceReportingWindow {
   startDate?: string;
 }
 
+/** One configured stream in an Airbyte configured catalog. */
+export interface ConfiguredCatalogStream {
+  cursor_field: readonly string[];
+  destination_sync_mode: "append" | "append_dedup" | "overwrite";
+  generation_id?: number;
+  minimum_generation_id?: number;
+  primary_key: readonly (readonly string[])[];
+  stream: {
+    is_file_based?: boolean;
+    is_resumable?: boolean;
+    json_schema: Record<string, unknown>;
+    name: string;
+    supported_sync_modes: readonly ("full_refresh" | "incremental")[];
+  };
+  sync_id?: number;
+  sync_mode: "full_refresh" | "incremental";
+}
+
+/** A fully configured Airbyte catalog for one Supported Provider. */
+export interface ConfiguredCatalog {
+  streams: readonly ConfiguredCatalogStream[];
+}
+
+/**
+ * Input for the access-token-only source-config builder. `accountIds` is the
+ * provider account identity: ad account ids for Meta Ads and site URLs for
+ * Google Search Console. Dates are ISO `YYYY-MM-DD`; `endDate` is exclusive.
+ */
+export interface AccessTokenSourceConfigInput {
+  accessToken: string;
+  accountIds: readonly string[];
+  endDate?: string;
+  startDate: string;
+}
+
 export interface AdsSyncProviderModule {
+  /**
+   * Builds a source configuration from one access token and the account
+   * identity. Present only for providers whose pinned source image reads a
+   * bearer access token. Never reads an environment or a secret store.
+   */
+  accessTokenSourceConfig?: (
+    input: AccessTokenSourceConfigInput
+  ) => Record<string, unknown>;
   backfillPolicy: ProviderBackfillPolicy;
+  /** The fully configured catalog the Reference Deployment syncs. */
+  configuredCatalog: ConfiguredCatalog;
   defaultAirbyteSchema: string;
   defaultScheduleEveryMinutes: number;
   displayName: string;

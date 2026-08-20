@@ -1,0 +1,12 @@
+# Keep this allowlist aligned with every Dockerfile COPY/ADD input; otherwise
+# a context memo can produce a stable tag for a changed build context.
+**
+!.dockerignore
+!Dockerfile
+!Dockerfile.gsc
+!Dockerfile.meta
+!Dockerfile.postgres
+!airbyte-source-server.py
+!patch-gsc-manifest-auth.py
+!patch-postgres-preprovisioned-schema.py
+!pin-postgres-java-cacerts.sh

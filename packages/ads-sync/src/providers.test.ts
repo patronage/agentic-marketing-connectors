@@ -31,6 +31,21 @@ function syntheticIdentity(sourceConfig: unknown): SourceIdentity {
 
 const syntheticProvider = {
   backfillPolicy: { maxWindowsPerRun: 2, windowStepDays: 1 },
+  configuredCatalog: {
+    streams: [
+      {
+        cursor_field: [],
+        destination_sync_mode: "append",
+        primary_key: [],
+        stream: {
+          json_schema: { properties: { account: { type: ["string"] } } },
+          name: "daily",
+          supported_sync_modes: ["full_refresh"],
+        },
+        sync_mode: "full_refresh",
+      },
+    ],
+  },
   defaultAirbyteSchema: "airbyte_synthetic",
   defaultScheduleEveryMinutes: 60,
   displayName: "Synthetic Source",
